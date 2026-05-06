@@ -1,7 +1,9 @@
 from .telegram_gateway import TelegramGateway
 
+
 class MockTelegramAdapter(TelegramGateway):
-    def __init__(self):
+    def __init__(self, config=None):
+        super().__init__(config=config)
         self.messages = []
         self.documents = []
 
