@@ -1,42 +1,60 @@
 # PHASE 6B-4 LLM BRAIN GATEWAY REPORT
 
-## Executive Summary
-Phase 6B-4 adds a clean local LLM brain gateway under `saga_fusion/llm/` for OpenAI-compatible endpoints such as Qwen/TurboQuant/llama.cpp. The gateway is disabled by default, uses env-only configuration, never hardcodes endpoint/API key in code, and falls back safely when disabled or unavailable.
+## 1. Endpoint configurado, redactado
+- Provider: `openai_compatible`
+- Base URL: `http://127.0.0.1:8080/v1`
+- API key: `[REDACTED]` / example value `local`
+- Enabled default: `false`
+- Smoke manual: skipped because `STRIX_LLM_ENABLED` was not `true` in the test environment.
 
-## Scope Implemented
-- Added `saga_fusion/llm/` package:
-  - `__init__.py`
-  - `init.py`
-  - `llm_config.py`
-  - `openai_compatible_client.py`
-  - `brain_service.py`
-  - `llm_router.py`
-  - `prompt_builder.py`
-  - `response_parser.py`
-- Added `tests/llm/` coverage.
-- Integrated natural-language Telegram messages through `LLMRouter` before `MissionPolicy`.
-- Kept explicit Telegram commands unchanged.
+## 2. Modelo configurado
+- Model: `qwen3.6-35b-a3b-turboquant`
+- Timeout: `120s`
+- Max output tokens: `2048`
+- Temperature: `0.2`
 
-## Safety Properties
-- `STRIX_LLM_ENABLED=false` by default.
-- If enabled, `STRIX_LLM_BASE_URL` and `STRIX_LLM_MODEL` are required.
-- `STRIX_LLM_API_KEY` can be `local` or empty for unauthenticated local servers.
-- API key is redacted in config repr.
-- Unit tests do not call real LLM endpoints.
-- LLM failures fall back deterministically.
-- BrainService does not execute tools.
-- Natural language output still flows through `MissionPolicy`, `ApprovalWorkflow`, `SandboxController` dry-run dispatch, and `EvidenceLogger`.
-- R4 is not auto-approved.
-- R5 is not executed.
-- Telegram mock and real gated behavior remain intact.
+## 3. Tests LLM
+Command:
+`python3 -m pytest tests/llm -q --tb=short`
 
-## Validation
-- `python3 -m pytest tests/llm tests/telegram -q --tb=short` -> `52 passed`
-- `python3 -m pytest tests/sandbox tests/telegram tests/llm tests/unit -q --tb=short` -> `127 passed`
-- `python3 -m pytest tests -q --tb=short` -> `151 passed, 3 warnings`
+Result:
+`10 passed`
 
-## Real Mission Status
-No real mission was executed in Phase 6B-4.
+## 4. Tests Full
+Command:
+`python3 -m pytest tests -q --tb=short`
 
-## Verdict
-Phase 6B-4 is ready for controlled local LLM health/config testing. It is not yet authorized for real mission execution.
+Result:
+`151 passed, 3 warnings`
+
+Additional command:
+`python3 -m pytest tests/telegram tests/llm -q --tb=short`
+
+Result:
+`52 passed`
+
+## 5. Confirmación
+- No se tocó Qwen/TurboQuant/llama.cpp: SI
+- No se tocó STRIX core: SI
+- No se guardaron secretos: SI
+- Telegram mock sigue funcionando: SI
+- Telegram real gated sigue funcionando: SI
+- LLM disabled fallback funciona: SI
+- LLM enabled mock funciona: SI
+- No se hicieron llamadas LLM reales en tests automáticos: SI
+- No se ejecutó misión real: SI
+
+## 6. Implementación
+- `saga_fusion/llm/llm_config.py` carga config desde env, valida base_url/model solo si enabled=true y redacted repr oculta API key.
+- `saga_fusion/llm/openai_compatible_client.py` soporta `POST {base_url}/chat/completions`, timeout, errores seguros y respuesta estructurada.
+- `saga_fusion/llm/brain_service.py` razona/estructura sin ejecutar herramientas.
+- `saga_fusion/llm/llm_router.py` usa fallback determinista si disabled o si falla el LLM.
+- `saga_fusion/telegram/mission_operator.py` conecta natural language -> router/brain -> MissionPolicy -> ApprovalWorkflow/SandboxController/EvidenceLogger.
+
+## 7. Veredicto
+APTO PARA PRUEBA TELEGRAM + CEREBRO LOCAL: SI
+
+Condiciones:
+- Activar `STRIX_LLM_ENABLED=true` solo en runtime/env local.
+- Confirmar endpoint local `/v1/models` antes de usar brain desde Telegram.
+- No ejecutar misiones reales sin aprobación explícita.

@@ -21,5 +21,5 @@ tests/security/test_denied_actions_never_execute.py::TestDeniedActionsNeverExecu
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-151 passed, 3 warnings in 2.13s
+151 passed, 3 warnings in 2.12s
 PYTEST_EXIT=0
