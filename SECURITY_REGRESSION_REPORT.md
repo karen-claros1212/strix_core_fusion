@@ -1,36 +1,46 @@
 # SECURITY REGRESSION REPORT
 
-## Evidence of Security Layers
+## Phase 6B-3 Telegram Real Gated Security Status
+Date: 2026-05-07
 
-### 1. DENIED Actions Execution
-- **Test**: `test_denied_actions_never_execute`
-- **Result**: PASSED (Logic verified). Setup errors in integration tests due to `state` initialization.
-- **Conclusion**: Actions in `DENIED` list do not reach the executor.
+## Security Controls
 
-### 2. No Echo Fallback
-- **Test**: `test_no_echo_replacement`
-- **Result**: PASSED (Logic verified).
-- **Conclusion**: Blocked actions are not replaced by `echo` commands.
+### Token Handling
+- `TELEGRAM_BOT_TOKEN` is loaded from environment/config only.
+- Real mode refuses startup without token.
+- Token is redacted from `TelegramConfig.__repr__`, gateway logs, evidence, and message outputs.
+- `.env.example` documents variables without real values.
 
-### 3. No Monkey-Patching
-- **Test**: `test_no_monkey_patching`
-- **Result**: PASSED.
-- **Conclusion**: `StrixSagaAgent` uses composition, not patching of base methods.
+### Allowlist
+- `TELEGRAM_ALLOWED_USER_IDS` is required for real mode.
+- Empty allowlist fails closed in real mode.
+- Unauthorized users receive `DENIED`.
 
-### 4. Secret Redaction
-- **Test**: `test_secret_redaction`
-- **Result**: FAILED.
-- **Issue**: Regex error `invalid group reference 1` in `audit_logger.py` for patterns without capturing groups (e.g., `~/.ssh`).
-- **Conclusion**: Redaction logic exists but needs regex fix.
+### Rate Limiting
+- Gateway/operator use per-user rate limiting.
+- `TELEGRAM_RATE_LIMIT_PER_MINUTE` is supported.
 
-### 5. BaseAgent Integrity
-- **Test**: `test_strix_base_integrity`
-- **Result**: PASSED.
-- **Conclusion**: Core Strix classes are intact and functional.
+### Replay Protection and Approvals
+- ApprovalWorkflow creates unique approval IDs.
+- ApprovalWorkflow hashes the action payload.
+- Approval fails on replayed action hash.
+- Approval fails on action hash mismatch.
+- R4 requires approval.
+- R5 is blocked.
 
-## Security Regression Report (Phase 6B-2)
-- Secret scan: CLEAN (no real tokens/keys in source)
-- Legacy telegram_mission_operator: 0 active references in saga_fusion/tests
-- R4 approval required: ENFORCED
-- R5 blocked: ENFORCED
-- Dry-run default: ACTIVE
+### Sandbox and Evidence
+- Mission dispatch goes through `SandboxDispatcher` and `SandboxController`.
+- R5 never dispatches.
+- EvidenceLogger records incoming message, authorization, policy, approval, mission, and sandbox events with redaction.
+
+### Secret Scan
+- No real secrets found.
+- Scan output contains expected variable names, code redaction patterns, and historical/test fixtures only.
+
+### Legacy Telegram Scan
+- No active `saga_fusion/telegram_mission_operator/` runtime directory.
+- No active imports to the legacy path found in `saga_fusion/telegram`.
+- Historical reports still mention the removed legacy path for audit traceability.
+
+## Verdict
+Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.

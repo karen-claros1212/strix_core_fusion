@@ -23,11 +23,12 @@ class TelegramMissionOperator:
         self.security = TelegramSecurity(config)
         self.evidence_logger = EvidenceLogger(audit=None, security=self.security)
         self.replay_guard = ReplayGuard()
-        self.rate_limiter = RateLimiter(max_requests=10, window_seconds=60)
+        self.rate_limiter = RateLimiter(max_requests=getattr(config, "rate_limit_per_minute", 10), window_seconds=60)
         self.sandbox_dispatcher = SandboxDispatcher(sandbox_controller=None)
 
     def _serialize_response(self, payload: dict) -> str:
-        return json.dumps(payload, sort_keys=True)
+        redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
+        return redacted
 
     def _mission_response(self, request, status: str, result: dict | None = None, approval_id: str | None = None) -> str:
         payload = {
@@ -37,29 +38,44 @@ class TelegramMissionOperator:
             "action_type": request.action_type,
             "target": request.target,
             "approval_id": approval_id,
+            "action_hash": request.action_hash,
             "result": result or {},
             "message": "requires approval" if status == "approval_required" else status.replace("_", " "),
         }
         return self._serialize_response(payload)
 
+    def _request_payload(self, request):
+        return {
+            "mission_id": request.mission_id,
+            "action_type": request.action_type,
+            "target": request.target,
+            "arguments": request.arguments,
+            "risk_level": request.risk_level.value,
+        }
+
     async def handle_message(self, chat_id: str, user_id: str, text: str) -> str:
+        self.evidence_logger.log_incoming_message(chat_id, user_id, text)
+
         if not self.rate_limiter.is_allowed(user_id):
+            self.evidence_logger.log_authorization_decision(chat_id, user_id, False)
             return "Rate limit exceeded. Please try again later."
 
-        if not self.security.validate_user(user_id):
-            return "Unauthorized user."
+        authorized = self.security.validate_user(user_id)
+        self.evidence_logger.log_authorization_decision(chat_id, user_id, authorized)
+        if not authorized:
+            return "DENIED: Unauthorized user."
 
         normalized_text = (text or "").strip()
         parsed = self.command_parser.parse(normalized_text)
 
-        if parsed is not None and not getattr(parsed, 'known', False):
+        if parsed is not None and not getattr(parsed, "known", False):
             return f"Error: Unknown command: {parsed.command}"
 
-        if parsed is not None and getattr(parsed, 'command', '') == 'status':
+        if parsed is not None and getattr(parsed, "command", "") == "status":
             return self._serialize_response({"status": "ok", "message": "System Status: Operational"})
 
-        if parsed is not None and getattr(parsed, 'command', '') == 'mission':
-            mission_text = ' '.join(getattr(parsed, 'args', []))
+        if parsed is not None and getattr(parsed, "command", "") == "mission":
+            mission_text = " ".join(getattr(parsed, "args", []))
         elif parsed is None:
             mission_text = normalized_text
         else:
@@ -67,6 +83,8 @@ class TelegramMissionOperator:
 
         request = self.mission_parser.parse(mission_text, requester_id=user_id, chat_id=chat_id)
         request.risk_level = self.policy.classify_risk(request)
+        payload = self._request_payload(request)
+        request.action_hash = self.approval_workflow.compute_action_hash(payload)
 
         if self.replay_guard.is_duplicate(request.mission_id):
             return "Duplicate mission detected."
@@ -74,25 +92,31 @@ class TelegramMissionOperator:
         if self.policy.is_blocked(request.risk_level):
             request.status = MissionStatus.REJECTED
             result = {"status": "blocked", "executed": False, "reason": "risk_r5_blocked"}
+            self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "blocked")
             self.evidence_logger.log_mission(request, result)
             return self._mission_response(request, "blocked", result=result)
 
         if self.policy.requires_approval(request.risk_level):
             request.status = MissionStatus.PENDING
-            approval_id = self.approval_workflow.create_approval(request.mission_id)
+            approval_id = self.approval_workflow.create_approval(request.mission_id, action_payload=payload)
             request.approval_id = approval_id
-            result = {"status": "approval_required", "executed": False, "approval_id": approval_id}
+            request.action_hash = self.approval_workflow.get_action_hash(approval_id)
+            result = {
+                "status": "approval_required",
+                "executed": False,
+                "approval_id": approval_id,
+                "action_hash": request.action_hash,
+            }
+            self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "approval_required")
+            self.evidence_logger.log_approval_decision(approval_id, "created", request.action_hash)
             self.evidence_logger.log_mission(request, result)
-            return self._mission_response(
-                request,
-                "approval_required",
-                result=result,
-                approval_id=approval_id,
-            )
+            return self._mission_response(request, "approval_required", result=result, approval_id=approval_id)
 
         request.status = MissionStatus.EXECUTING
         result = self.sandbox_dispatcher.dispatch(request)
         request.status = MissionStatus.COMPLETED if result.get("status") == "dry_run" else MissionStatus.FAILED
+        self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "sandbox_dispatch")
+        self.evidence_logger.log_sandbox_dispatch_result(request.mission_id, result)
         self.evidence_logger.log_mission(request, result)
         self.replay_guard.mark_executed(request.mission_id)
         return self._mission_response(request, result.get("status", "dry_run"), result=result)

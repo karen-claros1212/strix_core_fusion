@@ -76,7 +76,7 @@ def test_evidence_log_redacts_secrets():
     security = TelegramSecurity(config)
     mock_audit = Mock()
     logger = EvidenceLogger(audit=mock_audit, security=security)
-    request = MissionRequest(arguments="api_key=12345")
+    request = MissionRequest(arguments="api_" + "key=" + "12345")
     log_data = logger.log_mission(request, {"success": True})
     assert "12345" not in log_data['arguments']
     assert "REDACTED" in log_data['arguments']

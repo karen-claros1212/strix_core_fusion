@@ -1,0 +1,32 @@
+reports/PHASE_6B_2_CLOSURE_REPORT.md:35:- ✅ No `telegram_mission_operator` directory recreated
+reports/PHASE_6B_3_PREFLIGHT_CHECKLIST.md:23:- [x] No imports to `telegram_mission_operator` (legacy path)
+reports/PHASE_6B_3_TELEGRAM_REAL_GATED_REPORT.md:63:Result: no active legacy runtime path or active import to `saga_fusion/telegram_mission_operator/`. Hits are historical reports/root audit docs and old filenames mentioned for audit traceability.
+reports/CODEX_RESUME_STATE_REPORT.md:20:## 6. Escaneo legacy telegram_mission_operator
+reports/CODEX_RESUME_STATE_REPORT.md:21:- Active runtime path `saga_fusion/telegram_mission_operator/`: absent
+reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:28:| `tests/telegram/test_telegram_mission_operator.py` | `test_evidence_log_redacts_secrets` | `AssertionError: assert 'REDACTED' in 'api_key=***'` | 5. Error real de lógica | `EvidenceLogger` | Corregir código |
+reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:29:| `tests/telegram/test_telegram_mission_operator.py` | `test_operator_end_to_end_dry_run` | `AssertionError: assert 'requires approval' in "Mission executed: ..."` | 5. Error real de lógica | `TelegramMissionOperator` | Corregir código |
+reports/phase_6b_3_secret_scan.log:7:./reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:28:| `tests/telegram/test_telegram_mission_operator.py` | `test_evidence_log_redacts_secrets` | `AssertionError: assert 'REDACTED' in 'api_key=***'` | 5. Error real de lógica | `EvidenceLogger` | Corregir código |
+reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:101:- **Archivo de Test:** `tests/telegram/test_telegram_mission_operator.py`
+reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:103:- **Archivo Probable a Corregir:** `saga_fusion/telegram/telegram_mission_operator.py`
+reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:106:- **Archivo de Test:** `tests/telegram/test_telegram_mission_operator.py`
+reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:108:- **Archivo Probable a Corregir:** `saga_fusion/telegram/telegram_mission_operator.py`
+reports/PHASE_6B_1C_CONTRACT_FREEZE.md:50:- **Duplicado:** `saga_fusion/telegram_mission_operator/` (13 archivos)
+./SECURITY_REGRESSION_REPORT.md:41:- No active `saga_fusion/telegram_mission_operator/` runtime directory.
+./reports/PHASE_6B_2_CLOSURE_REPORT.md:35:- ✅ No `telegram_mission_operator` directory recreated
+./reports/PHASE_6B_3_PREFLIGHT_CHECKLIST.md:23:- [x] No imports to `telegram_mission_operator` (legacy path)
+./reports/PHASE_6B_3_TELEGRAM_REAL_GATED_REPORT.md:63:Result: no active legacy runtime path or active import to `saga_fusion/telegram_mission_operator/`. Hits are historical reports/root audit docs and old filenames mentioned for audit traceability.
+./reports/CODEX_RESUME_STATE_REPORT.md:20:## 6. Escaneo legacy telegram_mission_operator
+./reports/CODEX_RESUME_STATE_REPORT.md:21:- Active runtime path `saga_fusion/telegram_mission_operator/`: absent
+./reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:28:| `tests/telegram/test_telegram_mission_operator.py` | `test_evidence_log_redacts_secrets` | `AssertionError: assert 'REDACTED' in 'api_key=***'` | 5. Error real de lógica | `EvidenceLogger` | Corregir código |
+./reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:29:| `tests/telegram/test_telegram_mission_operator.py` | `test_operator_end_to_end_dry_run` | `AssertionError: assert 'requires approval' in "Mission executed: ..."` | 5. Error real de lógica | `TelegramMissionOperator` | Corregir código |
+./reports/phase_6b_3_secret_scan.log:7:./reports/PHASE_6B_1C_FAILURE_CLASSIFICATION.md:28:| `tests/telegram/test_telegram_mission_operator.py` | `test_evidence_log_redacts_secrets` | `AssertionError: assert 'REDACTED' in 'api_key=***'` | 5. Error real de lógica | `EvidenceLogger` | Corregir código |
+./reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:101:- **Archivo de Test:** `tests/telegram/test_telegram_mission_operator.py`
+./reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:103:- **Archivo Probable a Corregir:** `saga_fusion/telegram/telegram_mission_operator.py`
+./reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:106:- **Archivo de Test:** `tests/telegram/test_telegram_mission_operator.py`
+./reports/PHASE_6B_1D_20_FAILURES_EXTRACTED.md:108:- **Archivo Probable a Corregir:** `saga_fusion/telegram/telegram_mission_operator.py`
+./reports/PHASE_6B_1C_CONTRACT_FREEZE.md:50:- **Duplicado:** `saga_fusion/telegram_mission_operator/` (13 archivos)
+./PHASE_6B_1A_TANATOSS_REMOVAL_AUDIT.md:39:- **saga_fusion/telegram_mission_operator/**: 13 archivos. Contiene lógica similar (Approval, Evidence, etc.).
+./PHASE_6B_0_RECOVERY_AUDIT_REPORT.md:21:- `saga_fusion/telegram_mission_operator/` (Duplicado potencial con `saga_fusion/telegram/`).
+./PHASE_6B_0_RECOVERY_AUDIT_REPORT.md:28:- Nuevos módulos en `saga_fusion/telegram_mission_operator/` (MissionParser, ApprovalWorkflow, etc.).
+./PHASE_6B_0_RECOVERY_AUDIT_REPORT.md:54:- Duplicación de lógica Telegram (`telegram/` vs `telegram_mission_operator/`).
+./PHASE_6B_0_RECOVERY_AUDIT_REPORT.md:59:1. Unificar `saga_fusion/telegram/` y `saga_fusion/telegram_mission_operator/`.

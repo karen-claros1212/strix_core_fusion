@@ -1,71 +1,44 @@
 # AUDIT SYSTEM STATUS - STRIX ELITE CYBER AGENT
 
-## Current Phase: 6A Completed
-**Status:** Sandbox Runtime PASSED
-**Date:** 2026-05-03
-**Result:** 14/14 tests passed, 0 failed
+## Current Phase: 6B-3 Completed
+**Status:** Gated real Telegram integration validated  
+**Date:** 2026-05-07  
+**Branch:** main  
+**Root:** `/mnt/Proyectos/strix_core_fusion`
 
-### Completed Tasks
-- [x] Execute Phase 6A: Sandbox Runtime Implementation & Testing.
-- [x] Validate SandboxPolicy, FilesystemJailer, NetworkJailer.
-- [x] Verify Security Controls (Privileged, Docker.sock, Metadata, etc.).
+## Baseline Before Phase 6B-3 Continuation
+- Initial git branch: main
+- Initial latest commit: `d8bcf30 phase 6b-3: gated real Telegram integration`
+- Initial full tests after dependency setup: 129 passed, 3 warnings
+- Legacy scan: no active legacy runtime directory; historical documentation still references old path
+- Secret scan: no real secrets identified; env variable names and test fixtures only
 
-### Phase 6A — Sandbox Runtime
-Status: APPROVED
-Tests:
-- Total: 14
-- Passed: 14
-- Failed: 0
-- Duration: 0.07s
+## Phase 6B-3 Controls Validated
+- `TELEGRAM_BOT_TOKEN` loaded only from environment/config object; real mode blocks without it.
+- `TELEGRAM_ALLOWED_USER_IDS` required in real mode; no fail-open allowlist for real mode.
+- `TELEGRAM_MODE=mock|real`, polling/webhook flags, and per-minute rate limit supported.
+- Token redaction in config repr, logs, gateway output, evidence records, and Telegram replies.
+- Unauthorized users receive `DENIED` responses.
+- RateLimiter active in gateway/operator path.
+- ReplayGuard active for repeated action hashes.
+- ApprovalWorkflow creates unique approval IDs and hashes action payloads.
+- R4 returns `approval_required`.
+- R5 returns `blocked` and never dispatches.
+- Sandbox dispatch remains mandatory through `SandboxDispatcher` -> `SandboxController` in dry-run mode.
+- EvidenceLogger records incoming message metadata, authorization, policy, approval, mission, and sandbox results with redaction.
+- Mock mode stays token-free and green.
+- Tests do not call real Telegram APIs.
 
-Validated modules:
-- SandboxPolicy
-- FilesystemJailer
-- NetworkJailer
-
-Security controls validated:
-- Command validation
-- Filesystem boundary validation
-- Path traversal blocking
-- Read-only checks
-- Symlink checks
-- DNS validation
-- IP validation
-- External/blocked network protection
-
-Note:
-Manual execution summary mentioned 20/20 tests, but PHASE_6A_TEST_REPORT.md currently documents 14/14 tests. Unless an additional report exists, the canonical result is 14/14.
-
-## Phase 6B-0 — Audit & Recovery
-Status: COMPLETED
-Date: 2026-05-03
-Result: Audit Report Generated (64 tests failing in 6B codebase)
-
-Findings:
-- **Root Cause**: Duplicated logic in `saga_fusion/telegram/` vs `saga_fusion/telegram_mission_operator/`.
-- **Sandbox**: 64 failing tests in `tests/sandbox/` and `tests/unit/`.
-- **Git State**: 14 modified files, 4 untracked files.
-
-## Next Phase — 6B-1 Corrections
-Status: READY TO START
-
-Scope:
-- Consolidate Telegram modules.
-- Fix 64 failing tests.
-- Verify Sandbox integration.
-- Prepare for GitHub migration.
+## Current Test Status
+- `tests/telegram`: 42 passed
+- `tests/sandbox tests/telegram tests/unit`: 117 passed
+- `tests`: 141 passed, 3 warnings
 
 ## Unchanged Components
+- `strix/`
+- `strix/agents/base_agent.py`
+- `strix/agents/state.py`
+- Agent Zero
 - OpenCLAW
 - Hermes
-- Agent Zero
-- Existing Telegram bot tokens
-- Existing gateway ports
-- Existing runtime services
-
-## Phase 6B-2 Status
-- Telegram Mission Operator Mock Mode: COMPLETED
-- Tests: 126/126 passed
-- Real Telegram: DISCONNECTED (no token, no API calls)
-- Gateway: 127.0.0.1:18080 (Anthropic-compatible)
-- Next: Phase 6B-3 preflight ready
+- Qwen/TurboQuant/llama.cpp/WSL2

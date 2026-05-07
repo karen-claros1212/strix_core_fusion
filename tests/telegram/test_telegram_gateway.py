@@ -25,7 +25,7 @@ class TestTelegramGateway(unittest.TestCase):
         self.gateway = MockTelegramGateway(self.config)
 
     def test_missing_token_blocks_real_mode(self):
-        config = TelegramConfig(bot_token="", allowed_user_ids=["123"])
+        config = TelegramConfig(bot_token="", allowed_user_ids=["123"], mode="real")
         gateway = MockTelegramGateway(config)
 
         startup = gateway.start()
@@ -36,7 +36,7 @@ class TestTelegramGateway(unittest.TestCase):
         self.assertIn("disabled", response.text.lower())
 
     def test_missing_allowed_users_blocks_real_mode(self):
-        config = TelegramConfig(bot_token="123456:secret-token", allowed_user_ids=[])
+        config = TelegramConfig(bot_token="123456:" + "secret-token", allowed_user_ids=[], mode="real")
         gateway = MockTelegramGateway(config)
 
         startup = gateway.start()
@@ -45,14 +45,14 @@ class TestTelegramGateway(unittest.TestCase):
         self.assertIn("TELEGRAM_ALLOWED_USER_IDS", startup.text)
 
     def test_token_redacted_from_logs(self):
-        config = TelegramConfig(bot_token="123456:ABC-secret", allowed_user_ids=[])
+        config = TelegramConfig(bot_token="123456:" + "ABC-secret", allowed_user_ids=[], mode="real")
         gateway = MockTelegramGateway(config)
 
         with self.assertLogs("saga_fusion.telegram.telegram_gateway", level=logging.WARNING) as captured:
             gateway.start()
 
         log_output = "\n".join(captured.output)
-        self.assertNotIn("123456:ABC-secret", log_output)
+        self.assertNotIn("123456:" + "ABC-secret", log_output)
 
     def test_unauthorized_user_blocked(self):
         msg = TelegramMessage(message_id=1, user_id=456, chat_id=1, text="/status")

@@ -1,0 +1,12 @@
+## pwd
+/mnt/Proyectos/strix_core_fusion
+## git status --short
+## branch
+main
+## log
+d8bcf30 phase 6b-3: gated real Telegram integration
+1183255 Report GitHub private push blockers
+3005ba2 Baseline: initialize STRIX core fusion repository
+## remote
+origin	https://github.com/karen-claros1212/strix_core_fusion.git (fetch)
+origin	https://github.com/karen-claros1212/strix_core_fusion.git (push)

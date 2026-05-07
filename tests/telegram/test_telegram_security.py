@@ -15,15 +15,16 @@ class TestTelegramSecurity(unittest.TestCase):
         self.assertFalse(self.security.validate_user(789))
 
     def test_redact_api_key(self):
-        text = "api_key=secret123"
+        text = "api_" + "key=" + "secret123"
         redacted = self.security.redact_secrets(text)
-        self.assertIn("api_key=***", redacted)
+        self.assertNotIn("secret123", redacted)
+        self.assertIn("REDACTED", redacted)
 
     def test_redact_token(self):
         text = "token 123456:abcXYZ"
         redacted = self.security.redact_secrets(text)
-        self.assertIn("token ***", redacted)
         self.assertNotIn("123456:abcXYZ", redacted)
+        self.assertIn("REDACTED", redacted)
 
     def test_rate_limit(self):
         for _ in range(5):

@@ -2,21 +2,36 @@
 
 ## 1. Context Management Risks
 - **Risk:** Memory overflow due to unbounded conversation history.
-- **Mitigation:** Implement `SagaContextManager` with soft/hard limits and summarization.
+- **Mitigation:** `SagaContextManager` with soft/hard limits and summarization.
 
 ## 2. Tool Execution Risks
 - **Risk:** Command injection via LLM-generated actions.
-- **Mitigation:** `SagaSecurityPolicy` with regex-based allow/deny lists.
+- **Mitigation:** `SagaSecurityPolicy`, `SandboxController`, and dry-run default dispatch.
 
 ## 3. Credential Leakage
-- **Risk:** API keys or SSH keys exposed in logs or outputs.
-- **Mitigation:** `SecretRedactor` middleware to mask sensitive patterns.
+- **Risk:** API keys, Telegram tokens, or bearer tokens exposed in logs/outputs.
+- **Mitigation:** Env-only token loading, safe config repr, TelegramSecurity redaction, EvidenceLogger redaction, and output budgeting.
 
 ## 4. Sandbox Escape
 - **Risk:** Tools breaking out of the execution environment.
-- **Mitigation:** Strict `SandboxRuntime` with resource limits and network policies.
+- **Mitigation:** Strict sandbox policy, filesystem/network/resource guards, and mandatory `SandboxController` dispatch.
 
-## Risk Register Update (Phase 6B-2)
-- [CLOSED] RB-6B2-01: Telegram Mission Operator not implemented → Mock mode complete
-- [CLOSED] RB-6B2-02: Sandbox block on Codex writes → Writable root configured
-- [OPEN] RB-6B3-01: Real Telegram connection pending Phase 6B-3
+## 5. Telegram Real Mode Misconfiguration
+- **Risk:** Real Telegram gateway starts without token or allowlist.
+- **Status:** CLOSED in Phase 6B-3.
+- **Mitigation:** `validate_real_mode_config()` blocks real mode unless both `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ALLOWED_USER_IDS` are present.
+
+## 6. Unauthorized Telegram Users
+- **Risk:** Unknown Telegram user triggers STRIX/Saga actions.
+- **Status:** CLOSED in Phase 6B-3.
+- **Mitigation:** Fail-closed allowlist validation and `DENIED` response.
+
+## 7. Approval Replay / Tampering
+- **Risk:** Approval callback reused or action payload changed after approval request.
+- **Status:** CLOSED in Phase 6B-3.
+- **Mitigation:** Approval action hashes, replay guard, and hash mismatch rejection.
+
+## Current Phase 6B-3 Verdict
+- `RB-6B3-01`: Real Telegram connection pending gated token test — READY FOR CONTROLLED TOKEN TEST.
+- `RB-6B3-02`: Mock mode regression — CLOSED, tests green.
+- `RB-6B3-03`: R4/R5 policy regression — CLOSED, tests green.

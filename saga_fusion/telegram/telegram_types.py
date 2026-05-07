@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 import uuid
 
+
 class RiskLevel(Enum):
     R0 = "R0"
     R1 = "R1"
@@ -10,6 +11,7 @@ class RiskLevel(Enum):
     R3 = "R3"
     R4 = "R4"
     R5 = "R5"
+
 
 class MissionStatus(Enum):
     PENDING = "PENDING"
@@ -20,7 +22,7 @@ class MissionStatus(Enum):
     FAILED = "FAILED"
     EXPIRED = "EXPIRED"
 
-@dataclass
+
 @dataclass
 class MissionRequest:
     mission_id: str = field(default_factory=lambda: str(uuid.uuid4()))
@@ -32,6 +34,8 @@ class MissionRequest:
     arguments: str = ""
     risk_level: RiskLevel = RiskLevel.R0
     status: MissionStatus = MissionStatus.PENDING
+    approval_id: Optional[str] = None
+    action_hash: Optional[str] = None
 
 
 @dataclass

@@ -6,7 +6,7 @@ from saga_fusion.telegram.mock_telegram_adapter import MockTelegramAdapter
 
 
 def build_operator():
-    config = TelegramConfig()
+    config = TelegramConfig(mode="mock", allowed_user_ids=["diego_claros"])
     adapter = MockTelegramAdapter()
     return TelegramMissionOperator(config, adapter)
 

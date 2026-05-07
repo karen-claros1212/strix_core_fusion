@@ -1,34 +1,40 @@
-# STRIX ELITE CYBER AGENT - Synopsis
-## Proposito
-STRIX Elite Cyber Agent: core unico con Saga Fusion como capa propia de seguridad, sandbox, evidencia, Telegram, CloudOps.
+# STRIX ELITE CYBER AGENT - Project Synopsis
 
-## Raiz
-/home/jesus/agent-zero/docker/run/agent-zero/usr/workdir/frameworks_fusion/strix_core_fusion/strix_base
+## Purpose
+STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned security, sandbox, evidence, Telegram, and CloudOps layer.
 
-## Estado de fases
-- Fase 0+1: baseline/documentacion
-- Fase 2/2.5: Saga Fusion sobre Strix real
-- Fase 3/3.5: tests/regresion
-- Fase 4: Evidence Store + Output Budget + Runtime Safety
-- Fase 5: CloudOps / InfraOps Operator
-- Fase 6B-1D-C: Sandbox + Telegram contracts fixed
-- Fase 6B-2: Telegram mock mode
-- Actual: 126/126 tests passed
+## Current Root
+`/mnt/Proyectos/strix_core_fusion`
 
-## Arquitectura
-- strix/: core
-- saga_fusion/: capa propia
-- saga_fusion/runtime/sandbox/: runtime seguro
-- saga_fusion/telegram/: interfaz Telegram oficial
-- saga_fusion/evidence/: evidencia
-- extensions/cai_patterns/: patrones CAI
-- extensions/hermes_patterns/: patrones Hermes
+## Phase Status
+- Phase 0+1: baseline/documentation
+- Phase 2/2.5: Saga Fusion over real STRIX
+- Phase 3/3.5: tests/regression
+- Phase 4: Evidence Store + Output Budget + Runtime Safety
+- Phase 5: CloudOps / InfraOps Operator
+- Phase 6B-2: Telegram mock mode completed
+- Phase 6B-3: gated real Telegram integration completed
+- Current full suite: 141 passed, 3 warnings
 
-## Reglas
-- STRIX es core unico
-- Telegram es interfaz, no proyecto aparte
-- R4 requiere aprobacion
-- R5 bloqueado
-- Nada ejecuta fuera de SandboxController
-- No secretos en repo
-- Codex programa; Morgan/OpenCLAW orquesta
+## Architecture
+- `strix/`: STRIX core; not modified in Phase 6B-3
+- `saga_fusion/`: owned Saga Fusion layer
+- `saga_fusion/runtime/sandbox/`: mandatory sandbox runtime
+- `saga_fusion/telegram/`: official Telegram interface
+- `saga_fusion/evidence/`: evidence capture
+
+## Telegram Phase 6B-3 Summary
+- Real mode is gated by env/config and refuses startup when required settings are missing.
+- Mock mode remains intact and requires no token.
+- Real token is env-only via `TELEGRAM_BOT_TOKEN`.
+- Allowed users are required for real mode via `TELEGRAM_ALLOWED_USER_IDS`.
+- Rate limiting, replay protection, approval hashes, R4 approvals, R5 blocking, evidence logging, and output/secret redaction are active.
+- Tests use mock/injected clients and do not call Telegram real APIs.
+
+## Core Rules
+- STRIX is the only core.
+- Telegram is an interface, not a separate project.
+- R4 requires approval.
+- R5 is blocked.
+- Nothing executes outside `SandboxController`.
+- No real secrets in repository.
