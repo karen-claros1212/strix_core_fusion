@@ -1,6 +1,6 @@
 import json
 
-from .telegram_types import MissionStatus
+from .telegram_types import MissionRequest, MissionStatus
 from .command_parser import CommandParser
 from .mission_policy import MissionPolicy
 from .approval_workflow import ApprovalWorkflow
@@ -10,6 +10,7 @@ from .replay_guard import ReplayGuard
 from .rate_limiter import RateLimiter
 from .telegram_security import TelegramSecurity
 from .mission_parser import MissionParser
+from ..llm.llm_router import LLMRouter
 
 
 class TelegramMissionOperator:
@@ -25,6 +26,7 @@ class TelegramMissionOperator:
         self.replay_guard = ReplayGuard()
         self.rate_limiter = RateLimiter(max_requests=getattr(config, "rate_limit_per_minute", 10), window_seconds=60)
         self.sandbox_dispatcher = SandboxDispatcher(sandbox_controller=None)
+        self.llm_router = LLMRouter()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -76,12 +78,23 @@ class TelegramMissionOperator:
 
         if parsed is not None and getattr(parsed, "command", "") == "mission":
             mission_text = " ".join(getattr(parsed, "args", []))
+            request = self.mission_parser.parse(mission_text, requester_id=user_id, chat_id=chat_id)
         elif parsed is None:
-            mission_text = normalized_text
+            mission_data = self.llm_router.build_mission_from_natural_language(
+                normalized_text,
+                context={"chat_id": str(chat_id), "user_id": str(user_id)},
+            )
+            request = MissionRequest(
+                requester_id=str(user_id),
+                chat_id=str(chat_id),
+                raw_text=normalized_text,
+                action_type=str(mission_data.get("action_type") or "status"),
+                target=str(mission_data.get("target") or ""),
+                arguments=str(mission_data.get("arguments") or mission_data.get("target") or ""),
+            )
         else:
             return "Unknown command."
 
-        request = self.mission_parser.parse(mission_text, requester_id=user_id, chat_id=chat_id)
         request.risk_level = self.policy.classify_risk(request)
         payload = self._request_payload(request)
         request.action_hash = self.approval_workflow.compute_action_hash(payload)

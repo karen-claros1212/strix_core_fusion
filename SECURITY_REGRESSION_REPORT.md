@@ -44,3 +44,13 @@ Date: 2026-05-07
 
 ## Verdict
 Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
+
+
+## Security Regression Report (Phase 6B-4)
+- LLM enabled flag defaults to false.
+- LLM endpoint/model/API key are env-only.
+- API key is redacted in repr.
+- Unit tests do not call real LLM endpoint.
+- LLM failures fall back safely and do not break TelegramGateway.
+- BrainService does not execute tools and cannot bypass MissionPolicy, ApprovalWorkflow, or SandboxController.
+- Real mission execution remains disabled/not performed.

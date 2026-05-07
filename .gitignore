@@ -21,3 +21,4 @@ backups/
 # Phase 6B-3 validation artifacts are intentionally committed.
 !reports/codex_resume_*.log
 !reports/phase_6b_3_*.log
+!reports/phase_6b_4_*.log

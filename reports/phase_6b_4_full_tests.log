@@ -1,0 +1,25 @@
+........................................................................ [ 47%]
+........................................................................ [ 95%]
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+tests/integration/test_strix_saga_agent_execution_flow.py::TestStrixSagaAgentExecutionFlow::test_process_iteration_calls_context_manager
+  /mnt/Proyectos/strix_core_fusion/tests/integration/test_strix_saga_agent_execution_flow.py:20: RuntimeWarning: coroutine 'StrixSagaAgent._process_iteration' was never awaited
+    self.agent._process_iteration()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/integration/test_strix_saga_agent_execution_flow.py::TestStrixSagaAgentExecutionFlow::test_execute_actions_calls_tool_guard
+  /mnt/Proyectos/strix_core_fusion/tests/integration/test_strix_saga_agent_execution_flow.py:31: RuntimeWarning: coroutine 'UnifiedSagaAgent._hook_secure_execution' was never awaited
+    self.agent._execute_actions(actions)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/security/test_denied_actions_never_execute.py::TestDeniedActionsNeverExecute::test_denied_action_not_in_executor_calls
+  /mnt/Proyectos/strix_core_fusion/tests/security/test_denied_actions_never_execute.py:19: RuntimeWarning: coroutine 'UnifiedSagaAgent._hook_secure_execution' was never awaited
+    self.agent._execute_actions(self.agent._current_actions)
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+151 passed, 3 warnings in 2.13s
+PYTEST_EXIT=0

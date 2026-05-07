@@ -42,3 +42,13 @@
 - OpenCLAW
 - Hermes
 - Qwen/TurboQuant/llama.cpp/WSL2
+
+
+## Phase 6B-4 Status
+- LLM Brain Gateway: COMPLETED
+- Path: `saga_fusion/llm/`
+- Provider: OpenAI-compatible local endpoint, env configured
+- Default: disabled
+- Tests: full suite `151 passed, 3 warnings`
+- Real LLM calls in unit tests: NO
+- Real mission execution: NO

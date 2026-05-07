@@ -30,3 +30,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Action hash mismatch blocks approval.
 - Mock mode flow remains green.
 - Tests avoid real Telegram API calls.
+
+
+## Test Results (Phase 6B-4)
+- LLM + Telegram: 52 passed
+- Sandbox + Telegram + LLM + Unit: 127 passed
+- Full suite: 151 passed, 3 warnings
+- New LLM tests cover config gating, payload construction, timeout handling, no-tool-execution brain service, router fallbacks, and Telegram natural-language mocked brain flow.

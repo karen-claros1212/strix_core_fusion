@@ -38,3 +38,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - R5 is blocked.
 - Nothing executes outside `SandboxController`.
 - No real secrets in repository.
+
+
+## Phase 6B-4 LLM Brain Gateway
+- Added `saga_fusion/llm/` as the local brain gateway for OpenAI-compatible Qwen/TurboQuant/llama.cpp endpoints.
+- LLM is disabled by default via `STRIX_LLM_ENABLED=false`.
+- Endpoint/model/API key are env-driven; code has no hardcoded LLM endpoint or key.
+- Natural Telegram messages may be structured by the brain only when enabled, then still pass through MissionPolicy, ApprovalWorkflow, SandboxController, and EvidenceLogger.
+- Unit tests mock the LLM and never call the real endpoint.
