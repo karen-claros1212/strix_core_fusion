@@ -106,3 +106,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Planner produces declarative plans/intents only; `execution_allowed` remains false and no direct tool execution path exists.
 - Unknown requests require policy review, R4 infrastructure changes produce approval-required intents, and R5 destructive/exfiltration requests produce blocked non-approvable intents.
 - Telegram mock flow records `task_plan_intent` evidence for reporting while MissionPolicy, ToolRouter, ApprovalVerifier, and SandboxController remain authoritative.
+
+## Phase 7I — Defensive Workflow Templates
+- Added `saga_fusion/workflows/` with 8 defensive workflow templates: repository audit, secret audit, dependency audit, Docker/Compose audit, configuration audit, log review, hardening plan, and incident-response triage.
+- Workflows generate `WorkflowPlan` objects only and keep `execution_allowed=False` in all current paths.
+- Secret and log workflows redact secret-like values; Docker/config workflows produce evidence and recommendations only.
+- TaskPlanner selects workflow plans by user intention; Reporting and Telegram mock summarize them without real remediation, CloudOps, pentest, or containment actions.

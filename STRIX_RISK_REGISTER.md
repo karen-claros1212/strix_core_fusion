@@ -122,3 +122,9 @@
 - [CLOSED] RB-7G-02: Task planner/pattern registry now emits reportable execution intent without bypassing MissionPolicy or ToolRouter.
 - [OPEN] RB-7H-01: Future planners must not convert ExecutionIntent into execution outside SandboxController and ApprovalVerifier.
 - [OPEN] RB-7H-02: Defensive workflow templates should reuse PatternRegistry without widening scope to external pentest or CloudOps real execution. Target: 7I.
+
+## Risk Register Update (Phase 7I)
+- [CLOSED] RB-7H-02: Defensive workflow templates now reuse PatternRegistry/TaskPlanner without widening scope to external pentest or CloudOps real execution.
+- [OPEN] RB-7I-01: Future workflow adapters must not convert `WorkflowPlan` into automatic remediation; mitigation is mandatory `execution_allowed=False`, ApprovalVerifier/SandboxController gating, and tests.
+- [OPEN] RB-7I-02: Offline dependency vulnerability review is placeholder-only; future online checks require explicit scope, network policy, evidence redaction, and approval.
+- [READY] Phase 7J can add memory/context patterns while preserving PromptSecurity, MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, and Reporting authority.

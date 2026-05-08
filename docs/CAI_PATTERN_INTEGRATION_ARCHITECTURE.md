@@ -47,3 +47,6 @@ HITL approvals are now structured `ApprovalRequest` objects with action_hash, ex
 
 ## Phase 7G Implementation Note
 Structured reporting is now a first-class Saga Fusion layer. `ReportBuilder`, executive/technical renderers, evidence summarization, Telegram formatting, and `ReportRedactor` convert mission/evidence/approval data into safe artifacts without executing tools or weakening MissionPolicy, ToolRouter, ApprovalVerifier, or SandboxController.
+
+## Phase 7I Implementation Note
+Defensive workflow templates are now clean-room Saga Fusion templates under `saga_fusion/workflows/`. They provide plan/evidence/report structure only for repository audit, secret audit, dependency audit, Docker/Compose audit, configuration audit, log review, hardening plan, and incident-response triage. They do not import CAI code, create a CAI runtime, or execute remediation. Current paths keep `execution_allowed=False`; TaskPlanner can select workflow plans by intention, Reporting can summarize `WorkflowPlan`, and Telegram mock can return an evidence-only workflow-plan response.

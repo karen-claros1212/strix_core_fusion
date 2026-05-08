@@ -130,3 +130,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - TaskPlanning + Approval + Policy + ToolRouting + Telegram + Reporting tests: 83 passed
 - Full suite: 226 passed, 3 warnings
 - Added tests for deterministic pattern registry, safe task planning, R4 approval intents, R5 blocked intents, unknown-pattern policy review, non-execution, reporting metadata, LLMRouter helper, and Telegram mock evidence regression.
+
+## Test Results (Phase 7I)
+- Workflow tests: 12 passed
+- TaskPlanning + Reporting + Telegram + Workflows tests: 71 passed
+- Full suite: 238 passed, 3 warnings
+- Added tests for 8-template registry, unknown-workflow non-execution, all `execution_allowed=False`, workflow plan generation, R4/R5 non-execution regression, hardening/IR no real actions, secret/log redaction, Docker privileged/exposed-port fixture detection, config insecure-default detection, TaskPlanner workflow selection, Reporting summary, and Telegram mock workflow plan response.

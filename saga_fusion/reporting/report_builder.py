@@ -48,6 +48,23 @@ class ReportBuilder:
     def build_findings_report(self, findings, audience='technical') -> MissionReport:
         return self.build_mission_report({'mission_id': 'findings'}, findings=findings, audience=audience)
 
+
+    def build_workflow_plan_report(self, workflow_plan, audience='technical') -> MissionReport:
+        audience_enum = ReportAudience(audience)
+        plan_data = workflow_plan.to_dict() if hasattr(workflow_plan, 'to_dict') else dict(workflow_plan or {})
+        plan_data = self.redactor.redact(plan_data)
+        steps = plan_data.get('steps', []) if isinstance(plan_data, dict) else []
+        evidence = plan_data.get('evidence', {}) if isinstance(plan_data, dict) else {}
+        sections = [
+            ReportSection('scope', 'Workflow Scope', {'workflow_id': plan_data.get('workflow_id'), 'category': plan_data.get('category'), 'allowed_mode': plan_data.get('allowed_mode')}),
+            ReportSection('summary', 'Summary', {'step_count': len(steps), 'evidence_required': plan_data.get('evidence_required'), 'report_required': plan_data.get('report_required'), 'execution_allowed': False}),
+            ReportSection('workflow_steps', 'Workflow Steps', steps),
+            ReportSection('evidence', 'Evidence Requirements', evidence),
+            ReportSection('recommendations', 'Recommendations', ['Review generated plan/evidence/report manually; do not auto-remediate.']),
+            ReportSection('residual_risk', 'Residual Risk', {'status': 'controlled', 'notes': 'Workflow is plan/evidence/report only; execution_allowed=False.'}),
+        ]
+        return MissionReport(str(uuid.uuid4()), audience_enum, f"Workflow Plan {plan_data.get('workflow_id','unknown')}", sections, [], {'schema_version': '7i', 'execution_allowed': False})
+
     def _summary(self, mission, findings, approvals):
         return {'finding_count': len(findings or []), 'approval_count': len(approvals or []), 'status': mission.get('status','unknown') if isinstance(mission, dict) else 'unknown'}
 

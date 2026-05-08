@@ -5,7 +5,7 @@ import uuid
 from .execution_intent_builder import ExecutionIntentBuilder
 from .pattern_registry import PatternRegistry
 from .task_plan_policy import TaskPlanPolicy
-from .task_types import ExecutionIntent, TaskPlan, TaskPlanStep, TaskPlanStatus, TaskRisk
+from .task_types import ExecutionIntent, TaskCategory, TaskPlan, TaskPlanStep, TaskPlanStatus, TaskRisk
 
 
 class TaskPlanner:
@@ -97,6 +97,10 @@ class TaskPlanner:
             )
 
         report_tags = tuple(pattern.reporting_tags) if pattern else ("unknown", "policy_review")
+        workflow_plan_payload = None
+        if pattern and pattern.category == TaskCategory.DEFENSIVE_WORKFLOW:
+            workflow_id = pattern.tool_name.split(":", 1)[1] if ":" in pattern.tool_name else pattern.pattern_id
+            workflow_plan_payload = self._build_workflow_plan_payload(workflow_id, source_text, target, arguments)
         return TaskPlan(
             plan_id=f"plan-{uuid.uuid4().hex[:12]}",
             source_text=source_text,
@@ -119,11 +123,36 @@ class TaskPlanner:
                 "clean_room": True,
                 "source": "saga_fusion_task_planner",
                 "context_keys": sorted((context or {}).keys()),
+                "workflow_plan": workflow_plan_payload,
             },
         )
 
     def build_execution_intent(self, plan: TaskPlan) -> ExecutionIntent:
         return self.intent_builder.build(plan)
+
+    @staticmethod
+    def _build_workflow_plan_payload(workflow_id: str, text: str, target: str, arguments: str) -> dict | None:
+        from ..workflows import DefensiveWorkflowRegistry
+
+        registry = DefensiveWorkflowRegistry()
+        template = registry.get(workflow_id)
+        if template is None:
+            return None
+        scope_value = target or arguments or text or "unspecified"
+        inputs: dict[str, str] = {}
+        for required in template.required_inputs:
+            if required == "repo_path":
+                inputs[required] = target or "."
+            elif required == "log_path":
+                inputs[required] = target or "."
+            elif required == "scope":
+                inputs[required] = scope_value
+            elif required == "incident_summary":
+                inputs[required] = text or scope_value
+            else:
+                inputs[required] = scope_value
+        plan = template.build_plan(inputs=inputs, notes=("selected_by_task_planner", "execution_allowed_false"))
+        return plan.to_dict()
 
     @staticmethod
     def _derive_target(text: str, action_type: str) -> str:

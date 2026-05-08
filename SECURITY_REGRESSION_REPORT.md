@@ -166,3 +166,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Unknown patterns require policy review and do not silently allow execution.
 - MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, PromptSecurity, and Reporting remain authoritative.
 - No CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2 change was performed.
+
+## Security Regression Report (Phase 7I)
+- Defensive workflows are declarative templates only and generate `WorkflowPlan`; no workflow executes tools, remediation, containment, CloudOps, Telegram real calls, or external pentest actions.
+- All current workflow templates, steps, plans, and results set `execution_allowed=False`.
+- Secret audit and log review redact secret-like values and never include full secret values in evidence/report structures.
+- Docker/config workflows detect risky indicators and insecure defaults but emit recommendations only.
+- Hardening and incident-response workflows explicitly create implementation/containment plans only; real containment and auto-remediation remain disabled.
+- R4/R5 regression gates remain intact through TaskPlanner, MissionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, and Reporting.

@@ -200,9 +200,25 @@ class TelegramMissionOperator:
                 "sandbox_mode": task_intent.sandbox_mode,
                 "tool_name": task_intent.tool_name,
                 "reporting_ready": task_plan.metadata.get("reporting_ready", False),
+                "workflow_plan": task_plan.metadata.get("workflow_plan"),
                 "reason": task_plan.reason,
             },
         )
+        if task_plan.metadata.get("workflow_plan") and not task_plan.blocked:
+            workflow_plan = task_plan.metadata["workflow_plan"]
+            self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "workflow_plan_only")
+            return self._serialize_response({
+                "status": "workflow_plan",
+                "mission_id": request.mission_id,
+                "pattern_id": task_plan.pattern_id,
+                "workflow_id": workflow_plan.get("workflow_id"),
+                "risk_level": workflow_plan.get("risk"),
+                "step_count": len(workflow_plan.get("steps", [])),
+                "evidence_required": workflow_plan.get("evidence_required"),
+                "report_required": workflow_plan.get("report_required"),
+                "execution_allowed": False,
+                "executed": False,
+            })
 
         request.risk_level = self.policy.classify_risk(request)
         tool_decision = self.tool_router.route_tool_request(request)
