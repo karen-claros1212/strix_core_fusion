@@ -72,3 +72,12 @@
 - Evidence: `reports/evidence/repo_audit_6c1_a891620db8fd9212.json`
 - Tests: repo_audit+llm+telegram 66 passed; full suite 165 passed, 3 warnings
 - External pentest/CloudOps/malware real action: NO
+
+
+## Phase 6C-2 Status
+- Findings triage + remediation plan: COMPLETED
+- Original findings: 35
+- Deduplicated findings/groups: 5
+- Severity: CRITICAL 0, HIGH 0, MEDIUM 0, LOW 1, INFO 4
+- Priority: P0 0, P1 0, P2 1, P3 4
+- No patches applied.

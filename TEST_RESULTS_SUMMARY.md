@@ -49,3 +49,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Repo audit + LLM + Telegram: 66 passed
 - Full suite: 165 passed, 3 warnings
 - Added tests for dry-run repo auditor secret redaction, Docker/config findings, evidence/report rendering.
+
+
+## Test Results (Phase 6C-2)
+- Repo audit tests: 4 passed
+- Full suite: 167 passed, 3 warnings
+- Added tests for finding triage deduplication and .env.example placeholder handling.

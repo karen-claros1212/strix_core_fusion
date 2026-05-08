@@ -45,3 +45,8 @@
 ## Risk Register Update (Phase 6C-1)
 - [OPEN] RB-6C1-01: Static dry-run repo audit found findings requiring triage before production-grade 6C expansion.
 - [CLOSED] RB-6C1-02: Repository audit evidence could leak secrets; mitigated with redaction and literal secret scan.
+
+
+## Risk Register Update (Phase 6C-2)
+- [OPEN] RB-6C2-01: Repo audit scanner false positives can create alert fatigue and obscure real future findings. Priority P2.
+- [ACCEPTED] RB-6C2-02: Historical reports and synthetic test fixtures intentionally contain secret-like strings; keep with labels/allowlists. Priority P3.

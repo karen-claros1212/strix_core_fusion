@@ -69,3 +69,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Secret findings are redacted before evidence/report output.
 - Runtime secret literal scan on 6C-1 report/evidence found 0 token/API-key leaks.
 - Audit touched no external pentest targets and executed no production CloudOps action.
+
+
+## Security Regression Report (Phase 6C-2)
+- Triage found 0 confirmed critical/high runtime security issues after deduplication.
+- Main risk is alert fatigue / documentation drift from scanner false positives around placeholders, test fixtures, and redaction code.
+- No secrets were exposed by triage outputs.
+- No patches or external actions were executed.
