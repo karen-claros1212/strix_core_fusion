@@ -32,3 +32,7 @@ Telegram/mock input -> PromptSecurity -> LLMRouter/BrainService -> TaskPlanning 
 
 ## Phase 7C Implementation Note
 `PromptSecurityLayer` is now the first natural-language security gate before BrainService/LLMRouter. It blocks prompt-injection and policy-bypass attempts before LLM calls, and passes WARN/ESCALATE metadata forward while MissionPolicy remains authoritative.
+
+
+## Phase 7D Implementation Note
+`ToolRouter` now provides safe route decisions and dry-run execution plans after MissionPolicy classification. It does not execute tools and must remain subordinate to MissionPolicy, ApprovalWorkflow, SandboxController, and EvidenceLogger.

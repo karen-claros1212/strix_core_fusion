@@ -77,3 +77,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added native Saga Fusion prompt security package under `saga_fusion/prompt_security/`.
 - Natural Telegram text now passes through prompt security before LLM routing.
 - Prompt injection, system prompt exfiltration, secret exfiltration, and policy/sandbox/evidence bypass attempts are blocked before LLM calls.
+
+
+## Phase 7D — Tool Routing Layer
+- Added native Saga Fusion tool routing under `saga_fusion/tool_routing/`.
+- Tool routing classifies tool intents, applies route policy, and builds dry-run execution plans without executing tools.
+- `TelegramMissionOperator` records tool route evidence while MissionPolicy remains authoritative.

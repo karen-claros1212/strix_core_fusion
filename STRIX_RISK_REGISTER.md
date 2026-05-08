@@ -93,3 +93,9 @@
 - [CLOSED] RB-7B-01 partial: Prompt security now precedes LLM routing, reducing risk before future tool routing.
 - [OPEN] RB-7C-01: Pattern-based prompt detection may miss novel prompt injection variants. Mitigation: expand detector regression corpus as evidence grows.
 - [OPEN] RB-7C-02: 7D tool routing must consume prompt-security metadata without bypassing MissionPolicy/SandboxController.
+
+
+## Risk Register Update (Phase 7D)
+- [CLOSED] RB-7B-01: Tool routing is now subordinate to MissionPolicy and SandboxController metadata, with no direct execution path.
+- [OPEN] RB-7D-01: Dangerous-action taxonomy needs further hardening and broader ES/EN coverage in 7E.
+- [OPEN] RB-7D-02: Future tool integrations must not convert ToolExecutionPlan into execution outside SandboxController.

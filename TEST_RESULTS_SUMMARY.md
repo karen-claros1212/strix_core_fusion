@@ -96,3 +96,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - LLM + Telegram + PromptSecurity tests: 76 passed
 - Full suite: 185 passed, 3 warnings
 - Added tests for ALLOW/WARN/BLOCK/ESCALATE, pre-LLM blocking, mock mode, R4 approval, and R5 blocking regressions.
+
+
+## Test Results (Phase 7D)
+- Tool routing tests: 10 passed
+- PromptSecurity + Telegram + ToolRouting tests: 64 passed
+- Full suite: 195 passed, 3 warnings
+- Added tests for registry metadata, classification, route policy, execution plans, unknown blocking, R4 approval, and R5 blocking.

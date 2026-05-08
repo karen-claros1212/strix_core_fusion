@@ -12,6 +12,7 @@ from .telegram_security import TelegramSecurity
 from .mission_parser import MissionParser
 from ..llm.llm_router import LLMRouter
 from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
+from ..tool_routing import ToolRouter
 
 
 class TelegramMissionOperator:
@@ -29,6 +30,7 @@ class TelegramMissionOperator:
         self.sandbox_dispatcher = SandboxDispatcher(sandbox_controller=None)
         self.llm_router = LLMRouter()
         self.prompt_security = PromptSecurityLayer()
+        self.tool_router = ToolRouter()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -132,6 +134,24 @@ class TelegramMissionOperator:
             return "Unknown command."
 
         request.risk_level = self.policy.classify_risk(request)
+        tool_decision = self.tool_router.route_tool_request(request)
+        tool_plan = self.tool_router.build_execution_plan(tool_decision, request)
+        self.evidence_logger._record(
+            "tool_route_decision",
+            {
+                "mission_id": request.mission_id,
+                "tool_name": tool_decision.tool_name,
+                "category": tool_decision.category.value,
+                "route": tool_decision.route,
+                "risk_level": tool_decision.risk_level.value,
+                "sandbox_required": tool_decision.sandbox_required,
+                "approval_required": tool_decision.approval_required,
+                "blocked": tool_decision.blocked,
+                "reason": tool_decision.reason,
+                "dry_run": tool_plan.dry_run,
+                "execution_allowed": tool_plan.execution_allowed,
+            },
+        )
         payload = self._request_payload(request)
         request.action_hash = self.approval_workflow.compute_action_hash(payload)
 
