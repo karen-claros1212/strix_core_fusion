@@ -62,3 +62,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Mixed intent uses highest-risk-wins semantics.
 - Smoke confirmed no real action execution for R4/R5 probes.
 - Secret literal scan found 0 runtime token/API-key leaks in reports/source/tests.
+
+
+## Security Regression Report (Phase 6C-1)
+- Repo audit runs in dry-run mode and does not apply patches.
+- Secret findings are redacted before evidence/report output.
+- Runtime secret literal scan on 6C-1 report/evidence found 0 token/API-key leaks.
+- Audit touched no external pentest targets and executed no production CloudOps action.

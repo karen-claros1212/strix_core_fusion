@@ -53,3 +53,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Destructive intents such as `elimina servidor` and `borra backups` canonicalize to `delete` and become R5 blocked.
 - Infrastructure-changing intents such as `crea VPS`, `cambia DNS`, `abre puerto`, and `restaura backup` canonicalize to R4 approval-required actions.
 - Highest risk wins when benign/R4 and destructive terms appear together.
+
+
+## Phase 6C-1 STRIX Core Repository Audit Dry-Run
+- Added `saga_fusion/repo_audit/` to audit the STRIX repository as an internal lab target.
+- Scope includes file inventory, Python import topology, secret-pattern scan, Docker/Compose risk scan, configuration insecurity scan, evidence JSON, and markdown report.
+- Audit is dry-run only: no patches applied, no external pentest target touched, no production CloudOps executed.

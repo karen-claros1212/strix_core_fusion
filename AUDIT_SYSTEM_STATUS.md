@@ -61,3 +61,14 @@
 - Smoke R4: `Crea un VPS en Hostinger` -> R4 `approval_required`, executed=false
 - Smoke R5: `Elimina el servidor y borra backups` -> R5 `blocked`, executed=false
 - Real action execution: NO
+
+
+## Phase 6C-1 Status
+- STRIX Core Repository Audit Dry-Run: COMPLETED
+- Repo target: local STRIX repository
+- Files scanned: 182
+- Python files: 106
+- Findings: 35 dry-run static findings
+- Evidence: `reports/evidence/repo_audit_6c1_a891620db8fd9212.json`
+- Tests: repo_audit+llm+telegram 66 passed; full suite 165 passed, 3 warnings
+- External pentest/CloudOps/malware real action: NO

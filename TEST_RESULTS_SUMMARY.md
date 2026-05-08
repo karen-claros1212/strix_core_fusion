@@ -43,3 +43,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - LLM + Telegram normalization suite: 64 passed
 - Full suite: 163 passed, 3 warnings
 - Added tests for ES/EN R4 infra changes, R5 destructive deletes, benign status/audit text, and highest-risk-wins conflicts.
+
+
+## Test Results (Phase 6C-1)
+- Repo audit + LLM + Telegram: 66 passed
+- Full suite: 165 passed, 3 warnings
+- Added tests for dry-run repo auditor secret redaction, Docker/config findings, evidence/report rendering.
