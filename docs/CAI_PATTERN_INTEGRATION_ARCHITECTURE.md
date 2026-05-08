@@ -40,3 +40,7 @@ Telegram/mock input -> PromptSecurity -> LLMRouter/BrainService -> TaskPlanning 
 
 ## Phase 7E Implementation Note
 DangerousActionPolicy now reinforces MissionPolicy and ToolRouter after prompt parsing/normalization. R4/R5 dangerous detections cannot be downgraded by LLM output.
+
+
+## Phase 7F Implementation Note
+HITL approvals are now structured `ApprovalRequest` objects with action_hash, expiry, authorized-user verification, evidence refs, and single-use semantics. R5 remains non-approvable.

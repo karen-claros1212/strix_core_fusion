@@ -13,6 +13,7 @@ from .mission_parser import MissionParser
 from ..llm.llm_router import LLMRouter
 from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 from ..tool_routing import ToolRouter
+from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, ApprovalVerifier
 
 
 class TelegramMissionOperator:
@@ -31,6 +32,10 @@ class TelegramMissionOperator:
         self.llm_router = LLMRouter()
         self.prompt_security = PromptSecurityLayer()
         self.tool_router = ToolRouter()
+        self.approval_store = ApprovalStore()
+        self.approval_request_builder = ApprovalRequestBuilder(expiration_minutes=config.approval_timeout_minutes)
+        self.approval_verifier = ApprovalVerifier(self.approval_store)
+        self.approval_audit = ApprovalAudit()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -79,6 +84,33 @@ class TelegramMissionOperator:
 
         if parsed is not None and getattr(parsed, "command", "") == "status":
             return self._serialize_response({"status": "ok", "message": "System Status: Operational"})
+
+        if parsed is not None and getattr(parsed, "command", "") == "approve":
+            if not getattr(parsed, "args", []):
+                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False})
+            approval_id = parsed.args[0]
+            approval_request = self.approval_store.get(approval_id)
+            action_hash = parsed.args[1] if len(parsed.args) > 1 else (approval_request.action_hash if approval_request else "")
+            decision = self.approval_verifier.verify(
+                approval_id,
+                action_hash=action_hash,
+                user_id=str(user_id),
+                authorized_users=set(getattr(self.config, "allowed_user_ids", []) or []),
+            )
+            self.approval_audit.record("approval_verified", {"approval_id": approval_id, "status": decision.status.value, "reason": decision.reason})
+            self.evidence_logger.log_approval_decision(approval_id, decision.status.value, action_hash)
+            if decision.allowed:
+                self.approval_store.mark_used(approval_id)
+            return self._serialize_response({"status": decision.status.value.lower(), "reason": decision.reason, "approval_id": approval_id, "executed": False})
+
+        if parsed is not None and getattr(parsed, "command", "") == "deny":
+            if not getattr(parsed, "args", []):
+                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False})
+            approval_id = parsed.args[0]
+            ok = self.approval_store.mark_denied(approval_id)
+            self.approval_audit.record("approval_denied", {"approval_id": approval_id, "ok": ok, "user_id": str(user_id)})
+            self.evidence_logger.log_approval_decision(approval_id, "DENIED" if ok else "NOT_FOUND")
+            return self._serialize_response({"status": "denied" if ok else "blocked", "reason": "approval_denied" if ok else "approval_not_found", "approval_id": approval_id, "executed": False})
 
         if parsed is not None and getattr(parsed, "command", "") == "mission":
             mission_text = " ".join(getattr(parsed, "args", []))
@@ -167,17 +199,38 @@ class TelegramMissionOperator:
 
         if self.policy.requires_approval(request.risk_level):
             request.status = MissionStatus.PENDING
-            approval_id = self.approval_workflow.create_approval(request.mission_id, action_payload=payload)
+            approval_request = self.approval_request_builder.build(
+                mission_id=request.mission_id,
+                action_payload=payload,
+                canonical_action=request.action_type,
+                risk_level=request.risk_level.value,
+                requested_by=str(user_id),
+                reason="MissionPolicy classified this action as R4.",
+                summary=f"Approve {request.action_type} on {request.target}",
+                rollback_plan="Prepare provider-specific rollback before execution.",
+                before_state="not_captured_dry_run",
+                evidence_ref=f"mission:{request.mission_id}",
+            )
+            self.approval_store.create(approval_request)
+            approval_id = approval_request.approval_id
+            self.approval_workflow.approvals[approval_id] = {
+                "mission_id": request.mission_id,
+                "action_hash": approval_request.action_hash,
+                "expires_at": approval_request.expires_at,
+                "status": "PENDING",
+            }
             request.approval_id = approval_id
-            request.action_hash = self.approval_workflow.get_action_hash(approval_id)
+            request.action_hash = approval_request.action_hash
             result = {
                 "status": "approval_required",
                 "executed": False,
                 "approval_id": approval_id,
                 "action_hash": request.action_hash,
+                "evidence_ref": approval_request.evidence_ref,
             }
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "approval_required")
             self.evidence_logger.log_approval_decision(approval_id, "created", request.action_hash)
+            self.approval_audit.record("approval_request_created", {"approval_id": approval_id, "mission_id": request.mission_id, "action_hash": request.action_hash})
             self.evidence_logger.log_mission(request, result)
             return self._mission_response(request, "approval_required", result=result, approval_id=approval_id)
 

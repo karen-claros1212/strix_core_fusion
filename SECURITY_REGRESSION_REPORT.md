@@ -144,3 +144,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - MissionPolicy remains authoritative and is reinforced before fallback classification.
 - ToolRouter respects DangerousActionDecision and still does not execute tools.
 - No CAI code copy, CAI runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change was performed.
+
+
+## Security Regression Report (Phase 7F)
+- Generic approval without approval_id is rejected.
+- R4 approvals require exact action_hash and authorized user.
+- Expired, used, hash-mismatched, nonexistent, unauthorized, and R5 approvals fail.
+- R5 missions remain blocked without approval creation.
+- No R4 real action executed in tests; no CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change.

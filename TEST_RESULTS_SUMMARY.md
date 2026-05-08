@@ -110,3 +110,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - PromptSecurity + ToolRouting + Telegram + Policy tests: 71 passed
 - Full suite: 202 passed, 3 warnings
 - Added tests for destructive filesystem, secret exfiltration, infra/backup destruction, firewall exposure, policy bypass, and benign status.
+
+
+## Test Results (Phase 7F)
+- Approval tests: 7 passed
+- Policy + ToolRouting + Telegram + Approval tests: 66 passed
+- Full suite: 209 passed, 3 warnings
+- Added tests for unique approval IDs, stable action hashes, expiration, used/replay, hash mismatch, unauthorized user, nonexistent approval, R5 rejection, and Telegram approve/deny regressions.

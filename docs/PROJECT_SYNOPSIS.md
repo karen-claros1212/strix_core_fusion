@@ -89,3 +89,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added `saga_fusion/policy/` with dangerous-action detector, policy, and explainer.
 - MissionPolicy and ToolRouter now consult dangerous-action decisions before allowing fallback classifications.
 - Critical destructive, exfiltration, bypass, and firewall-disable patterns are R5 blocked; cloud creation and limited firewall exposure require R4 approval.
+
+
+## Phase 7F — HITL Approval Gates
+- Added `saga_fusion/approval/` for structured R4 approval requests, store, policy, verifier, and audit.
+- R4 approvals now require approval_id and exact action_hash; used/expired/hash-mismatched/unauthorized approvals fail.
+- R5 actions do not create approval requests.

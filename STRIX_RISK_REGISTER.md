@@ -105,3 +105,9 @@
 - [CLOSED] RB-7D-01: Dangerous-action taxonomy now covers filesystem destruction, secrets/exfiltration, infra deletion, backup deletion, firewall exposure, and bypass attempts.
 - [OPEN] RB-7E-01: R4 approval metadata should be hardened next so sensitive allowed plans carry complete HITL context. Target: 7F.
 - [OPEN] RB-7E-02: Read-only secret audit scope remains intentionally blocked until explicit scope semantics are implemented.
+
+
+## Risk Register Update (Phase 7F)
+- [CLOSED] RB-7E-01: R4 approvals now include approval_id, action_hash, expiry, evidence_ref, and authorized-user verification.
+- [OPEN] RB-7F-01: Future execution adapters must enforce ApprovalVerifier + SandboxController before approved R4 dispatch. Target: later execution phases.
+- [OPEN] RB-7F-02: Reporting should expose approval evidence and denial reasons without leaking secrets. Target: 7G.
