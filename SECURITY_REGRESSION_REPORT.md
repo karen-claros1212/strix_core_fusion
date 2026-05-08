@@ -121,3 +121,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - No CAI code copied and no CAI runtime created.
 - No STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2, token, `.env`, Telegram real, CloudOps real, or external pentest action performed.
 - 7C must start with prompt security only, before tool routing or offensive/recon pattern work.
+
+
+## Security Regression Report (Phase 7C)
+- Prompt-injection and prompt-bypass attempts are blocked before LLM calls in natural Telegram flow.
+- PromptSecurity reinforces MissionPolicy and does not replace R0-R5 classification.
+- R4 VPS regression remains approval_required; R5 destructive regression remains blocked.
+- No CAI code copied, no CAI runtime, no Telegram real, no CloudOps real, no external pentest, no token/`.env` change, and no STRIX core change.

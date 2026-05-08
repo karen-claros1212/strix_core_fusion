@@ -28,3 +28,7 @@ Telegram/mock input -> PromptSecurity -> LLMRouter/BrainService -> TaskPlanning 
 - No direct browser/terminal runtime.
 - No malware payload generation.
 - No CAI runtime compatibility layer.
+
+
+## Phase 7C Implementation Note
+`PromptSecurityLayer` is now the first natural-language security gate before BrainService/LLMRouter. It blocks prompt-injection and policy-bypass attempts before LLM calls, and passes WARN/ESCALATE metadata forward while MissionPolicy remains authoritative.

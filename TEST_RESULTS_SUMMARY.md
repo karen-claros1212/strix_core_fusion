@@ -89,3 +89,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 ## Test Results (Phase 7B)
 - Full suite: 173 passed, 3 warnings
 - Phase 7B is documentation/planning only.
+
+
+## Test Results (Phase 7C)
+- Prompt security tests: 12 passed
+- LLM + Telegram + PromptSecurity tests: 76 passed
+- Full suite: 185 passed, 3 warnings
+- Added tests for ALLOW/WARN/BLOCK/ESCALATE, pre-LLM blocking, mock mode, R4 approval, and R5 blocking regressions.

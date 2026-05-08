@@ -87,3 +87,9 @@
 - [OPEN] RB-7B-01: Tool routing implementation could bypass SandboxController if built before prompt/policy gates. Mitigation: implement prompt security first in 7C.
 - [OPEN] RB-7B-02: CAI pattern extraction can drift into runtime compatibility. Mitigation: clean-room Saga Fusion modules only.
 - [OPEN] RB-7B-03: Future offensive/recon patterns require explicit authorized lab scope before any execution capability.
+
+
+## Risk Register Update (Phase 7C)
+- [CLOSED] RB-7B-01 partial: Prompt security now precedes LLM routing, reducing risk before future tool routing.
+- [OPEN] RB-7C-01: Pattern-based prompt detection may miss novel prompt injection variants. Mitigation: expand detector regression corpus as evidence grows.
+- [OPEN] RB-7C-02: 7D tool routing must consume prompt-security metadata without bypassing MissionPolicy/SandboxController.

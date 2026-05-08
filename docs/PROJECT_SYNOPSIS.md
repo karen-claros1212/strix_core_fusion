@@ -71,3 +71,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Converted 7A matrix into a clean-room Saga Fusion implementation plan.
 - Planned phases 7C-7J across prompt security, tool routing, dangerous action handling, HITL, reporting, task planning, defensive templates, and memory/context.
 - No runtime code implemented.
+
+
+## Phase 7C — Prompt Security Layer
+- Added native Saga Fusion prompt security package under `saga_fusion/prompt_security/`.
+- Natural Telegram text now passes through prompt security before LLM routing.
+- Prompt injection, system prompt exfiltration, secret exfiltration, and policy/sandbox/evidence bypass attempts are blocked before LLM calls.

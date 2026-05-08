@@ -11,6 +11,7 @@ from .rate_limiter import RateLimiter
 from .telegram_security import TelegramSecurity
 from .mission_parser import MissionParser
 from ..llm.llm_router import LLMRouter
+from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 
 
 class TelegramMissionOperator:
@@ -27,6 +28,7 @@ class TelegramMissionOperator:
         self.rate_limiter = RateLimiter(max_requests=getattr(config, "rate_limit_per_minute", 10), window_seconds=60)
         self.sandbox_dispatcher = SandboxDispatcher(sandbox_controller=None)
         self.llm_router = LLMRouter()
+        self.prompt_security = PromptSecurityLayer()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -80,9 +82,43 @@ class TelegramMissionOperator:
             mission_text = " ".join(getattr(parsed, "args", []))
             request = self.mission_parser.parse(mission_text, requester_id=user_id, chat_id=chat_id)
         elif parsed is None:
-            mission_data = self.llm_router.build_mission_from_natural_language(
+            prompt_guard = self.prompt_security.guard_for_llm(
                 normalized_text,
                 context={"chat_id": str(chat_id), "user_id": str(user_id)},
+            )
+            decision = prompt_guard["decision"]
+            self.evidence_logger._record(
+                "prompt_security_decision",
+                {
+                    "chat_id": str(chat_id),
+                    "user_id": str(user_id),
+                    "risk_level": decision.risk_level.value,
+                    "reason": decision.reason,
+                    "threats": [threat.value for threat in decision.threats],
+                    "matched_patterns": decision.matched_patterns,
+                },
+            )
+            if decision.risk_level == PromptRiskLevel.BLOCK:
+                return self._serialize_response(
+                    {
+                        "status": "blocked",
+                        "risk_level": "prompt_security",
+                        "reason": decision.reason,
+                        "executed": False,
+                        "message": "blocked by prompt security",
+                    }
+                )
+            mission_data = self.llm_router.build_mission_from_natural_language(
+                prompt_guard["sanitized"].sanitized_text,
+                context={
+                    "chat_id": str(chat_id),
+                    "user_id": str(user_id),
+                    "prompt_security": {
+                        "risk_level": decision.risk_level.value,
+                        "reason": decision.reason,
+                        "threats": [threat.value for threat in decision.threats],
+                    },
+                },
             )
             request = MissionRequest(
                 requester_id=str(user_id),
