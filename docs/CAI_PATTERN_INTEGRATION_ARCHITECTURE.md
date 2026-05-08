@@ -36,3 +36,7 @@ Telegram/mock input -> PromptSecurity -> LLMRouter/BrainService -> TaskPlanning 
 
 ## Phase 7D Implementation Note
 `ToolRouter` now provides safe route decisions and dry-run execution plans after MissionPolicy classification. It does not execute tools and must remain subordinate to MissionPolicy, ApprovalWorkflow, SandboxController, and EvidenceLogger.
+
+
+## Phase 7E Implementation Note
+DangerousActionPolicy now reinforces MissionPolicy and ToolRouter after prompt parsing/normalization. R4/R5 dangerous detections cannot be downgraded by LLM output.

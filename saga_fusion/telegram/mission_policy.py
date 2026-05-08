@@ -1,10 +1,30 @@
 from .telegram_types import MissionRequest, RiskLevel
 from ..llm.action_normalizer import canonicalize_action
+from ..policy import DangerousActionPolicy
 
 
 class MissionPolicy:
+    def __init__(self):
+        self.dangerous_action_policy = DangerousActionPolicy()
+
     def classify_risk(self, request: MissionRequest) -> RiskLevel:
         """Classify risk based on action and arguments."""
+        dangerous = self.dangerous_action_policy.evaluate(
+            " ".join(
+                str(part or "")
+                for part in (
+                    getattr(request, "action_type", ""),
+                    getattr(request, "target", ""),
+                    getattr(request, "arguments", ""),
+                    getattr(request, "raw_text", ""),
+                )
+            )
+        )
+        if dangerous.blocked:
+            return RiskLevel.R5
+        if dangerous.approval_required:
+            return RiskLevel.R4
+
         action = canonicalize_action(
             request.action_type,
             request.target,

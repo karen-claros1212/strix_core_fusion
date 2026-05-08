@@ -136,3 +136,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Sandbox-required tools are marked for sandbox route/dry-run.
 - PromptSecurity, Telegram mock mode, and R4/R5 regressions remain green.
 - No CAI code copy, CAI runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change was performed.
+
+
+## Security Regression Report (Phase 7E)
+- DangerousActionPolicy blocks critical destructive, exfiltration, bypass, backup deletion, and firewall-disable intents as R5.
+- Cloud creation and limited firewall exposure require R4 approval.
+- MissionPolicy remains authoritative and is reinforced before fallback classification.
+- ToolRouter respects DangerousActionDecision and still does not execute tools.
+- No CAI code copy, CAI runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change was performed.

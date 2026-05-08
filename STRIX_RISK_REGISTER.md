@@ -99,3 +99,9 @@
 - [CLOSED] RB-7B-01: Tool routing is now subordinate to MissionPolicy and SandboxController metadata, with no direct execution path.
 - [OPEN] RB-7D-01: Dangerous-action taxonomy needs further hardening and broader ES/EN coverage in 7E.
 - [OPEN] RB-7D-02: Future tool integrations must not convert ToolExecutionPlan into execution outside SandboxController.
+
+
+## Risk Register Update (Phase 7E)
+- [CLOSED] RB-7D-01: Dangerous-action taxonomy now covers filesystem destruction, secrets/exfiltration, infra deletion, backup deletion, firewall exposure, and bypass attempts.
+- [OPEN] RB-7E-01: R4 approval metadata should be hardened next so sensitive allowed plans carry complete HITL context. Target: 7F.
+- [OPEN] RB-7E-02: Read-only secret audit scope remains intentionally blocked until explicit scope semantics are implemented.

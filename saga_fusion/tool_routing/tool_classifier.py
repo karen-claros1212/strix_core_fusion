@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .tool_registry import ToolRegistry
 from .tool_routing_types import ToolCategory, ToolRisk
+from ..policy import DangerousActionCategory, DangerousActionPolicy
 
 READ_VERBS = ('status','list','show','get','read','leer','lista','muestra','revisa logs')
 AUDIT_VERBS = ('audit','audita','scan','escanea','review','revisa','dry-run','dry run')
@@ -12,10 +13,31 @@ DELETE_VERBS = ('delete','destroy','wipe','elimina','borra','destruye')
 class ToolClassifier:
     def __init__(self, registry: ToolRegistry | None = None):
         self.registry = registry or ToolRegistry()
+        self.dangerous_action_policy = DangerousActionPolicy()
 
     def classify(self, request, context=None) -> dict:
         text = self._request_text(request)
         explicit = self._explicit_tool(request)
+        dangerous = self.dangerous_action_policy.evaluate(text)
+        if dangerous.blocked:
+            return {
+                'tool_name': explicit or 'cloudops_plan',
+                'category': ToolCategory.CLOUDOPS,
+                'risk_level': ToolRisk.R5,
+                'matched': dangerous.reason,
+                'dangerous_action': dangerous,
+            }
+        if dangerous.approval_required:
+            category = ToolCategory.CLOUDOPS
+            if DangerousActionCategory.FIREWALL_EXPOSURE in dangerous.categories:
+                category = ToolCategory.NETWORK
+            return {
+                'tool_name': explicit or 'cloudops_plan',
+                'category': category,
+                'risk_level': ToolRisk.R4,
+                'matched': dangerous.reason,
+                'dangerous_action': dangerous,
+            }
         if explicit and self.registry.exists(explicit):
             tool = self.registry.get(explicit)
             return {'tool_name': tool.name, 'category': tool.category, 'risk_level': tool.default_risk, 'matched': 'explicit_tool'}

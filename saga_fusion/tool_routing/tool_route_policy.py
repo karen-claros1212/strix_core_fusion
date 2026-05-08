@@ -14,7 +14,14 @@ class ToolRoutePolicy:
         category = classification.get('category') or (tool.category if tool else ToolCategory.UNKNOWN)
         risk = classification.get('risk_level') or (tool.default_risk if tool else ToolRisk.R4)
         sandbox_required = bool(tool.requires_sandbox if tool else True)
+        dangerous = classification.get('dangerous_action')
         evidence = {'matched': classification.get('matched'), 'category': category.value, 'tool_name': tool_name}
+        if dangerous is not None:
+            evidence["dangerous_action"] = {
+                "reason": dangerous.reason,
+                "categories": [category.value for category in dangerous.categories],
+                "severity": dangerous.severity.value,
+            }
         if tool is None or category == ToolCategory.UNKNOWN:
             return ToolRouteDecision(False, True, False, ToolRisk.R4, tool_name, ToolCategory.UNKNOWN, 'blocked', True, 'unknown_tool_blocked', evidence)
         if risk == ToolRisk.R5:

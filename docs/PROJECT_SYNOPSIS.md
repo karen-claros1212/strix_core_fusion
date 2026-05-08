@@ -83,3 +83,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added native Saga Fusion tool routing under `saga_fusion/tool_routing/`.
 - Tool routing classifies tool intents, applies route policy, and builds dry-run execution plans without executing tools.
 - `TelegramMissionOperator` records tool route evidence while MissionPolicy remains authoritative.
+
+
+## Phase 7E — Dangerous Action Handling
+- Added `saga_fusion/policy/` with dangerous-action detector, policy, and explainer.
+- MissionPolicy and ToolRouter now consult dangerous-action decisions before allowing fallback classifications.
+- Critical destructive, exfiltration, bypass, and firewall-disable patterns are R5 blocked; cloud creation and limited firewall exposure require R4 approval.
