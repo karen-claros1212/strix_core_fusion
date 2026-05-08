@@ -143,11 +143,21 @@ class RepoAuditor:
 
     def _scan_secrets(self, rel: str, text: str, result: RepoAuditResult) -> None:
         for idx, line in enumerate(text.splitlines(), start=1):
-            if rel.endswith(".env.example") and line.strip().endswith("="):
+            if self._is_safe_env_example_placeholder(rel, line):
                 continue
             for name, pattern in SECRET_PATTERNS:
                 if pattern.search(line):
                     self._add(result, "secret_scan", "HIGH", rel, idx, f"Potential secret pattern: {name}", line.strip(), "Move secrets to runtime env and keep only placeholders in repo.")
+
+    def _is_safe_env_example_placeholder(self, rel: str, line: str) -> bool:
+        if not rel.endswith(".env.example") or "=" not in line or line.lstrip().startswith("#"):
+            return False
+        key, value = line.split("=", 1)
+        normalized_key = key.strip().upper()
+        normalized_value = value.strip().strip("\"'").lower()
+        if not any(marker in normalized_key for marker in ("TOKEN", "API_KEY", "SECRET", "PASSWORD")):
+            return False
+        return normalized_value in {"", "local", "example", "changeme", "placeholder", "<redacted>", "<secret>"}
 
     def _scan_docker(self, rel: str, text: str, result: RepoAuditResult) -> None:
         if "docker" not in rel.lower() and "compose" not in rel.lower() and "Dockerfile" not in rel:
@@ -158,6 +168,8 @@ class RepoAuditor:
                     self._add(result, "docker_audit", "MED", rel, idx, f"Docker risk: {name}", line.strip(), "Review container privilege, networking, mounts, and image pinning before production use.")
 
     def _scan_config(self, rel: str, text: str, result: RepoAuditResult) -> None:
+        if rel.startswith("tests/"):
+            return
         for idx, line in enumerate(text.splitlines(), start=1):
             for name, pattern in CONFIG_PATTERNS:
                 if pattern.search(line):

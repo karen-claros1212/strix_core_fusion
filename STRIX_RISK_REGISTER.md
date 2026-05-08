@@ -50,3 +50,8 @@
 ## Risk Register Update (Phase 6C-2)
 - [OPEN] RB-6C2-01: Repo audit scanner false positives can create alert fatigue and obscure real future findings. Priority P2.
 - [ACCEPTED] RB-6C2-02: Historical reports and synthetic test fixtures intentionally contain secret-like strings; keep with labels/allowlists. Priority P3.
+
+
+## Risk Register Update (Phase 6C-3)
+- [CLOSED] RB-6C2-01 partial: Auto-fix-safe scanner false positives for `.env.example` placeholders and test config fixtures reduced.
+- [OPEN] RB-6C3-01: Manual-review findings remain for redaction code self-hits, historical report labeling, and synthetic secret fixtures. Target: Phase 6C-4.

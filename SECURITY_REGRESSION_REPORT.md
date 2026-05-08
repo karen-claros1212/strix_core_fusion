@@ -76,3 +76,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Main risk is alert fatigue / documentation drift from scanner false positives around placeholders, test fixtures, and redaction code.
 - No secrets were exposed by triage outputs.
 - No patches or external actions were executed.
+
+
+## Security Regression Report (Phase 6C-3)
+- Only auto-fix-safe triage findings were patched.
+- `.env.example` placeholders remain accepted only when values are blank or explicit placeholders; real-looking tokens still remain scannable.
+- `tests/` config fixtures no longer inflate runtime config-risk findings.
+- Manual-review findings were not modified.
+- No real external action, Telegram real execution, CloudOps operation, or production mutation was performed.
