@@ -117,3 +117,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Policy + ToolRouting + Telegram + Approval tests: 66 passed
 - Full suite: 209 passed, 3 warnings
 - Added tests for unique approval IDs, stable action hashes, expiration, used/replay, hash mismatch, unauthorized user, nonexistent approval, R5 rejection, and Telegram approve/deny regressions.
+
+## Test Results (Phase 7G)
+- Reporting tests: 8 passed
+- Approval + Policy + ToolRouting + Telegram + Reporting tests: 74 passed
+- Full suite: 217 passed, 3 warnings
+- Added tests for structured reports, executive and technical rendering, evidence JSON loading, Telegram summarization/truncation, artifact references, and report redaction.

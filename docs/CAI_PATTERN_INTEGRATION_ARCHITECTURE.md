@@ -44,3 +44,6 @@ DangerousActionPolicy now reinforces MissionPolicy and ToolRouter after prompt p
 
 ## Phase 7F Implementation Note
 HITL approvals are now structured `ApprovalRequest` objects with action_hash, expiry, authorized-user verification, evidence refs, and single-use semantics. R5 remains non-approvable.
+
+## Phase 7G Implementation Note
+Structured reporting is now a first-class Saga Fusion layer. `ReportBuilder`, executive/technical renderers, evidence summarization, Telegram formatting, and `ReportRedactor` convert mission/evidence/approval data into safe artifacts without executing tools or weakening MissionPolicy, ToolRouter, ApprovalVerifier, or SandboxController.

@@ -14,6 +14,7 @@ from ..llm.llm_router import LLMRouter
 from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 from ..tool_routing import ToolRouter
 from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, ApprovalVerifier
+from ..reporting import ReportBuilder, TelegramReportFormatter
 
 
 class TelegramMissionOperator:
@@ -36,6 +37,8 @@ class TelegramMissionOperator:
         self.approval_request_builder = ApprovalRequestBuilder(expiration_minutes=config.approval_timeout_minutes)
         self.approval_verifier = ApprovalVerifier(self.approval_store)
         self.approval_audit = ApprovalAudit()
+        self.report_builder = ReportBuilder()
+        self.telegram_report_formatter = TelegramReportFormatter()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -111,6 +114,14 @@ class TelegramMissionOperator:
             self.approval_audit.record("approval_denied", {"approval_id": approval_id, "ok": ok, "user_id": str(user_id)})
             self.evidence_logger.log_approval_decision(approval_id, "DENIED" if ok else "NOT_FOUND")
             return self._serialize_response({"status": "denied" if ok else "blocked", "reason": "approval_denied" if ok else "approval_not_found", "approval_id": approval_id, "executed": False})
+
+        if parsed is not None and getattr(parsed, "command", "") == "report":
+            report = self.report_builder.build_mission_report(
+                {"mission_id": "telegram-report", "status": "generated"},
+                evidence=self.evidence_logger.records,
+                audience="telegram_summary",
+            )
+            return self.telegram_report_formatter.format(report, artifact_ref="telegram:evidence")
 
         if parsed is not None and getattr(parsed, "command", "") == "mission":
             mission_text = " ".join(getattr(parsed, "args", []))

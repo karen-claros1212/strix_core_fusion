@@ -95,3 +95,8 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added `saga_fusion/approval/` for structured R4 approval requests, store, policy, verifier, and audit.
 - R4 approvals now require approval_id and exact action_hash; used/expired/hash-mismatched/unauthorized approvals fail.
 - R5 actions do not create approval requests.
+
+## Phase 7G — Structured Reporting Layer
+- Added `saga_fusion/reporting/` for structured mission reports, executive summaries, technical reports, evidence summaries, Telegram-safe summaries, and report-level secret redaction.
+- Reporting preserves artifact/evidence references while redacting Telegram tokens, LLM API keys, Authorization Bearer values, private keys, and sensitive key-value fields.
+- Telegram report sending now prefers safe summaries plus artifact references for long reports.

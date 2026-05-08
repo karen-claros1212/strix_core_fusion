@@ -111,3 +111,8 @@
 - [CLOSED] RB-7E-01: R4 approvals now include approval_id, action_hash, expiry, evidence_ref, and authorized-user verification.
 - [OPEN] RB-7F-01: Future execution adapters must enforce ApprovalVerifier + SandboxController before approved R4 dispatch. Target: later execution phases.
 - [OPEN] RB-7F-02: Reporting should expose approval evidence and denial reasons without leaking secrets. Target: 7G.
+
+## Risk Register Update (Phase 7G)
+- [CLOSED] RB-7F-02: Reporting now exposes approval/evidence context through redacted structured reports and Telegram-safe summaries.
+- [OPEN] RB-7G-01: Future report exporters must preserve ReportRedactor and OutputBudget behavior for every new format.
+- [OPEN] RB-7G-02: Task planner/pattern registry should produce reportable execution intent without bypassing MissionPolicy or ToolRouter. Target: 7H.

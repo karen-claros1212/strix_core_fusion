@@ -152,3 +152,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Expired, used, hash-mismatched, nonexistent, unauthorized, and R5 approvals fail.
 - R5 missions remain blocked without approval creation.
 - No R4 real action executed in tests; no CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change.
+
+## Security Regression Report (Phase 7G)
+- ReportRedactor redacts Telegram bot tokens, STRIX LLM API keys, Authorization Bearer values, private keys, sensitive key-value fields, `.env`, and SSH paths while preserving fingerprints.
+- Reporting adds safe summaries and artifact references instead of exposing long/raw evidence in Telegram responses.
+- R4/R5, ApprovalVerifier, ToolRouter, PromptSecurity, DangerousActionPolicy, and SandboxController semantics are not weakened.
+- No CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change was performed.

@@ -188,3 +188,12 @@
 - R4 approval_id/action_hash required: SI
 - R5 non-approvable: SI
 - Verdict: APTO PARA 7G REPORTING IMPROVEMENTS: SI
+
+## Phase 7G Status
+- Structured reporting layer: COMPLETED
+- Reporting tests: 8 passed
+- Approval+Policy+Tool+Telegram+Reporting tests: 74 passed
+- Full suite: 217 passed, 3 warnings
+- Report redaction: SI
+- Telegram summary/artifact references: SI
+- Verdict: APTO PARA 7H TASK PLANNER / PATTERN REGISTRY: SI
