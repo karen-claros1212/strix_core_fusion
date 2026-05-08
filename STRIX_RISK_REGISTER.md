@@ -61,3 +61,9 @@
 - [OPEN] RB-6C4-01: Redaction-code self-hit requires targeted scanner classification patch in 6C-5. Risk: LOW alert fatigue.
 - [ACCEPTED] RB-6C4-02: Synthetic secret-like test fixtures remain for redaction coverage. Risk: INFO scanner noise.
 - [DOCUMENTATION] RB-6C4-03: Historical report placeholders should be labeled/preserved, not deleted. Risk: INFO documentation drift.
+
+
+## Risk Register Update (Phase 6C-5)
+- [CLOSED] RB-6C4-01: Redaction-code self-hit now classifies as `scanner_self_reference` INFO, not HIGH secret leak.
+- [MONITORED] RB-6C4-02: Synthetic fixtures remain accepted and are classified as INFO fixture evidence.
+- [MONITORED] RB-6C4-03: Historical report placeholders remain preserved and are classified as INFO historical evidence.

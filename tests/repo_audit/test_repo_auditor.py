@@ -43,3 +43,51 @@ def test_repo_auditor_skips_config_audit_inside_tests(tmp_path):
     result = RepoAuditor(tmp_path).audit()
 
     assert not any(f.category == "config_audit" for f in result.findings)
+
+
+def test_repo_auditor_classifies_redaction_regex_self_reference(tmp_path):
+    pkg = tmp_path / "saga_fusion"
+    pkg.mkdir()
+    (pkg / "audit_logger.py").write_text(
+        "def redact_secrets(value):\n"
+        "    patterns = [\n"
+        "        (r'(?i)api[_-]?key\\s*[=:]\\s*([a-zA-Z0-9_-]+)', r'api_key=[REDACTED]'),\n"
+        "    ]\n"
+    )
+
+    result = RepoAuditor(tmp_path).audit()
+
+    assert any(f.category == "scanner_self_reference" and f.severity == "INFO" for f in result.findings)
+    assert not any(f.category == "secret_scan" for f in result.findings)
+
+
+def test_repo_auditor_still_detects_real_secret_in_runtime_code(tmp_path):
+    pkg = tmp_path / "saga_fusion"
+    pkg.mkdir()
+    (pkg / "runtime_config.py").write_text("API_KEY=real_runtime_secret\n")
+
+    result = RepoAuditor(tmp_path).audit()
+
+    assert any(f.category == "secret_scan" and f.severity == "HIGH" for f in result.findings)
+
+
+def test_repo_auditor_classifies_synthetic_test_fixture(tmp_path):
+    tests_dir = tmp_path / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "test_redaction.py").write_text("cfg = 'api_key=secret-key'\n")
+
+    result = RepoAuditor(tmp_path).audit()
+
+    assert any(f.category == "synthetic_fixture" and f.severity == "INFO" for f in result.findings)
+    assert not any(f.category == "secret_scan" for f in result.findings)
+
+
+def test_repo_auditor_classifies_historical_evidence_placeholder(tmp_path):
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "PHASE_REPORT.md").write_text("STRIX_LLM_API_KEY=local was used as a placeholder\n")
+
+    result = RepoAuditor(tmp_path).audit()
+
+    assert any(f.category == "historical_evidence" and f.severity == "INFO" for f in result.findings)
+    assert not any(f.category == "secret_scan" for f in result.findings)

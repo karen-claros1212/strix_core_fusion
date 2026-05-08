@@ -142,12 +142,20 @@ class RepoAuditor:
         result.findings.append(Finding(category, severity, path, line, title, self._redact(evidence), recommendation))
 
     def _scan_secrets(self, rel: str, text: str, result: RepoAuditResult) -> None:
-        for idx, line in enumerate(text.splitlines(), start=1):
+        lines = text.splitlines()
+        for idx, line in enumerate(lines, start=1):
             if self._is_safe_env_example_placeholder(rel, line):
                 continue
             for name, pattern in SECRET_PATTERNS:
                 if pattern.search(line):
-                    self._add(result, "secret_scan", "HIGH", rel, idx, f"Potential secret pattern: {name}", line.strip(), "Move secrets to runtime env and keep only placeholders in repo.")
+                    if self._is_redaction_self_reference(rel, lines, idx, line):
+                        self._add(result, "scanner_self_reference", "INFO", rel, idx, f"Redaction pattern self-reference: {name}", line.strip(), "Keep redaction logic; classify as scanner self-reference, not a literal secret leak.")
+                    elif self._is_synthetic_test_fixture(rel, line):
+                        self._add(result, "synthetic_fixture", "INFO", rel, idx, f"Synthetic test secret fixture: {name}", line.strip(), "Keep synthetic fixture for redaction tests; ensure no real credentials are used.")
+                    elif self._is_historical_evidence_reference(rel, line):
+                        self._add(result, "historical_evidence", "INFO", rel, idx, f"Historical evidence placeholder: {name}", line.strip(), "Preserve historical evidence; verify it remains redacted or placeholder-only.")
+                    else:
+                        self._add(result, "secret_scan", "HIGH", rel, idx, f"Potential secret pattern: {name}", line.strip(), "Move secrets to runtime env and keep only placeholders in repo.")
 
     def _is_safe_env_example_placeholder(self, rel: str, line: str) -> bool:
         if not rel.endswith(".env.example") or "=" not in line or line.lstrip().startswith("#"):
@@ -158,6 +166,39 @@ class RepoAuditor:
         if not any(marker in normalized_key for marker in ("TOKEN", "API_KEY", "SECRET", "PASSWORD")):
             return False
         return normalized_value in {"", "local", "example", "changeme", "placeholder", "<redacted>", "<secret>"}
+
+    def _is_redaction_self_reference(self, rel: str, lines: list[str], idx: int, line: str) -> bool:
+        lowered_path = rel.lower()
+        lowered_line = line.lower()
+        if "redact" not in lowered_path and "audit_logger" not in lowered_path and "secret_redactor" not in lowered_path:
+            return False
+        if "redacted" not in lowered_line and "redact" not in lowered_line:
+            return False
+        context_start = max(0, idx - 12)
+        context = "\n".join(lines[context_start:idx]).lower()
+        redaction_context = any(marker in context for marker in ("redact_secrets", "secret_redactor", "patterns =", "redaction"))
+        regex_literal = "r'" in line or 'r"' in line or "\\s*" in line or "re.sub" in context
+        return redaction_context and regex_literal
+
+    def _is_synthetic_test_fixture(self, rel: str, line: str) -> bool:
+        if not rel.startswith("tests/"):
+            return False
+        if SECRET_PATTERNS[0][1].search(line) or SECRET_PATTERNS[1][1].search(line):
+            return False
+        lowered = line.lower()
+        synthetic_markers = (
+            "secret-key", "supersecret", "token123", "secret-token",
+            "abc-secret", "secrettokenvalue", "dummy", "fake", "fixture",
+            "test_", "tmp_path", "write_text", "assert",
+        )
+        return any(marker in lowered for marker in synthetic_markers)
+
+    def _is_historical_evidence_reference(self, rel: str, line: str) -> bool:
+        if not rel.startswith("reports/"):
+            return False
+        lowered = line.lower()
+        safe_markers = ("[redacted]", "<redacted>", "=local", "placeholder", "test-only", "synthetic")
+        return any(marker in lowered for marker in safe_markers)
 
     def _scan_docker(self, rel: str, text: str, result: RepoAuditResult) -> None:
         if "docker" not in rel.lower() and "compose" not in rel.lower() and "Dockerfile" not in rel:

@@ -67,3 +67,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Repo audit tests: 6 passed
 - Full suite: 169 passed, 3 warnings
 - No functional code changes were applied in this phase.
+
+
+## Test Results (Phase 6C-5)
+- Repo audit tests: 10 passed
+- Full suite: 173 passed, 3 warnings
+- Added tests for redaction self-reference classification, real runtime secret detection, synthetic test fixture classification, and historical evidence placeholder classification.

@@ -31,3 +31,11 @@
 - `6C2-1736e032`: DOCUMENTATION_ONLY — preserve historical reports; optional metadata/labeling only.
 - `6C2-bcf76f36`: TRUE_POSITIVE_ACCEPT_RISK — keep synthetic test fixtures; optional fixture-aware scanner labels in 6C-5.
 - Next phase: 6C-5 targeted scanner/report classification patches only; no production/external action.
+
+
+## Phase 6C-5 Targeted Patch Outcome
+- Patched `6C2-5f2a13a2` only.
+- Redaction regex/replacement literals now classify as `scanner_self_reference` INFO instead of HIGH literal secret leaks.
+- Real secret simulations in runtime code remain HIGH `secret_scan` findings.
+- Synthetic fixtures and historical reports are preserved and classified as INFO categories.
+- Next phase: 6C-6 final re-audit over the repo to confirm residual findings and close the 6C repository-audit loop.
