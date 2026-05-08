@@ -54,3 +54,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - LLM failures fall back safely and do not break TelegramGateway.
 - BrainService does not execute tools and cannot bypass MissionPolicy, ApprovalWorkflow, or SandboxController.
 - Real mission execution remains disabled/not performed.
+
+
+## Security Regression Report (Phase 6B-4B)
+- Spanish/English destructive actions normalize to R5 and are blocked.
+- Spanish/English infrastructure-changing actions normalize to R4 and require approval.
+- Mixed intent uses highest-risk-wins semantics.
+- Smoke confirmed no real action execution for R4/R5 probes.
+- Secret literal scan found 0 runtime token/API-key leaks in reports/source/tests.

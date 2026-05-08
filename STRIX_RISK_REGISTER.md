@@ -35,3 +35,8 @@
 - `RB-6B3-01`: Real Telegram connection pending gated token test — READY FOR CONTROLLED TOKEN TEST.
 - `RB-6B3-02`: Mock mode regression — CLOSED, tests green.
 - `RB-6B3-03`: R4/R5 policy regression — CLOSED, tests green.
+
+
+## Risk Register Update (Phase 6B-4B)
+- [CLOSED] RB-6B4B-01: Spanish natural-language R4/R5 intents were not deterministically canonicalized before MissionPolicy.
+- Mitigation: ES/EN canonical action normalizer with highest-risk-wins behavior, covered by tests and real Telegram smoke.

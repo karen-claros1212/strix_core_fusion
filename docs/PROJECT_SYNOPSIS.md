@@ -46,3 +46,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Endpoint/model/API key are env-driven; code has no hardcoded LLM endpoint or key.
 - Natural Telegram messages may be structured by the brain only when enabled, then still pass through MissionPolicy, ApprovalWorkflow, SandboxController, and EvidenceLogger.
 - Unit tests mock the LLM and never call the real endpoint.
+
+
+## Phase 6B-4B Canonical ES/EN Action Normalization
+- Added deterministic ES/EN mission action normalization before risk classification.
+- Destructive intents such as `elimina servidor` and `borra backups` canonicalize to `delete` and become R5 blocked.
+- Infrastructure-changing intents such as `crea VPS`, `cambia DNS`, `abre puerto`, and `restaura backup` canonicalize to R4 approval-required actions.
+- Highest risk wins when benign/R4 and destructive terms appear together.

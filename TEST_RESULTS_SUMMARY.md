@@ -37,3 +37,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Sandbox + Telegram + LLM + Unit: 127 passed
 - Full suite: 151 passed, 3 warnings
 - New LLM tests cover config gating, payload construction, timeout handling, no-tool-execution brain service, router fallbacks, and Telegram natural-language mocked brain flow.
+
+
+## Test Results (Phase 6B-4B)
+- LLM + Telegram normalization suite: 64 passed
+- Full suite: 163 passed, 3 warnings
+- Added tests for ES/EN R4 infra changes, R5 destructive deletes, benign status/audit text, and highest-risk-wins conflicts.

@@ -52,3 +52,12 @@
 - Tests: full suite `151 passed, 3 warnings`
 - Real LLM calls in unit tests: NO
 - Real mission execution: NO
+
+
+## Phase 6B-4B Status
+- Canonical ES/EN mission action normalization: COMPLETED
+- LLM+Telegram tests: 64 passed
+- Full tests: 163 passed, 3 warnings
+- Smoke R4: `Crea un VPS en Hostinger` -> R4 `approval_required`, executed=false
+- Smoke R5: `Elimina el servidor y borra backups` -> R5 `blocked`, executed=false
+- Real action execution: NO

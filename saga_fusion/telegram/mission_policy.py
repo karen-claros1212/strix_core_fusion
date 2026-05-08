@@ -1,15 +1,18 @@
 from .telegram_types import MissionRequest, RiskLevel
+from ..llm.action_normalizer import canonicalize_action
 
 
 class MissionPolicy:
     def classify_risk(self, request: MissionRequest) -> RiskLevel:
         """Classify risk based on action and arguments."""
-        action = (request.action_type or "").lower()
-        args = (request.arguments or "").lower()
-        target = (request.target or "").lower()
-        combined = " ".join(part for part in [action, target, args] if part)
+        action = canonicalize_action(
+            request.action_type,
+            request.target,
+            request.arguments,
+            getattr(request, "raw_text", ""),
+        )
 
-        if "rm -rf" in combined or action in {"delete", "destroy", "wipe"}:
+        if action == "delete":
             return RiskLevel.R5
         if action in {"create", "deploy", "run", "execute"}:
             return RiskLevel.R4
