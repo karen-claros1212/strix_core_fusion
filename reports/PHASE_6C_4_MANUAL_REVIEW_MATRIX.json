@@ -1,0 +1,51 @@
+{
+  "decision_counts": {
+    "DOCUMENTATION_ONLY": 1,
+    "DUPLICATE": 0,
+    "FALSE_POSITIVE": 0,
+    "TRUE_POSITIVE_ACCEPT_RISK": 1,
+    "TRUE_POSITIVE_PATCH_REQUIRED": 1
+  },
+  "generated_at_utc": "2026-05-08T02:50:27.980896Z",
+  "items": [
+    {
+      "affected_file": "saga_fusion/audit_logger.py:39-42",
+      "decision": "TRUE_POSITIVE_PATCH_REQUIRED",
+      "finding_id": "6C2-5f2a13a2",
+      "owner_notes": "Do not weaken runtime redaction. Patch only the audit scanner/classifier, not the EvidenceLogger/AuditLogger behavior.",
+      "patch_allowed_in_6C5": true,
+      "reason": "The finding is not a real leaked secret, but it is a true scanner-classification defect: redaction regex/replacement literals in runtime redaction code are being reported as secret material. This can create alert fatigue around evidence safety code and should be patched with a precise scanner rule in 6C-5.",
+      "recommended_next_action": "In 6C-5 add a narrow repo-auditor classification/allowlist for redaction pattern tables and add regression tests that real adjacent secrets still trigger.",
+      "runtime_reachable": true,
+      "security_impact": "LOW: no credential is present and the code improves redaction, but noisy scanner output can obscure future real leaks.",
+      "test_required": "tests/repo_audit regression for redaction-code self-hit suppression plus full suite."
+    },
+    {
+      "affected_file": "reports/PHASE_6B_4_TELEGRAM_LLM_SMOKE_REPORT.md:11 and related historical reports/evidence",
+      "decision": "DOCUMENTATION_ONLY",
+      "finding_id": "6C2-1736e032",
+      "owner_notes": "Do not rewrite history unless a real secret literal is found. This phase found documentation-only noise.",
+      "patch_allowed_in_6C5": true,
+      "reason": "The affected content is historical diagnostic/report text with non-secret placeholders or already-redacted auth-failure context. It is not runtime reachable and should remain for audit traceability.",
+      "recommended_next_action": "Keep historical reports. In 6C-5, optionally add report metadata/labels or scanner classification for already-redacted/historical report lines; do not delete audit history.",
+      "runtime_reachable": false,
+      "security_impact": "INFO: documentation drift/noise only; no execution path and no real token value in the reviewed finding evidence.",
+      "test_required": "Documentation/report classification test only if scanner metadata support is implemented."
+    },
+    {
+      "affected_file": "tests/llm/test_llm_config.py:24 and related synthetic test fixtures",
+      "decision": "TRUE_POSITIVE_ACCEPT_RISK",
+      "finding_id": "6C2-bcf76f36",
+      "owner_notes": "Do not delete redaction tests. Keep synthetic fixtures clearly non-real and covered by scanner metadata.",
+      "patch_allowed_in_6C5": true,
+      "reason": "Synthetic secret-like fixture strings exist intentionally in tests to prove redaction/config behavior. They are not runtime reachable and no real credential is present. The risk is accepted for test coverage value.",
+      "recommended_next_action": "Accept fixture presence. In 6C-5, optionally add fixture-aware scanner labels for synthetic test secret strings without removing tests.",
+      "runtime_reachable": false,
+      "security_impact": "LOW/INFO: test-only synthetic data can generate scanner noise but is required for regression coverage.",
+      "test_required": "If patched, add repo_audit tests proving test fixtures are labeled/suppressed while real source secrets still trigger."
+    }
+  ],
+  "phase": "6C-4",
+  "reviewed_count": 3,
+  "source_matrix": "reports/PHASE_6C_2_FINDINGS_MATRIX.json"
+}

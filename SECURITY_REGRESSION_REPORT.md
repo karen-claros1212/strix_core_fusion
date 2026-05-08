@@ -84,3 +84,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - `tests/` config fixtures no longer inflate runtime config-risk findings.
 - Manual-review findings were not modified.
 - No real external action, Telegram real execution, CloudOps operation, or production mutation was performed.
+
+
+## Security Regression Report (Phase 6C-4)
+- Manual review found no confirmed leaked runtime secret in the three remaining findings.
+- One runtime redaction-code scanner self-hit requires targeted scanner classification in 6C-5.
+- Historical report findings are documentation-only and should preserve audit traceability.
+- Synthetic test secret fixtures are accepted risk for redaction regression coverage.
+- No Telegram real, CloudOps, pentest external, token, `.env`, architecture, or STRIX core change was performed.

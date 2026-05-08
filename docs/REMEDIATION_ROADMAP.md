@@ -23,3 +23,11 @@
 - `.env.example` placeholder handling is now explicit for secret-like keys.
 - Runtime config audit now skips synthetic `tests/` fixtures.
 - Manual-review findings remain deferred to 6C-4.
+
+
+## Phase 6C-4 Manual Review Outcome
+- Reviewed remaining manual findings: 3/3.
+- `6C2-5f2a13a2`: TRUE_POSITIVE_PATCH_REQUIRED — scanner should classify redaction code self-hits precisely in 6C-5.
+- `6C2-1736e032`: DOCUMENTATION_ONLY — preserve historical reports; optional metadata/labeling only.
+- `6C2-bcf76f36`: TRUE_POSITIVE_ACCEPT_RISK — keep synthetic test fixtures; optional fixture-aware scanner labels in 6C-5.
+- Next phase: 6C-5 targeted scanner/report classification patches only; no production/external action.
