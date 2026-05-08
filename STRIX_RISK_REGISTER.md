@@ -67,3 +67,11 @@
 - [CLOSED] RB-6C4-01: Redaction-code self-hit now classifies as `scanner_self_reference` INFO, not HIGH secret leak.
 - [MONITORED] RB-6C4-02: Synthetic fixtures remain accepted and are classified as INFO fixture evidence.
 - [MONITORED] RB-6C4-03: Historical report placeholders remain preserved and are classified as INFO historical evidence.
+
+
+## Risk Register Update (Phase 6C-6)
+- [CLOSED] RB-6C1-01: Repository audit findings triaged/remediated/classified through 6C final re-audit.
+- [CLOSED] RB-6C4-01: Redaction self-reference classification regression resolved.
+- [ACCEPTED] RB-6C4-02: Synthetic fixtures remain monitored accepted risk.
+- [DOCUMENTATION] RB-6C4-03: Historical evidence placeholders preserved for audit traceability.
+- [READY] Phase 7 CAI patterns may begin under controlled/lab constraints.

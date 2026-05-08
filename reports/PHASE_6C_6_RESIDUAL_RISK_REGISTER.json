@@ -1,0 +1,45 @@
+{
+  "accepted_risk": [
+    "6C2-bcf76f36"
+  ],
+  "baseline_6c1_findings": 35,
+  "category_counts": {
+    "config_audit": 24,
+    "historical_evidence": 397,
+    "scanner_self_reference": 3,
+    "secret_scan": 43,
+    "synthetic_fixture": 15
+  },
+  "corrected_findings": [
+    "6C2-30938a19",
+    "6C2-a9a5a159",
+    "6C2-5f2a13a2"
+  ],
+  "documentation_only": [
+    "6C2-1736e032"
+  ],
+  "final_raw_findings": 482,
+  "generated_at_utc": "2026-05-08T03:08:10.875227Z",
+  "legacy_telegram_active_runtime": false,
+  "notes": [
+    "Raw final finding count is higher than 6C-1 because preserved historical reports/evidence from 6C phases are intentionally scanned and classified mostly as INFO historical_evidence.",
+    "HIGH raw findings remain in preserved reports/tests/evidence/config redaction contexts, but no confirmed runtime real secret leak was identified.",
+    "No report or fixture was deleted."
+  ],
+  "phase": "6C-6",
+  "priority_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": "residual documentation/test/scanner noise only"
+  },
+  "real_high_findings": 0,
+  "real_secret_literal_leak": false,
+  "scanner_regression": false,
+  "severity_counts": {
+    "HIGH": 43,
+    "INFO": 415,
+    "LOW": 24
+  },
+  "source_evidence": "reports/evidence/repo_audit_6c6_2070cbfd448cfbef.json"
+}

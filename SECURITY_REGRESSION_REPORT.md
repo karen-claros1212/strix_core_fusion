@@ -101,3 +101,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Historical reports and synthetic fixtures were preserved.
 - Accepted-risk fixture source was not modified.
 - No Telegram real, CloudOps real, pentest external, token, `.env`, architecture, or STRIX core protected file change was performed.
+
+
+## Security Regression Report (Phase 6C-6)
+- Final dry-run re-audit found no confirmed real secret literal leak.
+- No P0/P1 residual issue confirmed.
+- No scanner regression identified after redaction self-reference classification.
+- No active `telegram_mission_operator` runtime/import exists in `saga_fusion` or `tests`; historical report mentions remain audit traceability only.
+- No Telegram real, CloudOps real, external pentest, token, `.env`, architecture, or STRIX protected core change was performed.
