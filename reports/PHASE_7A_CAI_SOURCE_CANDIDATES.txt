@@ -1,0 +1,2 @@
+/mnt/Proyectos/venv_rfdetr_virtualenv/lib/python3.12/site-packages/cairo
+/mnt/Proyectos/venv_rfdetr_virtualenv/lib/python3.12/site-packages/pycairo-1.29.0.dist-info

@@ -109,3 +109,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - No scanner regression identified after redaction self-reference classification.
 - No active `telegram_mission_operator` runtime/import exists in `saga_fusion` or `tests`; historical report mentions remain audit traceability only.
 - No Telegram real, CloudOps real, external pentest, token, `.env`, architecture, or STRIX protected core change was performed.
+
+
+## Security Regression Report (Phase 7A)
+- No CAI source code was copied into STRIX.
+- No CAI runtime, external offensive workflow, Telegram real execution, CloudOps real action, token, `.env`, architecture, or protected core change was performed.
+- CAI offensive/recon/exploit concepts are documented as patterns only and remain gated for future authorized lab phases.

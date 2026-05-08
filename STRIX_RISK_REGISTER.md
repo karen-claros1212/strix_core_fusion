@@ -75,3 +75,9 @@
 - [ACCEPTED] RB-6C4-02: Synthetic fixtures remain monitored accepted risk.
 - [DOCUMENTATION] RB-6C4-03: Historical evidence placeholders preserved for audit traceability.
 - [READY] Phase 7 CAI patterns may begin under controlled/lab constraints.
+
+
+## Risk Register Update (Phase 7A)
+- [OPEN] RB-7A-01: CAI-inspired tool routing could bypass STRIX gates if implemented directly. Mitigation: clean-room reimplementation under MissionPolicy/ApprovalWorkflow/SandboxController only.
+- [OPEN] RB-7A-02: Offensive/recon/exploit workflows are dual-use. Mitigation: documentation/pattern extraction only until explicit authorized lab phase.
+- [OPEN] RB-7A-03: Prompt patterns may carry prompt-injection risk. Mitigation: adapt hardening lessons, never copy prompts as trusted instructions.
