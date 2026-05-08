@@ -81,3 +81,9 @@
 - [OPEN] RB-7A-01: CAI-inspired tool routing could bypass STRIX gates if implemented directly. Mitigation: clean-room reimplementation under MissionPolicy/ApprovalWorkflow/SandboxController only.
 - [OPEN] RB-7A-02: Offensive/recon/exploit workflows are dual-use. Mitigation: documentation/pattern extraction only until explicit authorized lab phase.
 - [OPEN] RB-7A-03: Prompt patterns may carry prompt-injection risk. Mitigation: adapt hardening lessons, never copy prompts as trusted instructions.
+
+
+## Risk Register Update (Phase 7B)
+- [OPEN] RB-7B-01: Tool routing implementation could bypass SandboxController if built before prompt/policy gates. Mitigation: implement prompt security first in 7C.
+- [OPEN] RB-7B-02: CAI pattern extraction can drift into runtime compatibility. Mitigation: clean-room Saga Fusion modules only.
+- [OPEN] RB-7B-03: Future offensive/recon patterns require explicit authorized lab scope before any execution capability.

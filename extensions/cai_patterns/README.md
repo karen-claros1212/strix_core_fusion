@@ -15,3 +15,14 @@ Planned subareas for later phases:
 - prompt_hardening/
 - report_patterns/
 - task_patterns/
+
+## Phase 7B Plan
+The future pattern directory remains docs-only. Implementation, when approved, will occur through Saga Fusion modules:
+- `saga_fusion/prompt_security/`
+- `saga_fusion/tool_routing/`
+- `saga_fusion/policy/`
+- `saga_fusion/reporting/`
+- `saga_fusion/task_planning/`
+- `saga_fusion/memory/`
+
+No CAI source code may be copied here.

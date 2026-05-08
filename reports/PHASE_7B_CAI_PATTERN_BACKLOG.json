@@ -1,0 +1,152 @@
+{
+  "generated_at_utc": "2026-05-08T03:45:40.152075Z",
+  "implementation_phases": [
+    "7C",
+    "7D",
+    "7E",
+    "7F",
+    "7G",
+    "7H",
+    "7I",
+    "7J"
+  ],
+  "pattern_count": 18,
+  "patterns": [
+    {
+      "capability": "guardrails",
+      "notes": "PromptGuard/injection signatures",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/prompt_security/",
+      "target_phase": "7C"
+    },
+    {
+      "capability": "prompt patterns",
+      "notes": "prompt hardening only, no direct copy",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/prompt_security/",
+      "target_phase": "7C"
+    },
+    {
+      "capability": "tool routing",
+      "notes": "router under SandboxController",
+      "strategy": "REIMPLEMENT_CLEAN",
+      "target_module": "saga_fusion/tool_routing/",
+      "target_phase": "7D"
+    },
+    {
+      "capability": "permission model",
+      "notes": "tool contracts and deny reasons",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/tool_routing/",
+      "target_phase": "7D"
+    },
+    {
+      "capability": "dangerous action handling",
+      "notes": "ES/EN R4/R5 hardening",
+      "strategy": "REIMPLEMENT_CLEAN",
+      "target_module": "saga_fusion/policy/",
+      "target_phase": "7E"
+    },
+    {
+      "capability": "approval gates / HITL",
+      "notes": "metadata/expiry/evidence",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/policy/",
+      "target_phase": "7F"
+    },
+    {
+      "capability": "report generation",
+      "notes": "evidence-linked reports",
+      "strategy": "REIMPLEMENT_CLEAN",
+      "target_module": "saga_fusion/reporting/",
+      "target_phase": "7G"
+    },
+    {
+      "capability": "task planner / patterns",
+      "notes": "pattern registry",
+      "strategy": "REIMPLEMENT_CLEAN",
+      "target_module": "saga_fusion/task_planning/",
+      "target_phase": "7H"
+    },
+    {
+      "capability": "defensive workflow",
+      "notes": "safe templates",
+      "strategy": "REIMPLEMENT_CLEAN",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "7I"
+    },
+    {
+      "capability": "malware/forensics knowledge",
+      "notes": "taxonomy only, no payloads",
+      "strategy": "DOCUMENT_ONLY",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "7I"
+    },
+    {
+      "capability": "memory/context handling",
+      "notes": "bounded redacted mission memory",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/memory/",
+      "target_phase": "7J"
+    },
+    {
+      "capability": "tracing/logging",
+      "notes": "redacted trace/evidence spans",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "saga_fusion/reporting/",
+      "target_phase": "7G"
+    },
+    {
+      "capability": "sandbox/policy",
+      "notes": "compare only, keep SandboxController",
+      "strategy": "DOCUMENT_ONLY",
+      "target_module": "saga_fusion/policy/",
+      "target_phase": "7E"
+    },
+    {
+      "capability": "offensive workflow",
+      "notes": "authorized lab only",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "future"
+    },
+    {
+      "capability": "bug bounty workflow",
+      "notes": "scope-gated future",
+      "strategy": "ADAPT_PATTERN",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "future"
+    },
+    {
+      "capability": "recon workflow",
+      "notes": "external recon blocked",
+      "strategy": "FUTURE_RESEARCH",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "future"
+    },
+    {
+      "capability": "exploit validation workflow",
+      "notes": "plan generation only",
+      "strategy": "DOCUMENT_ONLY",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "future"
+    },
+    {
+      "capability": "browser/terminal tools",
+      "notes": "blocked until tool sandbox design",
+      "strategy": "FUTURE_RESEARCH",
+      "target_module": "extensions/cai_patterns/",
+      "target_phase": "future"
+    }
+  ],
+  "phase": "7B",
+  "rules": [
+    "No CAI code copy",
+    "No CAI parallel runtime",
+    "Saga Fusion controls remain authoritative"
+  ],
+  "source_inputs": [
+    "reports/PHASE_7A_CAI_CAPABILITY_MATRIX.md",
+    "reports/PHASE_7A_CAI_EXTRACTION_PLAN.md"
+  ]
+}

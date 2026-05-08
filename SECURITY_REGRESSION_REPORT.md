@@ -115,3 +115,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - No CAI source code was copied into STRIX.
 - No CAI runtime, external offensive workflow, Telegram real execution, CloudOps real action, token, `.env`, architecture, or protected core change was performed.
 - CAI offensive/recon/exploit concepts are documented as patterns only and remain gated for future authorized lab phases.
+
+
+## Security Regression Report (Phase 7B)
+- No CAI code copied and no CAI runtime created.
+- No STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2, token, `.env`, Telegram real, CloudOps real, or external pentest action performed.
+- 7C must start with prompt security only, before tool routing or offensive/recon pattern work.
