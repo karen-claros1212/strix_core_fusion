@@ -100,3 +100,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added `saga_fusion/reporting/` for structured mission reports, executive summaries, technical reports, evidence summaries, Telegram-safe summaries, and report-level secret redaction.
 - Reporting preserves artifact/evidence references while redacting Telegram tokens, LLM API keys, Authorization Bearer values, private keys, and sensitive key-value fields.
 - Telegram report sending now prefers safe summaries plus artifact references for long reports.
+
+## Phase 7H — Task Planner / Pattern Registry
+- Added `saga_fusion/task_planning/` for deterministic clean-room pattern lookup, task plans, task-plan policy decisions, and execution intents.
+- Planner produces declarative plans/intents only; `execution_allowed` remains false and no direct tool execution path exists.
+- Unknown requests require policy review, R4 infrastructure changes produce approval-required intents, and R5 destructive/exfiltration requests produce blocked non-approvable intents.
+- Telegram mock flow records `task_plan_intent` evidence for reporting while MissionPolicy, ToolRouter, ApprovalVerifier, and SandboxController remain authoritative.

@@ -28,3 +28,9 @@ Middleware layer integrating Mythos context management and CAI security policies
 - ~/.ssh path redacted: PASS
 - Unknown action blocked by default: PASS
 - Concurrency with two simultaneous executions: PASS
+
+## Phase 7H Security Addendum — Task Planning
+- Added declarative task planning to reduce ambiguous mission interpretation before policy/routing gates.
+- Unknown/unregistered planning patterns do not silently allow execution; they produce policy-review-required, non-executing intents.
+- Dangerous planning requests remain governed by DangerousActionPolicy and MissionPolicy; R5 destructive/exfiltration intents are blocked and non-approvable.
+- No direct execution primitives were introduced in the planner.

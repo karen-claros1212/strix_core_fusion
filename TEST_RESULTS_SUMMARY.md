@@ -123,3 +123,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Approval + Policy + ToolRouting + Telegram + Reporting tests: 74 passed
 - Full suite: 217 passed, 3 warnings
 - Added tests for structured reports, executive and technical rendering, evidence JSON loading, Telegram summarization/truncation, artifact references, and report redaction.
+
+
+## Test Results (Phase 7H)
+- Task planning tests: 9 passed
+- TaskPlanning + Approval + Policy + ToolRouting + Telegram + Reporting tests: 83 passed
+- Full suite: 226 passed, 3 warnings
+- Added tests for deterministic pattern registry, safe task planning, R4 approval intents, R5 blocked intents, unknown-pattern policy review, non-execution, reporting metadata, LLMRouter helper, and Telegram mock evidence regression.

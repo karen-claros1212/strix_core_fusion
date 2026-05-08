@@ -2,6 +2,7 @@ from .llm_config import LLMConfig, load_llm_config, validate_llm_config
 from .openai_compatible_client import OpenAICompatibleClient, LLMResponse
 from .prompt_builder import PromptBuilder
 from .response_parser import ResponseParser
+from ..task_planning import TaskPlanner
 
 
 class BrainService:
@@ -10,6 +11,7 @@ class BrainService:
         self.client = client or OpenAICompatibleClient(self.config)
         self.prompts = PromptBuilder()
         self.parser = ResponseParser()
+        self.task_planner = TaskPlanner()
         self.executed_tools = False
 
     def healthcheck(self) -> dict:
@@ -33,6 +35,11 @@ class BrainService:
             mission["llm_error"] = response.error
             return mission
         return self.parser.parse_mission(response.content, fallback_text=text)
+
+    def build_task_plan_from_natural_language(self, text, context=None) -> dict:
+        plan = self.task_planner.plan(text, context=context)
+        intent = self.task_planner.build_execution_intent(plan)
+        return {"plan": plan.to_dict(), "intent": intent.to_dict(), "executed": False}
 
     def summarize_tool_output(self, text):
         return self.analyze_message(f"Summarize this tool output safely without executing anything:\n{text}")

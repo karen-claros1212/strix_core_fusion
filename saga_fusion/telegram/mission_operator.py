@@ -15,6 +15,7 @@ from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 from ..tool_routing import ToolRouter
 from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, ApprovalVerifier
 from ..reporting import ReportBuilder, TelegramReportFormatter
+from ..task_planning import TaskPlanner
 
 
 class TelegramMissionOperator:
@@ -39,6 +40,7 @@ class TelegramMissionOperator:
         self.approval_audit = ApprovalAudit()
         self.report_builder = ReportBuilder()
         self.telegram_report_formatter = TelegramReportFormatter()
+        self.task_planner = TaskPlanner()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -175,6 +177,32 @@ class TelegramMissionOperator:
             )
         else:
             return "Unknown command."
+
+        task_plan = self.task_planner.plan(
+            getattr(request, "raw_text", "") or " ".join([request.action_type, request.target, request.arguments]),
+            target=request.target,
+            arguments=request.arguments,
+            context={"chat_id": str(chat_id), "user_id": str(user_id)},
+        )
+        task_intent = self.task_planner.build_execution_intent(task_plan)
+        self.evidence_logger._record(
+            "task_plan_intent",
+            {
+                "mission_id": request.mission_id,
+                "plan_id": task_plan.plan_id,
+                "pattern_id": task_plan.pattern_id,
+                "status": task_plan.status.value,
+                "risk_level": task_plan.risk_level.value,
+                "approval_required": task_plan.approval_required,
+                "blocked": task_plan.blocked,
+                "execution_allowed": task_intent.execution_allowed,
+                "dry_run": task_intent.dry_run,
+                "sandbox_mode": task_intent.sandbox_mode,
+                "tool_name": task_intent.tool_name,
+                "reporting_ready": task_plan.metadata.get("reporting_ready", False),
+                "reason": task_plan.reason,
+            },
+        )
 
         request.risk_level = self.policy.classify_risk(request)
         tool_decision = self.tool_router.route_tool_request(request)

@@ -72,3 +72,20 @@ Scope:
 - Existing Telegram bot tokens
 - Existing gateway ports
 - Existing runtime services
+
+## Phase 7H — Task Planner / Pattern Registry
+Status: IMPLEMENTED
+Date: 2026-05-08
+
+Validated controls:
+- PatternRegistry deterministic lookup.
+- TaskPlanner declarative plan creation.
+- TaskPlanPolicy consults MissionPolicy, DangerousActionPolicy, and ToolRouter.
+- ExecutionIntentBuilder produces dry-run/non-executing intents.
+- Telegram mock path records task-plan evidence without real Telegram execution.
+
+Safety status:
+- R4 remains approval-required.
+- R5 remains blocked.
+- Unknown patterns require policy review and are non-executing.
+- ToolRouter still does not execute tools.

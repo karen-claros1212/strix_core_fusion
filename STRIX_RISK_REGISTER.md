@@ -116,3 +116,9 @@
 - [CLOSED] RB-7F-02: Reporting now exposes approval/evidence context through redacted structured reports and Telegram-safe summaries.
 - [OPEN] RB-7G-01: Future report exporters must preserve ReportRedactor and OutputBudget behavior for every new format.
 - [OPEN] RB-7G-02: Task planner/pattern registry should produce reportable execution intent without bypassing MissionPolicy or ToolRouter. Target: 7H.
+
+
+## Risk Register Update (Phase 7H)
+- [CLOSED] RB-7G-02: Task planner/pattern registry now emits reportable execution intent without bypassing MissionPolicy or ToolRouter.
+- [OPEN] RB-7H-01: Future planners must not convert ExecutionIntent into execution outside SandboxController and ApprovalVerifier.
+- [OPEN] RB-7H-02: Defensive workflow templates should reuse PatternRegistry without widening scope to external pentest or CloudOps real execution. Target: 7I.

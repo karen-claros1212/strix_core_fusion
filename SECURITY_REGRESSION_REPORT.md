@@ -158,3 +158,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Reporting adds safe summaries and artifact references instead of exposing long/raw evidence in Telegram responses.
 - R4/R5, ApprovalVerifier, ToolRouter, PromptSecurity, DangerousActionPolicy, and SandboxController semantics are not weakened.
 - No CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, or STRIX core change was performed.
+
+
+## Security Regression Report (Phase 7H)
+- TaskPlanner and ExecutionIntentBuilder produce declarative plans/intents only; execution_allowed remains false in current paths.
+- R4 plans produce approval-required intent metadata only; R5 plans are blocked and non-approvable.
+- Unknown patterns require policy review and do not silently allow execution.
+- MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, PromptSecurity, and Reporting remain authoritative.
+- No CAI code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2 change was performed.
