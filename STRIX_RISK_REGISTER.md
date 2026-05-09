@@ -134,3 +134,11 @@
 - [OPEN] RB-7J-01: Regex-only secret detection may miss novel secret formats. Mitigation: continue adding redaction regression fixtures and keep `SECRET_BLOCKED` conservative.
 - [OPEN] RB-7J-02: Retrieval is lexical/process-local only. Future durable or semantic memory must preserve redaction, `SECRET_BLOCKED` exclusion, and non-authoritative policy guarantees.
 - [READY] Phase 8 Hermes Patterns can proceed only as clean-room pattern adaptation with no Hermes runtime/code copy and with PromptSecurity/MissionPolicy authority unchanged.
+
+
+## Risk Register Update (Phase 8A)
+- [OPEN] RB-8A-01: Hermes-inspired gateway/toolset patterns could duplicate STRIX Telegram/ToolRouter paths if implemented directly. Mitigation: no Hermes runtime or gateway integration; clean-room design only.
+- [OPEN] RB-8A-02: Skill/plugin patterns can import untrusted instructions or side effects. Mitigation: future STRIX extension governance must keep plugins docs-only or sandbox-gated with PromptSecurity and ApprovalVerifier.
+- [OPEN] RB-8A-03: Cron/long-running task patterns can repeat sensitive actions or stall on approvals. Mitigation: future jobs must be dry-run by default, scoped, bounded, redacted, and evidence-backed.
+- [OPEN] RB-8A-04: Context compression/recovery can drop safety constraints. Mitigation: never compress away system policy, R4/R5 rules, redaction rules, or evidence requirements.
+- [READY] Phase 8B may proceed as Hermes pattern design only; no runtime compatibility layer, gateway, terminal backend, self-improvement loop, or real external execution.

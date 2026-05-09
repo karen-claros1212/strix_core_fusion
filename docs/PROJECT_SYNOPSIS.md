@@ -118,3 +118,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Memory redacts tokens, API keys, Authorization headers, cookies, `.env`, private keys, SSH paths, passwords, and generic secrets before storage; secret-like records are marked `SECRET_BLOCKED` and excluded from LLM context.
 - BrainService/PromptBuilder include retrieved context only as non-authoritative/untrusted context; Telegram mission handling stores redacted mission memory after plan/report outcomes.
 - Memory cannot become system instructions, cannot lower R4/R5, and cannot override PromptSecurity or MissionPolicy.
+
+## Phase 8A — Hermes Source Audit + Capability Matrix
+- Audited Hermes Agent as a reference source using local STRIX references plus public `NousResearch/hermes-agent` GitHub tree metadata and public docs/README references only.
+- Local STRIX Hermes Agent source was not found; unrelated React Native/Hermes JS engine and vLLM parser packages in other project directories were explicitly excluded.
+- Created Hermes source tree metadata snapshot, capability matrix, extraction plan, and `extensions/hermes_patterns/README.md`.
+- No Hermes source code was copied, no Hermes runtime/gateway/tool/plugin integration was created, and no STRIX functional logic was modified.
+- Useful clean-room pattern areas identified: toolset scoping, approval/HITL gateway regressions, cron/long-running task patterns, skill/plugin metadata, session recovery, context compression, evidence manifests, observability, and security guardrails.

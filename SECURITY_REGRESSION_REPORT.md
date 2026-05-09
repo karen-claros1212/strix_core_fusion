@@ -181,3 +181,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - MemoryPolicy prevents memory from downgrading R4/R5 and excludes `SECRET_BLOCKED` records from normal retrieval/context.
 - MemoryRedactor blocks raw storage of Telegram bot tokens, STRIX LLM API keys, Authorization headers, API keys, cookies, `.env`, private keys, SSH paths, passwords, and generic tokens; only redacted placeholders and safe fingerprints may persist.
 - No CAI/Hermes code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2 change was performed.
+
+
+## Security Regression Report (Phase 8A)
+- Local STRIX Hermes Agent source was not found; only public Hermes Agent tree metadata/docs were referenced.
+- No Hermes source code was copied, no Hermes runtime/gateway/tools/plugins were created, and no Hermes integration was performed.
+- No STRIX core, Agent Zero, OpenCLAW, Hermes installed, Qwen/TurboQuant/llama.cpp/WSL2, Telegram real, CloudOps real, external pentest, token, or `.env` change was performed.
+- Capability extraction is documentation-only and keeps PromptSecurity, MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, Reporting, OutputBudget, SecretRedactor, and MemoryPolicy authoritative.

@@ -228,3 +228,16 @@
 - Integrations: BrainService/PromptBuilder non-authoritative context; TelegramMissionOperator mission memory after plan/report outcomes
 - Validation: memory tests 12 passed; integration subset 71 passed; full suite status recorded in `TEST_RESULTS_SUMMARY.md`
 - Verdict: APTO PARA PHASE 8 HERMES PATTERNS: SI
+
+
+## Phase 8A Status
+- Hermes Source Audit + Capability Matrix: COMPLETED
+- Local Hermes Agent source in STRIX repo: NO
+- Public reference used: `https://github.com/NousResearch/hermes-agent` GitHub tree metadata + public docs/README references
+- Tree metadata entries captured: 3830
+- Capabilities mapped: 17
+- Classification counts: ADAPT_PATTERN 8; REIMPLEMENT_CLEAN 5; DOCUMENT_ONLY 2; DISCARD 1; FUTURE_RESEARCH 1
+- Hermes source copied/runtime created/integrated: NO / NO / NO
+- STRIX functional logic changed: NO
+- Validation: full suite status recorded in `TEST_RESULTS_SUMMARY.md`
+- Verdict: APTO PARA PHASE 8B HERMES PATTERN DESIGN: SI

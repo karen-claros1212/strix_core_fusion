@@ -142,3 +142,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - TaskPlanning + Reporting + Telegram + Memory tests: 71 passed
 - Full suite: 250 passed, 3 warnings
 - Added tests for token/`.env`/private-key redaction and fingerprints, no raw secret storage, mission memory redaction, bounded context windows, `SECRET_BLOCKED` exclusion, session summaries, R4/R5 non-downgrade, untrusted/user-approved policy semantics, and retriever relevance/scope/sensitivity filtering.
+
+
+## Test Results (Phase 8A)
+- Full suite: 250 passed, 3 warnings
+- Command: `python3 -m pytest tests -q --tb=short`
+- Phase 8A is audit/documentation only: no functional logic changes, no Hermes code copy, no Hermes runtime, no Hermes integration.

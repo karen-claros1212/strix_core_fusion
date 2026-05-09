@@ -64,3 +64,9 @@
 - Default patterns cover read-only status, repo audit dry-run, report generation, R4 infrastructure changes, and R5 destructive/exfiltration blocks.
 - Plans and execution intents are declarative only and never execute tools.
 - Next phase: 7I defensive workflow templates, still document/report-only unless separately approved.
+
+## Phase 8A Hermes Pattern Audit Outcome
+- Created `reports/PHASE_8A_HERMES_SOURCE_TREE.txt`, `reports/PHASE_8A_HERMES_CAPABILITY_MATRIX.md`, `reports/PHASE_8A_HERMES_EXTRACTION_PLAN.md`, and `extensions/hermes_patterns/README.md`.
+- Local STRIX Hermes Agent source was not found; Phase 8A used public Hermes Agent metadata/docs only and copied no code.
+- Recommended next step: Phase 8B documentation-first design for Hermes-inspired extension governance, toolset scopes, approval/cron/session recovery requirements, and evidence manifests.
+- Deferred/blocked: Hermes runtime compatibility, gateway integration, terminal backends, self-improvement loops, and real Telegram/CloudOps/external-pentest execution.
