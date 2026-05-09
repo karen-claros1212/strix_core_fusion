@@ -148,3 +148,11 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Full suite: 250 passed, 3 warnings
 - Command: `python3 -m pytest tests -q --tb=short`
 - Phase 8A is audit/documentation only: no functional logic changes, no Hermes code copy, no Hermes runtime, no Hermes integration.
+
+<!-- PHASE_8A_BIS_TEST_RESULTS -->
+## Phase 8A-BIS — Hermes Source Checkout Read-Only Audit
+- Command: `python3 -m pytest tests -q --tb=short`
+- Result: `250 passed, 3 warnings in 491.20s (0:08:11)`
+- Log: `reports/phase_8a_bis_full_tests.log`
+- Environment note: local user-level test dependencies `pytest` and `psutil` were installed because the container initially lacked them; no Hermes dependencies were installed.
+- Scope touched: documentation/reports/gitignore only; no STRIX core runtime changes.

@@ -241,3 +241,16 @@
 - STRIX functional logic changed: NO
 - Validation: full suite status recorded in `TEST_RESULTS_SUMMARY.md`
 - Verdict: APTO PARA PHASE 8B HERMES PATTERN DESIGN: SI
+
+<!-- PHASE_8A_BIS_STATUS -->
+## Phase 8A-BIS Status
+- Hermes source checkout audit: COMPLETED
+- Source path: `external_sources/hermes-agent`
+- Commit: `bfc84bdc6f85c14715e06d5fa83192ea3e7c7f79`
+- License: MIT License (Nous Research, 2025)
+- Generated artifacts: commit, docs list, source tree, capability grep, capability matrix, extraction plan, gap analysis
+- Capabilities mapped: 12 categories
+- Safety: read-only audit; no Hermes execution/dependency install/code copy/runtime/gateway; external source ignored
+- Full suite: `250 passed, 3 warnings in 491.20s (0:08:11)`
+- Test log: `reports/phase_8a_bis_full_tests.log`
+- Verdict: APTO PARA 8C CLEAN-ROOM PATTERN DESIGN: SI

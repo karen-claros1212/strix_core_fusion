@@ -125,3 +125,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Created Hermes source tree metadata snapshot, capability matrix, extraction plan, and `extensions/hermes_patterns/README.md`.
 - No Hermes source code was copied, no Hermes runtime/gateway/tool/plugin integration was created, and no STRIX functional logic was modified.
 - Useful clean-room pattern areas identified: toolset scoping, approval/HITL gateway regressions, cron/long-running task patterns, skill/plugin metadata, session recovery, context compression, evidence manifests, observability, and security guardrails.
+
+<!-- PHASE_8A_BIS_SYNOPSIS -->
+## Phase 8A-BIS — Hermes Source Checkout Read-Only Audit
+- Cloned official `NousResearch/hermes-agent` into ignored `external_sources/hermes-agent` for read-only audit.
+- Audited commit: `bfc84bdc6f85c14715e06d5fa83192ea3e7c7f79`; license observed: MIT License.
+- Generated commit/doc/source-tree/capability-grep artifacts plus capability matrix, extraction plan, and gap analysis.
+- Identified clean-room candidates for 8C/8D/8E: metadata, memory/context fencing, tool loop guardrails, approval timeout semantics, evidence manifests, dry-run scheduler, session recovery, and LLM error taxonomy.
+- No Hermes code was copied, no Hermes dependencies installed, no Hermes runtime executed, and no STRIX core/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real tokens were touched.

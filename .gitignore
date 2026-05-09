@@ -22,3 +22,6 @@ backups/
 !reports/codex_resume_*.log
 !reports/phase_6b_3_*.log
 !reports/phase_6b_4_*.log
+
+# External source checkouts are read-only audit inputs and must not be staged.
+external_sources/

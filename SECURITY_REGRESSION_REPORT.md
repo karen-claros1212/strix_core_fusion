@@ -188,3 +188,12 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - No Hermes source code was copied, no Hermes runtime/gateway/tools/plugins were created, and no Hermes integration was performed.
 - No STRIX core, Agent Zero, OpenCLAW, Hermes installed, Qwen/TurboQuant/llama.cpp/WSL2, Telegram real, CloudOps real, external pentest, token, or `.env` change was performed.
 - Capability extraction is documentation-only and keeps PromptSecurity, MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, Reporting, OutputBudget, SecretRedactor, and MemoryPolicy authoritative.
+
+<!-- PHASE_8A_BIS_SECURITY -->
+## Phase 8A-BIS — Hermes Source Checkout Safety Regression
+- External source cloned to ignored path: `external_sources/hermes-agent`.
+- No Hermes code copied into Saga Fusion.
+- No Hermes execution or dependency installation occurred.
+- No real token/`.env` access occurred; only `.env.example` appeared in source-tree metadata.
+- STRIX core, Agent Zero, OpenCLAW, installed Hermes, Qwen/TurboQuant/llama.cpp/WSL2 were not touched.
+- Security posture: documentation-only audit with clean-room extraction plan; future candidates require separate implementation approval and tests.

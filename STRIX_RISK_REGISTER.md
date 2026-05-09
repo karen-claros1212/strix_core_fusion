@@ -142,3 +142,13 @@
 - [OPEN] RB-8A-03: Cron/long-running task patterns can repeat sensitive actions or stall on approvals. Mitigation: future jobs must be dry-run by default, scoped, bounded, redacted, and evidence-backed.
 - [OPEN] RB-8A-04: Context compression/recovery can drop safety constraints. Mitigation: never compress away system policy, R4/R5 rules, redaction rules, or evidence requirements.
 - [READY] Phase 8B may proceed as Hermes pattern design only; no runtime compatibility layer, gateway, terminal backend, self-improvement loop, or real external execution.
+
+<!-- PHASE_8A_BIS_RISKS -->
+## Phase 8A-BIS — Hermes Pattern Risks
+| risk_id | risk | severity | status | mitigation |
+|---|---|---:|---|---|
+| 8A-BIS-R1 | Accidentally staging `external_sources/hermes-agent` or vendoring Hermes code. | HIGH | Mitigated | Added/kept `external_sources/` in `.gitignore`; verify `git status --short --ignored`. |
+| 8A-BIS-R2 | Importing Hermes plugins/skills could bypass STRIX policy. | HIGH | Open for future phases | Documentation-only; any implementation must be clean-room and disabled by default. |
+| 8A-BIS-R3 | Scheduled tasks can execute stale/destructive instructions. | HIGH | Open for 8D | Begin with dry-run scheduled audit specs and SandboxController gating. |
+| 8A-BIS-R4 | Memory/context compaction can promote untrusted text to instructions. | MEDIUM | Open for 8C | Non-authoritative summary template, context fences, scrubber tests, policy precedence. |
+| 8A-BIS-R5 | Gateway/session recovery can route approvals or reports to wrong recipient. | HIGH | Open for 8D | Redacted session IDs, task-local context, delivery manifests, restart-drain tests. |
