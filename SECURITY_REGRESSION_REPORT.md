@@ -174,3 +174,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Docker/config workflows detect risky indicators and insecure defaults but emit recommendations only.
 - Hardening and incident-response workflows explicitly create implementation/containment plans only; real containment and auto-remediation remain disabled.
 - R4/R5 regression gates remain intact through TaskPlanner, MissionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, and Reporting.
+
+## Security Regression Report (Phase 7J)
+- Memory is non-authoritative context only and is never promoted to system instruction authority.
+- PromptSecurity remains before LLM routing; MissionPolicy remains authority for risk and execution gates.
+- MemoryPolicy prevents memory from downgrading R4/R5 and excludes `SECRET_BLOCKED` records from normal retrieval/context.
+- MemoryRedactor blocks raw storage of Telegram bot tokens, STRIX LLM API keys, Authorization headers, API keys, cookies, `.env`, private keys, SSH paths, passwords, and generic tokens; only redacted placeholders and safe fingerprints may persist.
+- No CAI/Hermes code/runtime, Telegram real, CloudOps real, external pentest, token/`.env`, STRIX core, Agent Zero, OpenCLAW, Hermes, Qwen/TurboQuant/llama.cpp/WSL2 change was performed.

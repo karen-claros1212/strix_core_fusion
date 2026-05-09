@@ -136,3 +136,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - TaskPlanning + Reporting + Telegram + Workflows tests: 71 passed
 - Full suite: 238 passed, 3 warnings
 - Added tests for 8-template registry, unknown-workflow non-execution, all `execution_allowed=False`, workflow plan generation, R4/R5 non-execution regression, hardening/IR no real actions, secret/log redaction, Docker privileged/exposed-port fixture detection, config insecure-default detection, TaskPlanner workflow selection, Reporting summary, and Telegram mock workflow plan response.
+
+## Test Results (Phase 7J)
+- Memory tests: 12 passed
+- TaskPlanning + Reporting + Telegram + Memory tests: 71 passed
+- Full suite: 250 passed, 3 warnings
+- Added tests for token/`.env`/private-key redaction and fingerprints, no raw secret storage, mission memory redaction, bounded context windows, `SECRET_BLOCKED` exclusion, session summaries, R4/R5 non-downgrade, untrusted/user-approved policy semantics, and retriever relevance/scope/sensitivity filtering.

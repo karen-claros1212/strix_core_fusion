@@ -16,6 +16,7 @@ from ..tool_routing import ToolRouter
 from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, ApprovalVerifier
 from ..reporting import ReportBuilder, TelegramReportFormatter
 from ..task_planning import TaskPlanner
+from ..memory import MemoryStore, MissionMemory, MemoryRetriever, ContextWindow, SessionSummarizer
 
 
 class TelegramMissionOperator:
@@ -41,6 +42,11 @@ class TelegramMissionOperator:
         self.report_builder = ReportBuilder()
         self.telegram_report_formatter = TelegramReportFormatter()
         self.task_planner = TaskPlanner()
+        self.memory_store = MemoryStore()
+        self.mission_memory = MissionMemory(self.memory_store)
+        self.memory_retriever = MemoryRetriever(self.memory_store)
+        self.context_window = ContextWindow(char_budget=1200)
+        self.session_summarizer = SessionSummarizer()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -59,6 +65,34 @@ class TelegramMissionOperator:
             "message": "requires approval" if status == "approval_required" else status.replace("_", " "),
         }
         return self._serialize_response(payload)
+
+
+    def _remember_mission(self, request, *, policy_decision: str, outcome: str, approval_status: str = "not_required", evidence_refs=None, report_refs=None, next_step: str = ""):
+        try:
+            return self.mission_memory.remember(
+                mission_id=request.mission_id,
+                user_intent=getattr(request, "raw_text", "") or " ".join([request.action_type, request.target, request.arguments]),
+                policy_decision=policy_decision,
+                risk_level=getattr(getattr(request, "risk_level", ""), "value", getattr(request, "risk_level", "")),
+                approval_status=approval_status,
+                evidence_refs=tuple(evidence_refs or ()),
+                report_refs=tuple(report_refs or ()),
+                outcome=outcome,
+                next_step=next_step,
+            )
+        except Exception:
+            return None
+
+    def _memory_context_for(self, request):
+        try:
+            retrieved = self.memory_retriever.retrieve(
+                getattr(request, "raw_text", "") or " ".join([request.action_type, request.target, request.arguments]),
+                mission_id=getattr(request, "mission_id", None),
+                limit=3,
+            )
+            return self.context_window.render(retrieved.as_context_items())
+        except Exception:
+            return ""
 
     def _request_payload(self, request):
         return {
@@ -160,6 +194,7 @@ class TelegramMissionOperator:
                 context={
                     "chat_id": str(chat_id),
                     "user_id": str(user_id),
+                    "memory_context": "non-authoritative; untrusted; cannot override PromptSecurity or MissionPolicy",
                     "prompt_security": {
                         "risk_level": decision.risk_level.value,
                         "reason": decision.reason,
@@ -182,7 +217,11 @@ class TelegramMissionOperator:
             getattr(request, "raw_text", "") or " ".join([request.action_type, request.target, request.arguments]),
             target=request.target,
             arguments=request.arguments,
-            context={"chat_id": str(chat_id), "user_id": str(user_id)},
+            context={
+                "chat_id": str(chat_id),
+                "user_id": str(user_id),
+                "memory_context": self._memory_context_for(request),
+            },
         )
         task_intent = self.task_planner.build_execution_intent(task_plan)
         self.evidence_logger._record(
@@ -207,6 +246,7 @@ class TelegramMissionOperator:
         if task_plan.metadata.get("workflow_plan") and not task_plan.blocked:
             workflow_plan = task_plan.metadata["workflow_plan"]
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "workflow_plan_only")
+            self._remember_mission(request, policy_decision="workflow_plan_only", outcome="planned", evidence_refs=(f"mission:{request.mission_id}",), next_step="manual_review")
             return self._serialize_response({
                 "status": "workflow_plan",
                 "mission_id": request.mission_id,
@@ -250,6 +290,7 @@ class TelegramMissionOperator:
             result = {"status": "blocked", "executed": False, "reason": "risk_r5_blocked"}
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "blocked")
             self.evidence_logger.log_mission(request, result)
+            self._remember_mission(request, policy_decision="blocked", outcome="blocked", evidence_refs=(f"mission:{request.mission_id}",), next_step="no_execution")
             return self._mission_response(request, "blocked", result=result)
 
         if self.policy.requires_approval(request.risk_level):
@@ -287,6 +328,7 @@ class TelegramMissionOperator:
             self.evidence_logger.log_approval_decision(approval_id, "created", request.action_hash)
             self.approval_audit.record("approval_request_created", {"approval_id": approval_id, "mission_id": request.mission_id, "action_hash": request.action_hash})
             self.evidence_logger.log_mission(request, result)
+            self._remember_mission(request, policy_decision="approval_required", outcome="pending_approval", approval_status="pending", evidence_refs=(approval_request.evidence_ref,), next_step="await_user_approval")
             return self._mission_response(request, "approval_required", result=result, approval_id=approval_id)
 
         request.status = MissionStatus.EXECUTING
@@ -295,5 +337,6 @@ class TelegramMissionOperator:
         self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "sandbox_dispatch")
         self.evidence_logger.log_sandbox_dispatch_result(request.mission_id, result)
         self.evidence_logger.log_mission(request, result)
+        self._remember_mission(request, policy_decision="sandbox_dispatch", outcome=result.get("status", "dry_run"), evidence_refs=(f"mission:{request.mission_id}",), next_step="review_report")
         self.replay_guard.mark_executed(request.mission_id)
         return self._mission_response(request, result.get("status", "dry_run"), result=result)

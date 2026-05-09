@@ -128,3 +128,9 @@
 - [OPEN] RB-7I-01: Future workflow adapters must not convert `WorkflowPlan` into automatic remediation; mitigation is mandatory `execution_allowed=False`, ApprovalVerifier/SandboxController gating, and tests.
 - [OPEN] RB-7I-02: Offline dependency vulnerability review is placeholder-only; future online checks require explicit scope, network policy, evidence redaction, and approval.
 - [READY] Phase 7J can add memory/context patterns while preserving PromptSecurity, MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController, EvidenceLogger, and Reporting authority.
+
+## Risk Register Update (Phase 7J)
+- [CLOSED] RB-7I-02 partial: Memory/context patterns now preserve policy authority and block raw secret storage before future Hermes-pattern work.
+- [OPEN] RB-7J-01: Regex-only secret detection may miss novel secret formats. Mitigation: continue adding redaction regression fixtures and keep `SECRET_BLOCKED` conservative.
+- [OPEN] RB-7J-02: Retrieval is lexical/process-local only. Future durable or semantic memory must preserve redaction, `SECRET_BLOCKED` exclusion, and non-authoritative policy guarantees.
+- [READY] Phase 8 Hermes Patterns can proceed only as clean-room pattern adaptation with no Hermes runtime/code copy and with PromptSecurity/MissionPolicy authority unchanged.

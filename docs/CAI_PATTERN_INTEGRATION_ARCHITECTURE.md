@@ -50,3 +50,6 @@ Structured reporting is now a first-class Saga Fusion layer. `ReportBuilder`, ex
 
 ## Phase 7I Implementation Note
 Defensive workflow templates are now clean-room Saga Fusion templates under `saga_fusion/workflows/`. They provide plan/evidence/report structure only for repository audit, secret audit, dependency audit, Docker/Compose audit, configuration audit, log review, hardening plan, and incident-response triage. They do not import CAI code, create a CAI runtime, or execute remediation. Current paths keep `execution_allowed=False`; TaskPlanner can select workflow plans by intention, Reporting can summarize `WorkflowPlan`, and Telegram mock can return an evidence-only workflow-plan response.
+
+## Phase 7J Implementation Note
+Native memory/context patterns now live under `saga_fusion/memory/`. They provide redacted in-memory records, mission memory, session summaries, bounded context windows, and retrieval without CAI/Hermes code or runtime. Retrieved context is injected only as non-authoritative, untrusted background and cannot override PromptSecurity, MissionPolicy, approval gates, R4/R5 handling, or sandbox rules. `SECRET_BLOCKED` records are excluded from normal retrieval/context.

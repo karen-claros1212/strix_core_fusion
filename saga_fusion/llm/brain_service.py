@@ -3,13 +3,17 @@ from .openai_compatible_client import OpenAICompatibleClient, LLMResponse
 from .prompt_builder import PromptBuilder
 from .response_parser import ResponseParser
 from ..task_planning import TaskPlanner
+from ..memory import MemoryStore, MemoryRetriever, ContextWindow
 
 
 class BrainService:
-    def __init__(self, config: LLMConfig | None = None, client: OpenAICompatibleClient | None = None):
+    def __init__(self, config: LLMConfig | None = None, client: OpenAICompatibleClient | None = None, memory_store: MemoryStore | None = None):
         self.config = config or load_llm_config()
         self.client = client or OpenAICompatibleClient(self.config)
-        self.prompts = PromptBuilder()
+        self.memory_store = memory_store or MemoryStore()
+        self.memory_retriever = MemoryRetriever(self.memory_store)
+        self.context_window = ContextWindow(char_budget=2000)
+        self.prompts = PromptBuilder(self.context_window)
         self.parser = ResponseParser()
         self.task_planner = TaskPlanner()
         self.executed_tools = False
@@ -18,7 +22,18 @@ class BrainService:
         ok, missing = validate_llm_config(self.config)
         return {"ok": ok and self.config.enabled, "enabled": self.config.enabled, "missing": missing, "provider": self.config.provider}
 
+    def _merge_memory_context(self, text, context=None, mission_id: str | None = None):
+        retrieved = self.memory_retriever.retrieve(str(text or ""), mission_id=mission_id, limit=3).as_context_items()
+        if context is None:
+            return retrieved
+        if isinstance(context, (list, tuple)):
+            return tuple(context) + retrieved
+        if retrieved:
+            return (str(context),) + retrieved
+        return context
+
     def analyze_message(self, text, context=None) -> dict:
+        context = self._merge_memory_context(text, context)
         if not self.config.enabled:
             return {"ok": False, "fallback": True, "reason": "llm_disabled", "text": text}
         response = self.client.chat_completion(self.prompts.analysis_prompt(text, context))
@@ -27,6 +42,7 @@ class BrainService:
         return {"ok": True, "content": response.content, "raw": response.raw}
 
     def build_mission_from_natural_language(self, text, context=None) -> dict:
+        context = self._merge_memory_context(text, context)
         if not self.config.enabled:
             return self.parser.fallback_mission(text)
         response: LLMResponse = self.client.chat_completion(self.prompts.mission_prompt(text, context))

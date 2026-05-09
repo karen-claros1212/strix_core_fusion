@@ -112,3 +112,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Workflows generate `WorkflowPlan` objects only and keep `execution_allowed=False` in all current paths.
 - Secret and log workflows redact secret-like values; Docker/config workflows produce evidence and recommendations only.
 - TaskPlanner selects workflow plans by user intention; Reporting and Telegram mock summarize them without real remediation, CloudOps, pentest, or containment actions.
+
+## Phase 7J — Memory / Context Patterns
+- Added `saga_fusion/memory/` with memory scopes, sensitivity labels, redaction, in-memory storage, mission memory, context windowing, session summarization, policy checks, and retrieval.
+- Memory redacts tokens, API keys, Authorization headers, cookies, `.env`, private keys, SSH paths, passwords, and generic secrets before storage; secret-like records are marked `SECRET_BLOCKED` and excluded from LLM context.
+- BrainService/PromptBuilder include retrieved context only as non-authoritative/untrusted context; Telegram mission handling stores redacted mission memory after plan/report outcomes.
+- Memory cannot become system instructions, cannot lower R4/R5, and cannot override PromptSecurity or MissionPolicy.
