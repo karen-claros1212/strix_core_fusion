@@ -164,3 +164,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Command: `python3 -m pytest tests -q --tb=short`
 - Result: `250 passed, 3 warnings in 191.21s (0:03:11)`
 - Phase 8B-REV is docs/reports/status only: no functional logic changes, no Hermes code copy, no Hermes runtime, no Hermes integration.
+
+## Test Results (Phase 8C)
+- Skills suite: 14 passed
+- Task planning + tool routing + skills: 33 passed
+- Full suite: 264 passed, 3 warnings
+- Added tests for valid manifest acceptance, duplicate rejection, disabled/unknown skill blocking, R4 approval requirement, R5 blocking, dangerous permission rejection, env-name-only handling without secret exposure, allowed_tools enforcement, metadata-only planning references, and no direct execution.

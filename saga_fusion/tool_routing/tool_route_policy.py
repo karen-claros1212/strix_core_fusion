@@ -10,6 +10,9 @@ class ToolRoutePolicy:
 
     def decide(self, classification: dict, request=None, context=None) -> ToolRouteDecision:
         tool_name = classification.get('tool_name','unknown')
+        skill_block = self._skill_tool_scope_decision(tool_name, context)
+        if skill_block is not None:
+            return skill_block
         tool = self.registry.get(tool_name)
         category = classification.get('category') or (tool.category if tool else ToolCategory.UNKNOWN)
         risk = classification.get('risk_level') or (tool.default_risk if tool else ToolRisk.R4)
@@ -30,3 +33,27 @@ class ToolRoutePolicy:
             return ToolRouteDecision(False, False, True, risk, tool.name, category, 'approval_required', sandbox_required, 'risk_r4_requires_approval', evidence)
         route = 'sandbox' if sandbox_required else 'direct_safe_metadata_only'
         return ToolRouteDecision(True, False, False, risk, tool.name, category, route, sandbox_required, 'allowed_by_tool_route_policy', evidence)
+
+    @staticmethod
+    def _skill_tool_scope_decision(tool_name: str, context=None) -> ToolRouteDecision | None:
+        if not isinstance(context, dict):
+            return None
+        manifest = context.get("skill_manifest") or context.get("skill")
+        if manifest is None:
+            return None
+        allowed_tools = getattr(manifest, "allowed_tools", None)
+        skill_name = getattr(manifest, "name", "unknown_skill")
+        if allowed_tools is None and isinstance(manifest, dict):
+            allowed_tools = manifest.get("allowed_tools")
+            skill_name = manifest.get("name", skill_name)
+        if allowed_tools is None:
+            return None
+        normalized_allowed = {str(tool).strip().lower() for tool in allowed_tools}
+        normalized_tool = (tool_name or "unknown").strip().lower()
+        if normalized_tool not in normalized_allowed:
+            return ToolRouteDecision(
+                False, True, False, ToolRisk.R4, normalized_tool, ToolCategory.UNKNOWN, "blocked", True,
+                "skill_allowed_tools_scope_blocked",
+                {"tool_name": normalized_tool, "skill_name": str(skill_name), "allowed_tools": sorted(normalized_allowed), "metadata_only": True},
+            )
+        return None

@@ -263,3 +263,13 @@
 - Safety: no Hermes code copy/execution/runtime/gateway/toolset/plugin/scheduler; `external_sources/hermes-agent` ignored/uncommitted
 - Validation: full suite status recorded in `TEST_RESULTS_SUMMARY.md`
 - Verdict: APTO PARA PHASE 8C SKILL/PLUGIN METADATA GOVERNANCE DESIGN/SCHEMA WORK: SI, pending explicit approval
+
+## Phase 8C Status
+- Skill / Plugin Metadata Governance: COMPLETED
+- Path: `saga_fusion/skills/`
+- Metadata lifecycle: manifest validation, registry, enable/disable, policy decisions
+- Integration: PatternRegistry/TaskPlanner metadata references; ToolRouter allowed_tools enforcement when skill context exists
+- Execution: NO skill execution path added
+- Hermes copy/execution: NO
+- Tests: skills 14 passed; task+tool+skills 33 passed; full suite 264 passed, 3 warnings
+- Verdict: APTO PARA 8D: SI

@@ -164,3 +164,9 @@
 | 8B-REV-R5 | LLM error recovery could hide auth/billing or leak data via fallback. | MEDIUM | Open for 8H | Reporting-first taxonomy; no credential rotation or unapproved provider fallback. |
 | 8B-REV-R6 | Approval timeout semantics could weaken into allow-always. | HIGH | Open for 8I | Timeout-to-deny only; R5 non-approvable; exact action hash/user/channel/session checks. |
 | READY | Phase 8C may proceed only with explicit approval and without Hermes runtime/code copy. | INFO | Ready | Use the 8B-REV backlog and acceptance criteria. |
+
+## Risk Register Update (Phase 8C)
+- [CLOSED] RB-8C-01: Skill/plugin metadata could bypass STRIX tool policy. Mitigation: ToolRouter blocks tools outside manifest `allowed_tools` when skill context is present.
+- [CLOSED] RB-8C-02: Skill metadata could request direct secrets. Mitigation: validator/policy reject dangerous permissions and direct secret request metadata; required_env is name-only.
+- [CLOSED] RB-8C-03: Skill metadata could weaken R4/R5 controls. Mitigation: R4 requires approval, R5 blocked, unknown/disabled blocked.
+- [MONITORED] RB-8C-04: Future skill execution would expand attack surface. Current status: no execution path; any future execution must remain behind MissionPolicy, ApprovalVerifier, and SandboxController.

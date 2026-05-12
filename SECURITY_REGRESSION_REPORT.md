@@ -205,3 +205,13 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - `external_sources/hermes-agent` remains ignored and must not be staged.
 - STRIX core, Agent Zero, OpenCLAW, Qwen/TurboQuant/llama.cpp/WSL2, real Telegram, real CloudOps, external pentest, tokens, and `.env` were not touched.
 - R4 approval, R5 blocking, `SandboxController`, EvidenceLogger/Reporting, redaction, and non-authoritative memory remain the governing controls for future phases.
+
+## Security Regression Report (Phase 8C)
+- Unknown skills are blocked.
+- Disabled skills are blocked.
+- R4 skill metadata requires approval.
+- R5 skill metadata is blocked and non-executing.
+- Direct secret requests in skill metadata are blocked; required_env stores names only and does not read/expose values.
+- MissionPolicy/SandboxController bypass attempts in skill metadata are blocked.
+- ToolRouter enforces `allowed_tools` when skill context is provided.
+- No skill execution path, plugin host, Hermes runtime/gateway/toolset, Hermes code copy, or Hermes execution was introduced.

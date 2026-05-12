@@ -124,6 +124,7 @@ class TaskPlanner:
                 "source": "saga_fusion_task_planner",
                 "context_keys": sorted((context or {}).keys()),
                 "workflow_plan": workflow_plan_payload,
+                "skill_metadata": dict(pattern.skill_metadata) if pattern else {},
             },
         )
 

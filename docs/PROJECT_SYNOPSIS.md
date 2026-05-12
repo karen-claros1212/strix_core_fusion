@@ -140,3 +140,12 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Produced docs/reports only: no Hermes code copy, execution, runtime integration, gateway/toolset/plugin host, scheduler, or functional STRIX implementation.
 - Prioritized extension governance, skill/plugin metadata, toolset scoping, dry-run scheduler, session recovery, context compression safety, evidence manifests, LLM error taxonomy, approval timeout tests, and tool loop guardrails.
 - Next phases remain gated: 8C–8I each require separate approval, focused tests, full pytest, and preservation of R4/R5/SandboxController authority.
+
+## Phase 8C — Skill / Plugin Metadata Governance
+- Added `saga_fusion/skills/` for STRIX-owned declarative skill/plugin metadata.
+- Skill manifests are metadata only and include permissions, allowed tools, required env names, risk level, enabled state, and entrypoint strings.
+- Registry rejects duplicates/invalid manifests and supports enable/disable/list-enabled lifecycle.
+- Policy blocks unknown/disabled/R5 skills, requires approval for R4, blocks direct secret requests, and rejects MissionPolicy/SandboxController bypass attempts.
+- TaskPlanner can carry skill metadata references; ToolRouter enforces `allowed_tools` in skill context.
+- No skill execution, plugin host, Hermes code copy, or Hermes execution was introduced.
+- Full suite: 264 passed, 3 warnings.

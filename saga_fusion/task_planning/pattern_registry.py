@@ -185,6 +185,15 @@ class PatternRegistry:
             raise ValueError("pattern_id is required")
         self._patterns[pattern.pattern_id] = pattern
 
+    def attach_skill_metadata(self, pattern_id: str, skill_metadata: dict) -> PatternDefinition:
+        """Attach declarative skill metadata to a planning pattern; no execution binding."""
+        pattern = self.get(pattern_id)
+        if pattern is None:
+            raise KeyError(f"unknown pattern: {pattern_id}")
+        updated = PatternDefinition(**{**pattern.__dict__, "skill_metadata": dict(skill_metadata or {})})
+        self._patterns[pattern_id] = updated
+        return updated
+
     def get(self, pattern_id: str) -> PatternDefinition | None:
         return self._patterns.get(pattern_id)
 

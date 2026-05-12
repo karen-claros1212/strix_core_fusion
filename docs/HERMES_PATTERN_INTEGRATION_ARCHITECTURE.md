@@ -60,3 +60,8 @@ Every future Hermes-inspired implementation must include: source-pattern citatio
 - `reports/PHASE_8B_REV_HERMES_PATTERN_BACKLOG.json`
 - Updated `extensions/hermes_patterns/README.md`
 - Updated project status files
+
+## Phase 8C completion — Skill/Plugin Metadata Governance
+Phase 8C implements a STRIX-owned metadata governance layer under `saga_fusion/skills/`. It provides manifest validation, registry lifecycle, and policy decisions only. It does not add a runtime plugin host, Hermes skill ingestion, Hermes gateway/toolset, or skill execution.
+
+Skill metadata is subordinate to STRIX controls: unknown and disabled skills are blocked, R4 skills require approval, R5 skills are blocked, direct secret requests are rejected, and bypass attempts against MissionPolicy or SandboxController are rejected. Task planning may reference skill metadata, and ToolRouter enforces `allowed_tools` when skill context is provided.

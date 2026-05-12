@@ -47,6 +47,7 @@ class PatternDefinition:
     requires_sandbox: bool = True
     reporting_tags: tuple[str, ...] = ()
     safe_modes: tuple[str, ...] = ("dry_run", "report_only")
+    skill_metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
