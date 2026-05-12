@@ -157,3 +157,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Tool loop guard blocks max per-mission tool-call budgets, repeated same tool+args loops, and recursive tool invocation attempts.
 - `ScopedToolRouter` preserves the existing `ToolRouter` and keeps execution plans dry-run/non-executing; no Hermes code/runtime/toolset or direct execution path was introduced.
 - Full suite: 278 passed, 3 warnings.
+
+## Phase 8E — Dry-Run Scheduler / Cron Patterns
+- Added `saga_fusion/scheduler/` for STRIX-owned scheduled-job metadata and cron-pattern validation.
+- Scheduler records owner, timeout, enabled state, dry-run status, evidence refs, safe metadata, risk, approval/block status, and cancellation state.
+- Five-field cron expressions are validated and next-run timestamps are planned only.
+- `execution_allowed` is forced false, `dry_run` is mandatory, and no execute/run method, OS cron job, workspace cron scheduling, or Hermes runtime/gateway/toolset was introduced.
+- R4 jobs require approval metadata; R5/destructive jobs are blocked; optional `ScopedToolRouter` integration remains non-executing.
+- Full suite: 291 passed, 3 warnings.

@@ -77,3 +77,10 @@
 - Updated Hermes architecture/extension docs with 8C–8I clean-room lanes.
 - Recommended next step: Phase 8C Skill/Plugin Metadata Governance as docs/schema-first work; no runtime plugin host.
 - Deferred/blocked: Hermes runtime compatibility, parallel gateway/toolset, live scheduler execution, self-improvement loop, real Telegram/CloudOps/external-pentest execution, and token/`.env` access.
+
+## Phase 8E Outcome
+- Added clean-room dry-run scheduler metadata under `saga_fusion/scheduler/`.
+- Validates five-field cron patterns and computes next-run plans only.
+- Enforces owner required, timeout bounds, mandatory dry-run, `execution_allowed=False`, cancellation/no-execution, R4 approval-required, and R5/destructive blocking.
+- No OS cron jobs, workspace cron_tools scheduling, Hermes runtime/code copy, or direct execution path were introduced.
+- Recommended next step: Phase 8F Session Recovery + Context Compression Safety, preserving scheduler cancellation/status, R4/R5 gates, redaction, and non-authoritative recovered context.

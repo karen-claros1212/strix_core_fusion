@@ -176,3 +176,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Skills + tool routing + tool scoping: 38 passed
 - Full suite: 278 passed, 3 warnings
 - Added tests for in-scope allow, out-of-scope blocking, unknown tool blocking, R4 approval requirement, R5 blocking, skill no-widen enforcement, repeated tool-loop blocking, recursion blocking, toolset registry defaults, scoped-router no-execution behavior, and existing ToolRouter/SkillPolicy regression integrity.
+
+## Test Results (Phase 8E)
+- Scheduler suite: 13 passed
+- Skills + tool routing + tool scoping + scheduler: 51 passed
+- Full suite: 291 passed, 3 warnings
+- Added tests for valid dry-run jobs, invalid cron rejection, mandatory `execution_allowed=False`, owner requirement, timeout bounds, cancellation/no-next-run behavior, R4 approval-required jobs, R5/destructive blocking, absence of execute/run methods, evidence metadata redaction, and scoped-router integration without execution.

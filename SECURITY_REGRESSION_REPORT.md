@@ -223,3 +223,13 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - ToolLoopGuard blocks repeated same tool+args calls, per-mission call-budget excess, and recursive tool invocation attempts with evidence metadata.
 - ScopedToolRouter delegates only to existing ToolRouter policy after scope/loop gates and forces dry-run/non-executing execution plans.
 - No Hermes code copy/execution/runtime/gateway/toolset, no direct execution, no real Telegram, no CloudOps real action, no external pentest, no tokens/`.env`, and no STRIX core/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2 changes were introduced.
+
+## Security Regression Report (Phase 8E)
+- Scheduler objects are declarative metadata only; they do not create OS cron jobs, call workspace cron tools, or execute scheduled work.
+- `execution_allowed=True` and `dry_run=False` are rejected at job construction.
+- Invalid cron expressions, missing owners, and out-of-bounds timeouts are rejected or blocked.
+- R4 scheduled jobs require approval metadata; R5/destructive scheduled jobs are blocked and non-approvable.
+- Cancellation disables jobs and prevents next-run planning.
+- Evidence refs/arguments/metadata redact token/password/API-key/Authorization-like values.
+- Optional `ScopedToolRouter` integration records route/scope policy decisions only and still performs no execution.
+- No Hermes code copy/execution/runtime/gateway/toolset, no direct execution, no real Telegram, no CloudOps real action, no external pentest, no tokens/`.env`, and no STRIX core/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2 changes were introduced.

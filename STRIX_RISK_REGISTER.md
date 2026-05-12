@@ -177,3 +177,10 @@
 - [CLOSED] RB-8D-03: Tool-routing loops could repeat or recurse indefinitely. Mitigation: `ToolLoopGuard` enforces per-mission max calls, repeated same tool+args limits, and active-stack recursion blocking.
 - [MONITORED] RB-8D-04: Future scheduler/cron work could bypass these scopes. Mitigation: Phase 8E must consume scoped-router/loop-guard semantics and remain dry-run/spec-only.
 - [READY] Phase 8E can proceed only with explicit approval and without OS cron/live actions or unattended execution.
+
+## Risk Register Update (Phase 8E)
+- [CLOSED] RB-8D-04 / 8B-REV-R3: Scheduler/cron patterns could drift into unattended execution. Mitigation: Phase 8E is metadata/planning only; `execution_allowed=False`, mandatory dry-run, no execute/run method, no OS cron, and no workspace cron_tools scheduling.
+- [CLOSED] RB-8E-01: Scheduled R4/R5 actions could bypass approval/blocking. Mitigation: R4 jobs are approval-required metadata; R5/destructive jobs are blocked and non-approvable.
+- [CLOSED] RB-8E-02: Scheduled-job evidence could leak secrets. Mitigation: evidence refs, arguments, and metadata are redacted for token/password/API-key/Authorization-like values.
+- [MONITORED] RB-8E-03: Future session recovery/context compression could revive blocked or stale scheduler metadata. Mitigation: Phase 8F must preserve non-authoritative recovery summaries, cancellation status, R4/R5 gates, redaction, and `execution_allowed=False` invariants.
+- [READY] Phase 8F can proceed only with explicit approval and without weakening scheduler, approval, redaction, or SandboxController boundaries.

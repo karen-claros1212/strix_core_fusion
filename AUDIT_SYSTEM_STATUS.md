@@ -284,3 +284,15 @@
 - Hermes copied/executed: NO / NO
 - Direct execution introduced: NO
 - Verdict: APTO PARA 8E DRY-RUN SCHEDULER/CRON PATTERNS: SI
+
+## Phase 8E Status
+- Dry-Run Scheduler / Cron Patterns: COMPLETED
+- Path: `saga_fusion/scheduler/`
+- Metadata: ScheduledJob, SchedulePlan, owner, timeout, enabled/dry-run state, evidence refs, redacted metadata, cancellation status
+- Cron support: five-field validation and next-run planning only
+- Execution: NO OS cron jobs, NO workspace cron_tools scheduling, NO direct scheduled execution, `execution_allowed=False`
+- Policy: owner required, timeout bounded, invalid cron blocked, R4 approval-required, R5/destructive blocked
+- Integration: optional `ScopedToolRouter` metadata checks without execution
+- Validation: scheduler 13 passed; skills+tool_routing+tool_scoping+scheduler 51 passed; full suite 291 passed, 3 warnings
+- Hermes copied/executed: NO / NO
+- Verdict: APTO PARA 8F SESSION RECOVERY + CONTEXT COMPRESSION SAFETY: SI

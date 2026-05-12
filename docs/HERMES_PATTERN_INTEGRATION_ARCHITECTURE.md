@@ -72,3 +72,8 @@ Phase 8D implements a STRIX-owned tool scoping and loop-guard layer under `saga_
 `ToolScopePolicy` gates requests by mission, workflow, toolset, and skill `allowed_tools`; unknown, denied, and out-of-scope tools are blocked. R4 tools remain approval-required and R5/destructive requests remain blocked. Skills cannot widen their own declared tool scope.
 
 `ToolLoopGuard` blocks per-mission over-budget calls, repeated same tool+args loops, and recursive tool calls with evidence metadata. `ScopedToolRouter` wraps the existing `ToolRouter` by applying scope first, loop guard second, and the existing route policy last; all generated execution plans remain dry-run/non-executing and `SandboxController` remains the only execution boundary.
+
+## Phase 8E completion — Dry-Run Scheduler / Cron Patterns
+Phase 8E implements a STRIX-owned scheduler metadata layer under `saga_fusion/scheduler/`. It validates five-field cron expressions, stores owner/timeout/enabled/dry-run/evidence metadata, supports cancellation state, and computes next-run plans only.
+
+The scheduler is intentionally non-executing: `ScheduledJob.execution_allowed` cannot be set to true, `dry_run` cannot be disabled, `SchedulePlanner` has no execute/run method, no OS cron integration exists, and no workspace cron tools are used. R4 scheduled jobs become approval-required metadata, R5/destructive scheduled jobs are blocked, and optional `ScopedToolRouter` checks remain metadata-only. `SandboxController` remains the only possible execution boundary for any future execution phase.
