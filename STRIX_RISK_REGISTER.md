@@ -191,3 +191,9 @@
 - [CLOSED] RB-8F-03: Secret-bearing context could leak through session summaries. Mitigation: `MemoryRedactor` reuse, secret-bearing context exclusion, and redacted intent markers.
 - [CLOSED] RB-8F-04: Recovered context could downgrade R4/R5 policy. Mitigation: highest-risk-wins enforcement; MissionPolicy, PromptSecurity, and SandboxController remain authoritative.
 - [READY] Phase 8G Evidence / Reporting Manifests may begin.
+
+## Risk Register Update (Phase 8G)
+- [CLOSED] RB-8G-01: Evidence/report artifacts could be untraceable or tampered after generation. Mitigation: manifest refs require SHA-256 and validator detects mismatches for existing local paths.
+- [CLOSED] RB-8G-02: Reporting manifests could leak raw secret-bearing artifact content. Mitigation: manifests store references/hashes/metadata only, block raw content/body metadata keys, and reuse ReportRedactor.
+- [CLOSED] RB-8G-03: Manifest metadata could be treated as executable instructions. Mitigation: manifest refs and manifests enforce `non_authoritative=True`, `execution_allowed=False`, and expose no execution surface.
+- [READY] Phase 8H LLM Error Taxonomy + Recovery may begin with reporting-first, bounded recovery semantics and no hidden credential/provider fallback.

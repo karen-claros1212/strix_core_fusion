@@ -307,3 +307,10 @@
 - Risk safety: recovered context cannot downgrade R4/R5; MissionPolicy, PromptSecurity, and SandboxController remain authoritative
 - Tests: session `12 passed`; memory+llm+session `46 passed`; full suite `303 passed, 3 warnings`
 - Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO
+
+## Phase 8G Status — Evidence / Reporting Manifests
+- Status: Completed.
+- Added `saga_fusion/manifests/` with artifact reference types, hashing helpers, manifest builder, policy, redactor wrapper, and validator.
+- Integrated safe manifest reference creation into `EvidenceReporter` and Telegram-safe manifest summaries into `TelegramReportFormatter`.
+- Controls: `non_authoritative=True`, `execution_allowed=False`, no raw artifact body embedding, SHA-256 validation, tamper detection, redaction status for sensitive artifacts, no direct execution surface.
+- Hermes posture: clean-room pattern adaptation only; no Hermes code copy, execution, runtime, gateway, toolset, or dependency use.

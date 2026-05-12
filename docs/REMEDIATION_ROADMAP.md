@@ -90,3 +90,11 @@
 - Closed the planned Hermes-inspired session recovery lane without adopting Hermes code/runtime/gateway/toolset.
 - Controls now cover checksum tamper rejection, expiry rejection, secret-bearing context exclusion, non-authoritative compressed context, and R4/R5 downgrade prevention.
 - Next phase: 8G Evidence / Reporting Manifests, preserving redaction and non-secret artifact metadata rules.
+
+## Phase 8G Outcome
+- Added `saga_fusion/manifests/` for evidence/reporting artifact traceability.
+- Manifests are reference/hash/provenance metadata only; raw artifact bodies are not embedded.
+- Sensitive artifacts require redaction status and secret-scan status is recorded; existing ReportRedactor is reused for manifest metadata.
+- Tampered artifact hashes are rejected for existing local artifact paths.
+- No Hermes code/runtime, direct execution, real Telegram, CloudOps, external pentest, tokens, or `.env` changes were introduced.
+- Next phase: 8H LLM Error Taxonomy + Recovery, preserving reporting-first behavior and no hidden provider fallback.

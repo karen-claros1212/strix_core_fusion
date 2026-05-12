@@ -244,3 +244,12 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - R4/R5 risk cannot be downgraded by recovered context.
 - Session recovery exposes no direct execution method and does not bypass MissionPolicy, PromptSecurity, or SandboxController.
 - Full regression remained green: `303 passed, 3 warnings`.
+
+## Security Regression Report (Phase 8G)
+- Manifest artifacts are references only; raw evidence/report bodies are not stored in manifests or Telegram summaries.
+- SHA-256 is required and existing local paths are re-hashed to detect tampering.
+- Sensitive or secret-scan-positive artifacts require explicit redaction status (`redacted`, `reference_only`, or `blocked`).
+- Existing `ReportRedactor` is reused for manifest metadata/provenance and Telegram manifest summaries.
+- `non_authoritative=True` and `execution_allowed=False` are enforced for artifact refs and manifests.
+- Manifest package exposes no direct execution surface; no execute/run/dispatch/send/call method exists.
+- No Hermes code/runtime/gateway/toolset, real Telegram, CloudOps, external pentest, token, or `.env` change was performed.

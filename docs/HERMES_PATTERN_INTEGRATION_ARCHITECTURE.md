@@ -84,3 +84,10 @@ Phase 8F implements a STRIX-owned session recovery safety layer under `saga_fusi
 Snapshots retain only safe state metadata and inert compressed context. Raw context is not persisted in snapshots. Secret-bearing context is excluded, secret-bearing intent is replaced with a redacted exclusion marker, checksums protect snapshot integrity, and expiry prevents stale recovery.
 
 Recovered context is explicitly non-authoritative (`non_authoritative=True`, `execution_allowed=False`) and is rendered only as untrusted user-context background for LLM prompt construction. It cannot act as a system/developer instruction, cannot override PromptSecurity/MissionPolicy/SandboxController, and cannot downgrade R4/R5 intent. Tampered, expired, authoritative, or executable snapshots are rejected.
+
+## Phase 8G completion — Evidence / Reporting Manifests
+Phase 8G implements a STRIX-owned evidence/reporting manifest layer under `saga_fusion/manifests/`. It is clean-room and introduces no Hermes runtime, gateway, toolset, or direct execution path.
+
+Manifests store artifact references, hashes, sizes, provenance, redaction/secret-scan status, classification/risk, mission/session IDs, metadata, and safe linkage between report artifacts and evidence artifacts. They do not embed raw artifact bodies. Existing `ReportRedactor` is reused through `ManifestRedactor`, and Telegram/reporting integration exposes only safe manifest summaries or references.
+
+`ManifestValidator` enforces SHA-256 format, existing-file tamper detection, redaction status for sensitive artifacts, no raw-body metadata keys, `non_authoritative=True`, and `execution_allowed=False`. The manifest package has no execute/run/dispatch/send/call surface; it is traceability/reporting metadata only. `SandboxController`, MissionPolicy, PromptSecurity, ApprovalVerifier, EvidenceLogger, and Reporting remain authoritative.

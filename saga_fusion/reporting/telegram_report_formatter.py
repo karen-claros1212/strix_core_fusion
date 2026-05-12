@@ -24,3 +24,24 @@ class TelegramReportFormatter:
             suffix = f"\nArtifact: {artifact_ref}" if artifact_ref else ''
             text = text[: max(0, self.max_length - len(suffix) - 20)] + '… [truncated]' + suffix
         return text
+
+    def format_manifest_summary(self, manifest_summary: dict) -> str:
+        """Render a Telegram-safe manifest summary: ids, refs, hashes, no raw artifact bodies."""
+        summary = self.redactor.redact(manifest_summary or {})
+        lines = [
+            f"Manifest: {summary.get('manifest_id', 'unknown')}",
+            f"Artifacts: {summary.get('artifact_count', 0)}",
+            f"Non-authoritative: {summary.get('non_authoritative') is True}",
+            f"Execution allowed: {summary.get('execution_allowed') is True}",
+        ]
+        for artifact in summary.get('artifacts', [])[:8]:
+            if not isinstance(artifact, dict):
+                continue
+            locator = artifact.get('path') or artifact.get('ref') or 'unreferenced'
+            digest = str(artifact.get('sha256', ''))[:12]
+            lines.append(f"- {artifact.get('artifact_id')}: {locator} sha256={digest}… redaction={artifact.get('redaction_status')}")
+        text = "\n".join(lines)
+        if len(text) > self.max_length:
+            text = text[: max(0, self.max_length - 20)] + '… [truncated]'
+        return text
+
