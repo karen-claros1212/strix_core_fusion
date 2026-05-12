@@ -188,3 +188,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - BrainService/LLMRouter surface `llm_recovery` metadata and never execute tools; unsafe output and invalid JSON are classified and fall back safely.
 - Tests force LLM disabled by default so shell environment variables cannot trigger real LLM calls; enabled paths use stub clients only.
 - Validation: LLM `31 passed`; LLM+prompt_security+session `55 passed`; full suite `327 passed, 3 warnings`.
+
+## Phase 8I — Approval Timeout + Regression Depth
+- Added explicit approval expiry helpers and TTL-boundary semantics (`now >= expires_at` expires approvals).
+- Hardened ApprovalStore/ApprovalVerifier terminal behavior for replay, denied, expired, hash mismatch, unauthorized actor, missing ID, and R5 attempts.
+- Added metadata-only `ApprovalRegressionMatrix` and evidence-safe approval audit summary.
+- Telegram approval success remains non-executing (`executed=False`) and marks approvals used to prevent replay.
+- Validation: approval `14 passed`; approval+telegram+manifests `69 passed`; full suite `334 passed, 3 warnings`.

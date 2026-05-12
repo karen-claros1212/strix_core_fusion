@@ -200,3 +200,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Relevant subset (`tests/llm tests/prompt_security tests/session`): `55 passed`
 - Full suite: `327 passed, 3 warnings`
 - Added tests for auth nonretry/redaction, timeout retry within bounds, rate-limit max retry exhaustion, invalid response classification, context-too-large classification, unsafe output safe fallback, no infinite retry loops, evidence redaction, R4/R5 no-downgrade recovery, and no real LLM calls from ambient env.
+
+## Test Results (Phase 8I)
+- Approval suite: `14 passed`
+- Relevant subset (`tests/approval tests/telegram tests/manifests`): `69 passed`
+- Full suite: `334 passed, 3 warnings`
+- Added tests for TTL boundary expiry, just-before-expiry approval, used approval replay blocking, hash mismatch blocking, unauthorized actor blocking, denied approval irreversibility, nonexistent approval blocking, R5 no-approval/non-approvable behavior, non-executing approval success, audit redaction, and regression matrix coverage.

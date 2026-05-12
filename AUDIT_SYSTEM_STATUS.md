@@ -330,3 +330,12 @@
 - Validation: llm `31 passed`; llm+prompt_security+session `55 passed`; full suite `327 passed, 3 warnings`.
 - Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO.
 - Verdict: APTO PARA 8I APPROVAL TIMEOUT + REGRESSION DEPTH: SI.
+
+## Phase 8I Status — Approval Timeout + Regression Depth
+- Status: Completed.
+- Added approval expiry helpers, terminal-state hardening, deterministic verifier evidence, audit summaries, and metadata-only regression matrix coverage.
+- Controls: expiry at/after TTL, exact action-hash matching, unauthorized actor blocking, used/replay blocking, denied/expired irreversibility, missing-ID blocking, and R5 non-approvable blocking.
+- Telegram integration: approval success is still non-executing (`executed=False`) and marks approval used for replay prevention.
+- Validation: approval `14 passed`; approval+telegram+manifests `69 passed`; full suite `334 passed, 3 warnings`.
+- Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO.
+- Verdict: APTO PARA PHASE 9 ORIGINAL STRIX OPTIMIZATION OR PHASE 8 CLOSURE: SI.

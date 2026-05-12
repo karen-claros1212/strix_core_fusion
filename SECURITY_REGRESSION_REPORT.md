@@ -269,3 +269,14 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Recovery fallback does not downgrade R4/R5 intent; existing action normalization and MissionPolicy remain authoritative.
 - Unit tests cannot call a live LLM gateway through ambient shell env because test conftest disables env-driven LLM enablement; enabled LLM paths are stubbed.
 - Full regression remained green: `327 passed, 3 warnings`.
+
+## Security Regression Report (Phase 8I)
+- Approval expiry is enforced at and after the TTL boundary; just-before-expiry approvals are still valid only if all other gates pass.
+- Used approvals cannot be replayed and produce `approval_replay_blocked` with `execution_allowed=False` evidence.
+- Action-hash mismatches are terminal and block later approval attempts.
+- Unauthorized actors are blocked without executing or mutating approval success state.
+- Denied and expired approvals are irreversible/non-executing.
+- Missing approval IDs and R5 approval attempts are blocked; R5 missions create no approval.
+- Telegram approval success still returns `executed=False`; no action is executed by approval success.
+- Audit summaries redact token/API-key/password-like values and remain metadata-only.
+- Full regression remained green: `334 passed, 3 warnings`.

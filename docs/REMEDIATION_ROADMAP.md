@@ -105,3 +105,11 @@
 - No hidden provider fallback, token rotation, real LLM unit-test calls, Hermes code/runtime/gateway/toolset, or direct execution path was introduced.
 - R4/R5 recovery fallback remains governed by action normalization and MissionPolicy; PromptSecurity and SandboxController remain authoritative.
 - Next phase: 8I Approval Timeout + Regression Depth, preserving timeout-to-deny semantics and adding deeper approval/session regression coverage.
+
+## Phase 8I Outcome
+- Closed the planned Approval Timeout + Regression Depth lane.
+- Timeout-to-deny is enforced at and after the approval TTL boundary.
+- Denied, expired, invalid-hash, blocked, and used approvals are terminal/non-executing.
+- R4 remains the only approvable risk level; R5 missions create no approvals and approval attempts are blocked.
+- Approval regression depth now covers R4/R5/expired/replay/hash/user/deny/nonexistent cases.
+- Next phase: Phase 9 original STRIX optimization or Phase 8 closure, preserving SandboxController, R4 approval, R5 blocking, and no direct production execution.

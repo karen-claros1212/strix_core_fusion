@@ -98,3 +98,10 @@ Phase 8H implements a STRIX-owned LLM error taxonomy and bounded recovery layer 
 The layer classifies auth, timeout, connection, rate-limit, server, invalid-response, unsafe-output, context-too-large, model-unavailable, and unknown failures. Recovery is bounded by explicit retry limits and records backoff as metadata only. Nonretryable errors fall back to the deterministic safe router without executing tools.
 
 `BrainService` and `LLMRouter` expose recovery metadata on failure/fallback while preserving public APIs. PromptSecurity, MissionPolicy, action normalization, ApprovalVerifier, ToolRouter, and SandboxController remain authoritative; R4/R5 intent is not downgraded by recovery fallback.
+
+## Phase 8I completion — Approval Timeout + Regression Depth
+Phase 8I hardens STRIX-owned HITL approval behavior under `saga_fusion/approval/`. It is clean-room and introduces no Hermes runtime, gateway, toolset, approval gateway, or execution path.
+
+Approval expiry is now explicit at the TTL boundary (`now >= expires_at`), approvals expose expiry helper metadata, and terminal states remain non-executing. `ApprovalVerifier` deterministically blocks missing IDs, R5 approval attempts, expired approvals, used/replay attempts, hash mismatches, unauthorized actors, and denied/terminal approvals. Successful R4 approval verification remains metadata-only and carries `execution_allowed=False`; Telegram approval responses continue to return `executed=False`.
+
+`ApprovalRegressionMatrix` records metadata-only coverage for R4, R5, expired, replay, hash mismatch, unauthorized user, denial, and nonexistent-ID approval paths. `SandboxController`, MissionPolicy, PromptSecurity, ApprovalVerifier, EvidenceLogger, and Reporting remain authoritative.

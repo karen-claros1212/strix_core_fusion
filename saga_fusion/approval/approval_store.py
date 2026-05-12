@@ -16,21 +16,21 @@ class ApprovalStore:
 
     def mark_approved(self, approval_id: str) -> bool:
         item = self.get(approval_id)
-        if not item:
+        if not item or item.status != ApprovalStatus.PENDING or item.used:
             return False
         item.status = ApprovalStatus.APPROVED
         return True
 
     def mark_denied(self, approval_id: str) -> bool:
         item = self.get(approval_id)
-        if not item:
+        if not item or item.status != ApprovalStatus.PENDING or item.used:
             return False
         item.status = ApprovalStatus.DENIED
         return True
 
     def mark_used(self, approval_id: str) -> bool:
         item = self.get(approval_id)
-        if not item:
+        if not item or item.used or item.status not in {ApprovalStatus.PENDING, ApprovalStatus.APPROVED}:
             return False
         item.used = True
         item.status = ApprovalStatus.USED
@@ -39,7 +39,7 @@ class ApprovalStore:
     def expire_old(self, now: float) -> int:
         count = 0
         for item in self._items.values():
-            if item.status == ApprovalStatus.PENDING and now > item.expires_at:
+            if item.status == ApprovalStatus.PENDING and item.is_expired(now):
                 item.status = ApprovalStatus.EXPIRED
                 count += 1
         return count

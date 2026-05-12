@@ -204,3 +204,10 @@
 - [CLOSED] RB-8H-03: Fallback could leak secrets or downgrade safety. Mitigation: evidence redaction covers API keys/Bearer tokens and fallback uses deterministic non-executing router under MissionPolicy/action normalization.
 - [CLOSED] RB-8H-04: Unsafe LLM output could bypass PromptSecurity/MissionPolicy/SandboxController. Mitigation: unsafe-output classification triggers safe fallback and preserves existing authorities.
 - [READY] Phase 8I Approval Timeout + Regression Depth may begin with timeout-to-deny semantics and deeper approval/session regression coverage.
+
+## Risk Register Update (Phase 8I)
+- [CLOSED] 8B-REV-R6 / RB-8I-01: Approval timeout semantics could weaken into allow-always. Mitigation: approvals expire at/after TTL and expiry is terminal/non-executing.
+- [CLOSED] RB-8I-02: Approval replay could reuse a HITL grant. Mitigation: used approvals become `USED` and verifier blocks replay with explicit evidence.
+- [CLOSED] RB-8I-03: Hash mismatch or wrong actor could approve a different action. Mitigation: exact action hash and allowlisted actor checks are deterministic; mismatches are terminal and unauthorized actors are blocked.
+- [CLOSED] RB-8I-04: R5 or nonexistent approvals could be approved through command paths. Mitigation: R5 missions create no approval, R5 approval attempts are blocked, and missing IDs are blocked.
+- [READY] Phase 9 original STRIX optimization or Phase 8 closure may proceed with SandboxController, R4 HITL approval, R5 non-approvable blocking, and no direct execution unchanged.

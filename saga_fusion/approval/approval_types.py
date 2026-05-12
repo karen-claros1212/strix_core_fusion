@@ -23,6 +23,16 @@ class ApprovalRiskLevel(str, Enum):
     R5 = 'R5'
 
 
+IRREVERSIBLE_APPROVAL_STATUSES = frozenset({
+    ApprovalStatus.APPROVED,
+    ApprovalStatus.DENIED,
+    ApprovalStatus.EXPIRED,
+    ApprovalStatus.INVALID_HASH,
+    ApprovalStatus.USED,
+    ApprovalStatus.BLOCKED,
+})
+
+
 @dataclass
 class ApprovalRequest:
     approval_id: str
@@ -40,6 +50,17 @@ class ApprovalRequest:
     evidence_ref: str
     used: bool = False
     status: ApprovalStatus = ApprovalStatus.PENDING
+
+    def is_expired(self, now: float) -> bool:
+        """Return True at or after expiry; approvals are not valid at expires_at."""
+        return float(now) >= float(self.expires_at)
+
+    def seconds_until_expiry(self, now: float) -> float:
+        return max(0.0, float(self.expires_at) - float(now))
+
+    @property
+    def is_terminal(self) -> bool:
+        return self.used or self.status in IRREVERSIBLE_APPROVAL_STATUSES
 
 
 @dataclass(frozen=True)

@@ -15,6 +15,15 @@ class ApprovalAudit:
         self.records.append(redacted)
         return redacted
 
+    def summary(self) -> dict:
+        return {
+            'record_count': len(self.records),
+            'event_types': sorted({record.get('event_type', '') for record in self.records}),
+            'contains_sensitive_values': False,
+            'execution_allowed': False,
+            'records': [dict(record) for record in self.records],
+        }
+
     def _redact(self, value):
         if isinstance(value, dict):
             return {k: self._redact(v) for k, v in value.items()}

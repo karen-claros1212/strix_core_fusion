@@ -126,7 +126,7 @@ class TelegramMissionOperator:
 
         if parsed is not None and getattr(parsed, "command", "") == "approve":
             if not getattr(parsed, "args", []):
-                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False})
+                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False, "execution_allowed": False})
             approval_id = parsed.args[0]
             approval_request = self.approval_store.get(approval_id)
             action_hash = parsed.args[1] if len(parsed.args) > 1 else (approval_request.action_hash if approval_request else "")
@@ -136,20 +136,20 @@ class TelegramMissionOperator:
                 user_id=str(user_id),
                 authorized_users=set(getattr(self.config, "allowed_user_ids", []) or []),
             )
-            self.approval_audit.record("approval_verified", {"approval_id": approval_id, "status": decision.status.value, "reason": decision.reason})
+            self.approval_audit.record("approval_verified", {"approval_id": approval_id, "status": decision.status.value, "reason": decision.reason, "evidence": decision.evidence})
             self.evidence_logger.log_approval_decision(approval_id, decision.status.value, action_hash)
             if decision.allowed:
                 self.approval_store.mark_used(approval_id)
-            return self._serialize_response({"status": decision.status.value.lower(), "reason": decision.reason, "approval_id": approval_id, "executed": False})
+            return self._serialize_response({"status": decision.status.value.lower(), "reason": decision.reason, "approval_id": approval_id, "executed": False, "execution_allowed": False})
 
         if parsed is not None and getattr(parsed, "command", "") == "deny":
             if not getattr(parsed, "args", []):
-                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False})
+                return self._serialize_response({"status": "blocked", "reason": "approval_id_required", "executed": False, "execution_allowed": False})
             approval_id = parsed.args[0]
             ok = self.approval_store.mark_denied(approval_id)
             self.approval_audit.record("approval_denied", {"approval_id": approval_id, "ok": ok, "user_id": str(user_id)})
             self.evidence_logger.log_approval_decision(approval_id, "DENIED" if ok else "NOT_FOUND")
-            return self._serialize_response({"status": "denied" if ok else "blocked", "reason": "approval_denied" if ok else "approval_not_found", "approval_id": approval_id, "executed": False})
+            return self._serialize_response({"status": "denied" if ok else "blocked", "reason": "approval_denied" if ok else "approval_not_found", "approval_id": approval_id, "executed": False, "execution_allowed": False})
 
         if parsed is not None and getattr(parsed, "command", "") == "report":
             report = self.report_builder.build_mission_report(

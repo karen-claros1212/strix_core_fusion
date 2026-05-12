@@ -17,7 +17,7 @@ class ApprovalPolicy:
             return False, 'only_r4_approvable'
         if not request.mission_id:
             return False, 'missing_mission_id'
-        if now > request.expires_at:
+        if request.is_expired(now):
             return False, 'approval_expired'
         if authorized_users is not None and request.requested_by not in authorized_users:
             return False, 'requester_not_authorized'
