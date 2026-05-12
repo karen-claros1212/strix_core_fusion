@@ -78,6 +78,43 @@ def test_redaction_status_required_for_sensitive_artifacts(tmp_path):
     assert any("requires redaction_status" in error for error in result.errors)
 
 
+def test_builder_does_not_read_artifact_text_for_secret_scanning(tmp_path, monkeypatch):
+    artifact = tmp_path / "secret_like.txt"
+    artifact.write_text("Authorization: Bearer abc.def.ghi")
+
+    def fail_read_text(self, *args, **kwargs):
+        raise AssertionError("ManifestBuilder must not read/decode artifact text")
+
+    monkeypatch.setattr(type(artifact), "read_text", fail_read_text)
+
+    ref = ManifestBuilder().evidence_ref_from_path(artifact)
+
+    assert ref.sha256 == sha256_file(artifact)
+    assert ref.size_bytes == artifact.stat().st_size
+    assert ref.secret_scan_status == SecretScanStatus.NOT_SCANNED.value
+    assert ref.redaction_status == RedactionStatus.NOT_REQUIRED.value
+
+
+def test_builder_uses_explicit_secret_scan_status_without_content_scan(tmp_path, monkeypatch):
+    artifact = tmp_path / "declared_sensitive.txt"
+    artifact.write_text("operator-declared sensitive artifact")
+
+    def fail_read_text(self, *args, **kwargs):
+        raise AssertionError("ManifestBuilder must not read/decode artifact text")
+
+    monkeypatch.setattr(type(artifact), "read_text", fail_read_text)
+
+    ref = ManifestBuilder().evidence_ref_from_path(
+        artifact,
+        secret_scan_status=SecretScanStatus.SENSITIVE.value,
+        redaction_status=RedactionStatus.REDACTED.value,
+    )
+    manifest = ManifestBuilder().build_evidence_manifest([ref])
+
+    assert ref.secret_scan_status == SecretScanStatus.SENSITIVE.value
+    assert ManifestValidator().validate(manifest).ok
+
+
 def test_artifact_refs_use_path_reference_not_raw_body(tmp_path):
     artifact = tmp_path / "evidence.txt"
     artifact.write_text("safe")

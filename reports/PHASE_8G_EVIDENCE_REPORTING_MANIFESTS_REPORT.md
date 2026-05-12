@@ -29,9 +29,9 @@ Report manifests link report artifact refs to evidence artifact IDs, making repo
 - No direct execution surface is exposed by the manifest package.
 
 ## Validation
-- `python3 -m pytest tests/manifests -q --tb=short` — `11 passed`
-- `python3 -m pytest tests/reporting tests/session tests/manifests -q --tb=short` — `33 passed`
-- `python3 -m pytest tests -q --tb=short` — `316 passed, 3 warnings`
+- `python3 -m pytest tests/manifests -q --tb=short` — `13 passed`
+- `python3 -m pytest tests/manifests tests/reporting -q --tb=short` — `23 passed`
+- `python3 -m pytest tests -q --tb=short` — `318 passed, 3 warnings`
 
 ## Prohibited actions not performed
 - No Hermes code copy, execution, runtime, gateway, toolset, provider plugin, or dependency use.
@@ -42,3 +42,6 @@ Report manifests link report artifact refs to evidence artifact IDs, making repo
 
 ## Verdict
 Phase 8G is complete and safe to proceed to Phase 8H: LLM Error Taxonomy + Recovery.
+
+## Follow-up hardening
+Critical review found that `ManifestBuilder._ref_from_path` performed text reads for best-effort secret detection. This was patched: path-based manifest refs now hash/count files only and never read/decode raw artifact text. Secret scan state is caller-provided metadata and defaults to `not_scanned`; sensitive or explicitly `sensitive` artifacts still require redaction status through `ManifestValidator`.

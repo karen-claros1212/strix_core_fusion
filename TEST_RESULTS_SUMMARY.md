@@ -190,7 +190,7 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Added tests for valid recovery, checksum tamper rejection, snapshot expiry rejection, secret exclusion/redaction, compression budget enforcement, non-authoritative compressed context, R4/R5 downgrade prevention, summary instruction neutralization, no execution surface, and redacted memory/context integration.
 
 ## Test Results (Phase 8G)
-- Manifest suite: `11 passed`
-- Relevant subset (`tests/reporting tests/session tests/manifests`): `33 passed`
-- Full suite: `316 passed, 3 warnings`
+- Manifest suite: `13 passed`
+- Relevant subset (`tests/manifests tests/reporting`): `23 passed`
+- Full suite: `318 passed, 3 warnings`
 - Added tests for valid manifest acceptance, invalid hash rejection, no secret-bearing raw content embedding, required redaction status for sensitive artifacts, path/reference-only artifact refs, enforced non-authoritative/non-executable flags, report-to-evidence linking, missing evidence link rejection, tamper detection, ReportRedactor reuse, Telegram-safe manifest summary, and no direct execution surface.

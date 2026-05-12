@@ -253,3 +253,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - `non_authoritative=True` and `execution_allowed=False` are enforced for artifact refs and manifests.
 - Manifest package exposes no direct execution surface; no execute/run/dispatch/send/call method exists.
 - No Hermes code/runtime/gateway/toolset, real Telegram, CloudOps, external pentest, token, or `.env` change was performed.
+
+## Phase 8G follow-up — No Artifact Content Scanning
+- Patched `ManifestBuilder` so local path refs never call `Path.read_text()` or decode artifact content for secret detection.
+- Local path refs now default to `SecretScanStatus.NOT_SCANNED`; callers may explicitly provide `secret_scan_status` and `redaction_status` metadata.
+- SHA-256/file-size hashing remains allowed and tamper detection is preserved.
+- Added tests that monkeypatch `Path.read_text` to fail, proving manifest ref building does not inspect raw artifact text.

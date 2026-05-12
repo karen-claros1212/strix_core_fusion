@@ -314,3 +314,9 @@
 - Integrated safe manifest reference creation into `EvidenceReporter` and Telegram-safe manifest summaries into `TelegramReportFormatter`.
 - Controls: `non_authoritative=True`, `execution_allowed=False`, no raw artifact body embedding, SHA-256 validation, tamper detection, redaction status for sensitive artifacts, no direct execution surface.
 - Hermes posture: clean-room pattern adaptation only; no Hermes code copy, execution, runtime, gateway, toolset, or dependency use.
+
+## Phase 8G follow-up — No Artifact Content Scanning
+- Patched `ManifestBuilder` so local path refs never call `Path.read_text()` or decode artifact content for secret detection.
+- Local path refs now default to `SecretScanStatus.NOT_SCANNED`; callers may explicitly provide `secret_scan_status` and `redaction_status` metadata.
+- SHA-256/file-size hashing remains allowed and tamper detection is preserved.
+- Added tests that monkeypatch `Path.read_text` to fail, proving manifest ref building does not inspect raw artifact text.

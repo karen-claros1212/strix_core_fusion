@@ -179,4 +179,4 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Evidence/report artifact refs include path/ref, kind/category, sha256, size, created_at, source phase, mission/session IDs, classification/risk, redaction status, secret scan status, provenance, references, metadata, `non_authoritative=True`, and `execution_allowed=False`.
 - `ManifestBuilder` creates safe references and manifest summaries; `ManifestValidator` rejects invalid/missing hashes, tampered local artifacts, sensitive artifacts without redaction status, raw-body metadata, authoritative manifests, and executable manifests.
 - Reporting integration can build evidence manifest refs and Telegram-safe manifest summaries without embedding raw artifacts or secrets.
-- Validation: manifests `11 passed`; reporting+session+manifests `33 passed`; full suite `316 passed, 3 warnings`.
+- Validation: manifests `13 passed`; manifests+reporting `23 passed`; full suite `318 passed, 3 warnings`.

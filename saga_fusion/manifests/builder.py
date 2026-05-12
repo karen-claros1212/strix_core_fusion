@@ -26,11 +26,11 @@ class ManifestBuilder:
         self.redactor = redactor or ManifestRedactor()
         self.validator = validator or ManifestValidator(self.policy, self.redactor)
 
-    def evidence_ref_from_path(self, path: str | Path, *, artifact_id: str | None = None, category: str = "evidence", source_phase: str = "unknown", mission_id: str | None = None, session_id: str | None = None, classification: str = "internal", risk: str = "R0", redaction_status: str | None = None, provenance: dict[str, Any] | None = None, references: Iterable[str] = (), metadata: dict[str, Any] | None = None) -> EvidenceArtifactRef:
-        return self._ref_from_path(EvidenceArtifactRef, path, artifact_id=artifact_id, category=category, source_phase=source_phase, mission_id=mission_id, session_id=session_id, classification=classification, risk=risk, redaction_status=redaction_status, provenance=provenance, references=references, metadata=metadata)
+    def evidence_ref_from_path(self, path: str | Path, *, artifact_id: str | None = None, category: str = "evidence", source_phase: str = "unknown", mission_id: str | None = None, session_id: str | None = None, classification: str = "internal", risk: str = "R0", redaction_status: str | None = None, secret_scan_status: str = SecretScanStatus.NOT_SCANNED.value, provenance: dict[str, Any] | None = None, references: Iterable[str] = (), metadata: dict[str, Any] | None = None) -> EvidenceArtifactRef:
+        return self._ref_from_path(EvidenceArtifactRef, path, artifact_id=artifact_id, category=category, source_phase=source_phase, mission_id=mission_id, session_id=session_id, classification=classification, risk=risk, redaction_status=redaction_status, secret_scan_status=secret_scan_status, provenance=provenance, references=references, metadata=metadata)
 
-    def report_ref_from_path(self, path: str | Path, *, artifact_id: str | None = None, category: str = "report", source_phase: str = "unknown", mission_id: str | None = None, session_id: str | None = None, classification: str = "internal", risk: str = "R0", redaction_status: str | None = None, provenance: dict[str, Any] | None = None, references: Iterable[str] = (), evidence_refs: Iterable[str] = (), metadata: dict[str, Any] | None = None) -> ReportArtifactRef:
-        ref = self._ref_from_path(ReportArtifactRef, path, artifact_id=artifact_id, category=category, source_phase=source_phase, mission_id=mission_id, session_id=session_id, classification=classification, risk=risk, redaction_status=redaction_status, provenance=provenance, references=references, metadata=metadata, evidence_refs=tuple(evidence_refs))
+    def report_ref_from_path(self, path: str | Path, *, artifact_id: str | None = None, category: str = "report", source_phase: str = "unknown", mission_id: str | None = None, session_id: str | None = None, classification: str = "internal", risk: str = "R0", redaction_status: str | None = None, secret_scan_status: str = SecretScanStatus.NOT_SCANNED.value, provenance: dict[str, Any] | None = None, references: Iterable[str] = (), evidence_refs: Iterable[str] = (), metadata: dict[str, Any] | None = None) -> ReportArtifactRef:
+        ref = self._ref_from_path(ReportArtifactRef, path, artifact_id=artifact_id, category=category, source_phase=source_phase, mission_id=mission_id, session_id=session_id, classification=classification, risk=risk, redaction_status=redaction_status, secret_scan_status=secret_scan_status, provenance=provenance, references=references, metadata=metadata, evidence_refs=tuple(evidence_refs))
         return ref
 
     def external_evidence_ref(self, *, ref: str, sha256: str, size_bytes: int | None = None, artifact_id: str | None = None, category: str = "evidence", source_phase: str = "unknown", mission_id: str | None = None, session_id: str | None = None, classification: str = "internal", risk: str = "R0", redaction_status: str | None = None, secret_scan_status: str = SecretScanStatus.NOT_SCANNED.value, provenance: dict[str, Any] | None = None, references: Iterable[str] = (), metadata: dict[str, Any] | None = None) -> EvidenceArtifactRef:
@@ -65,8 +65,7 @@ class ManifestBuilder:
 
     def _ref_from_path(self, cls, path: str | Path, **kwargs):
         path = Path(path)
-        text_sample = path.read_text(errors="ignore") if path.exists() and path.stat().st_size <= 512 * 1024 else ""
-        secret_status = SecretScanStatus.SENSITIVE.value if text_sample and self.redactor.contains_secret(text_sample) else SecretScanStatus.CLEAN.value
+        secret_status = kwargs.pop("secret_scan_status", SecretScanStatus.NOT_SCANNED.value)
         redaction_status = kwargs.pop("redaction_status") or self._default_redaction_status(kwargs.get("classification", "internal"), secret_status)
         return cls(
             artifact_id=kwargs.pop("artifact_id") or self._artifact_id(cls.__name__.replace("ArtifactRef", "").lower()),
