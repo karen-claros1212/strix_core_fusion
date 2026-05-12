@@ -1,5 +1,11 @@
 import asyncio
 import json
+import os
+
+# Approval unit regressions must never reach ambient local LLM gateways.
+# Telegram paths use /mission commands below so MissionOperator never invokes LLMRouter,
+# and this env guard keeps constructor-loaded LLM config disabled for the test process.
+os.environ["STRIX_LLM_ENABLED"] = "false"
 
 from saga_fusion.approval import (
     ApprovalAudit,
@@ -177,7 +183,7 @@ def test_phase_8i_telegram_approval_success_is_non_executing_and_replay_is_used(
     async def run():
         cfg = TelegramConfig(mode="mock", allowed_user_ids=["operator"])
         operator = TelegramMissionOperator(cfg, MockTelegramAdapter(cfg))
-        r4 = json.loads(await operator.handle_message("chat", "operator", "Crea un VPS en Hostinger"))
+        r4 = json.loads(await operator.handle_message("chat", "operator", "/mission create VPS"))
         approval_id = r4["approval_id"]
         action_hash = r4["action_hash"]
         approved = json.loads(await operator.handle_message("chat", "operator", f"/approve {approval_id} {action_hash}"))
@@ -197,7 +203,7 @@ def test_phase_8i_telegram_r5_creates_no_approval_and_nonexistent_approval_block
     async def run():
         cfg = TelegramConfig(mode="mock", allowed_user_ids=["operator"])
         operator = TelegramMissionOperator(cfg, MockTelegramAdapter(cfg))
-        r5 = json.loads(await operator.handle_message("chat", "operator", "Elimina el servidor y borra backups"))
+        r5 = json.loads(await operator.handle_message("chat", "operator", "/mission delete server backups"))
         assert r5["status"] == "blocked"
         assert r5["approval_id"] is None
         assert operator.approval_store.get(r5.get("approval_id")) is None

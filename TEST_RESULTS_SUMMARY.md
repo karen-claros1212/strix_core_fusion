@@ -206,3 +206,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Relevant subset (`tests/approval tests/telegram tests/manifests`): `69 passed`
 - Full suite: `334 passed, 3 warnings`
 - Added tests for TTL boundary expiry, just-before-expiry approval, used approval replay blocking, hash mismatch blocking, unauthorized actor blocking, denied approval irreversibility, nonexistent approval blocking, R5 no-approval/non-approvable behavior, non-executing approval success, audit redaction, and regression matrix coverage.
+
+## Test Results (Phase 8I follow-up — approval LLM isolation)
+- Approval suite: `14 passed in 0.08s`
+- Relevant subset (`tests/approval tests/telegram tests/manifests`): `69 passed in 0.12s`
+- Full suite: `334 passed, 3 warnings in 2.34s`
+- Approval regression tests now disable ambient LLM config in-process and use `/mission` command inputs for Telegram approval coverage, preventing unit tests from reaching local LLM gateways.

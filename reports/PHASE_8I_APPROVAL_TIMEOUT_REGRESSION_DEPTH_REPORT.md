@@ -49,3 +49,11 @@ Warnings are the existing coroutine warnings in integration/security tests and a
 
 ## Verdict
 Phase 8I closes the planned Hermes-inspired approval timeout/regression lane. STRIX may proceed to Phase 9 original STRIX optimization or Phase 8 closure, with the same hard boundaries: no production execution without SandboxController, R4 HITL approval, and R5 non-approvable blocking.
+
+## Follow-up: LLM Isolation for Approval Regression Tests
+A critical review found the Phase 8I Telegram approval regression tests could enter natural-language mission parsing and therefore honor ambient `STRIX_LLM_ENABLED`/local LLM settings. The tests now explicitly set `STRIX_LLM_ENABLED=false` for the test process and use `/mission ...` command inputs for Telegram approval coverage, keeping approval tests deterministic and unit-safe without changing production behavior.
+
+Follow-up validation:
+- `python3 -m pytest tests/approval -q --tb=short` → `14 passed in 0.08s`
+- `python3 -m pytest tests/approval tests/telegram tests/manifests -q --tb=short` → `69 passed in 0.12s`
+- `python3 -m pytest tests -q --tb=short` → `334 passed, 3 warnings in 2.34s`

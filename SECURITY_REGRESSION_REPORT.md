@@ -280,3 +280,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Telegram approval success still returns `executed=False`; no action is executed by approval success.
 - Audit summaries redact token/API-key/password-like values and remain metadata-only.
 - Full regression remained green: `334 passed, 3 warnings`.
+
+## Security Regression Follow-up (Phase 8I LLM Isolation)
+- Approval regression tests explicitly disable ambient `STRIX_LLM_ENABLED` for the test process.
+- Telegram approval regression coverage uses `/mission` command inputs, avoiding natural-language LLM routing in approval unit tests.
+- Production behavior is unchanged; no real LLM, real Telegram, CloudOps, external pentest, token, or `.env` change was introduced.
+- Approval suite runtime improved to `14 passed in 0.08s` while preserving full-suite status: `334 passed, 3 warnings`.
