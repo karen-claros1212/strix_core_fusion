@@ -259,3 +259,13 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Local path refs now default to `SecretScanStatus.NOT_SCANNED`; callers may explicitly provide `secret_scan_status` and `redaction_status` metadata.
 - SHA-256/file-size hashing remains allowed and tamper detection is preserved.
 - Added tests that monkeypatch `Path.read_text` to fail, proving manifest ref building does not inspect raw artifact text.
+
+## Security Regression Report (Phase 8H)
+- LLM recovery is taxonomy/reporting-first and does not execute tools or switch providers.
+- Retry limits are explicit and bounded; backoff is metadata only and no sleep loop or infinite retry path exists.
+- Auth, invalid response, unsafe output, context-too-large, model-unavailable, and unknown errors are nonretryable safe-fallback conditions.
+- Error evidence redacts Bearer tokens, OpenAI-style keys, API keys, token/secret fields, and authorization assignments.
+- Unsafe LLM output attempting tool execution, approval bypass, PromptSecurity bypass, MissionPolicy bypass, or SandboxController bypass falls back to deterministic non-executing routing.
+- Recovery fallback does not downgrade R4/R5 intent; existing action normalization and MissionPolicy remain authoritative.
+- Unit tests cannot call a live LLM gateway through ambient shell env because test conftest disables env-driven LLM enablement; enabled LLM paths are stubbed.
+- Full regression remained green: `327 passed, 3 warnings`.

@@ -180,3 +180,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - `ManifestBuilder` creates safe references and manifest summaries; `ManifestValidator` rejects invalid/missing hashes, tampered local artifacts, sensitive artifacts without redaction status, raw-body metadata, authoritative manifests, and executable manifests.
 - Reporting integration can build evidence manifest refs and Telegram-safe manifest summaries without embedding raw artifacts or secrets.
 - Validation: manifests `13 passed`; manifests+reporting `23 passed`; full suite `318 passed, 3 warnings`.
+
+## Phase 8H — LLM Error Taxonomy + Recovery
+- Added clean-room LLM taxonomy/recovery modules under `saga_fusion/llm/`.
+- Classifies auth, timeout, connection, rate limit, server error, invalid response, unsafe output, context-too-large, model unavailable, and unknown errors.
+- Recovery has explicit max retry count, category retry caps, metadata-only backoff, max-retry exhaustion, and deterministic safe fallback.
+- BrainService/LLMRouter surface `llm_recovery` metadata and never execute tools; unsafe output and invalid JSON are classified and fall back safely.
+- Tests force LLM disabled by default so shell environment variables cannot trigger real LLM calls; enabled paths use stub clients only.
+- Validation: LLM `31 passed`; LLM+prompt_security+session `55 passed`; full suite `327 passed, 3 warnings`.

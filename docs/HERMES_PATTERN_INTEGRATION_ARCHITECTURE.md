@@ -91,3 +91,10 @@ Phase 8G implements a STRIX-owned evidence/reporting manifest layer under `saga_
 Manifests store artifact references, hashes, sizes, provenance, redaction/secret-scan status, classification/risk, mission/session IDs, metadata, and safe linkage between report artifacts and evidence artifacts. They do not embed raw artifact bodies. Existing `ReportRedactor` is reused through `ManifestRedactor`, and Telegram/reporting integration exposes only safe manifest summaries or references.
 
 `ManifestValidator` enforces SHA-256 format, existing-file tamper detection, redaction status for sensitive artifacts, no raw-body metadata keys, `non_authoritative=True`, and `execution_allowed=False`. The manifest package has no execute/run/dispatch/send/call surface; it is traceability/reporting metadata only. `SandboxController`, MissionPolicy, PromptSecurity, ApprovalVerifier, EvidenceLogger, and Reporting remain authoritative.
+
+## Phase 8H completion — LLM Error Taxonomy + Recovery
+Phase 8H implements a STRIX-owned LLM error taxonomy and bounded recovery layer under `saga_fusion/llm/`. It is clean-room and introduces no Hermes runtime, Hermes gateway, Hermes toolset, provider fallback, credential rotation, direct execution, or real LLM calls in tests.
+
+The layer classifies auth, timeout, connection, rate-limit, server, invalid-response, unsafe-output, context-too-large, model-unavailable, and unknown failures. Recovery is bounded by explicit retry limits and records backoff as metadata only. Nonretryable errors fall back to the deterministic safe router without executing tools.
+
+`BrainService` and `LLMRouter` expose recovery metadata on failure/fallback while preserving public APIs. PromptSecurity, MissionPolicy, action normalization, ApprovalVerifier, ToolRouter, and SandboxController remain authoritative; R4/R5 intent is not downgraded by recovery fallback.

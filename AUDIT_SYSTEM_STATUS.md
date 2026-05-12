@@ -320,3 +320,13 @@
 - Local path refs now default to `SecretScanStatus.NOT_SCANNED`; callers may explicitly provide `secret_scan_status` and `redaction_status` metadata.
 - SHA-256/file-size hashing remains allowed and tamper detection is preserved.
 - Added tests that monkeypatch `Path.read_text` to fail, proving manifest ref building does not inspect raw artifact text.
+
+## Phase 8H Status — LLM Error Taxonomy + Recovery
+- Status: Completed.
+- Added `saga_fusion/llm/` taxonomy and recovery components: error categories/severity/records, classifier/redactor, policy, and manager.
+- Integration: `BrainService` uses bounded recovery for client calls; `LLMRouter` records recovery metadata and returns non-executing deterministic fallback when needed.
+- Controls: explicit retry caps, metadata-only backoff, no infinite loops, nonretryable auth/context/invalid/unsafe/model errors, redacted evidence, and `executed=False` fallback.
+- Test isolation: `tests/llm/conftest.py` disables env-driven real LLM calls; enabled LLM tests use stub clients only.
+- Validation: llm `31 passed`; llm+prompt_security+session `55 passed`; full suite `327 passed, 3 warnings`.
+- Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO.
+- Verdict: APTO PARA 8I APPROVAL TIMEOUT + REGRESSION DEPTH: SI.

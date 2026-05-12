@@ -194,3 +194,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Relevant subset (`tests/manifests tests/reporting`): `23 passed`
 - Full suite: `318 passed, 3 warnings`
 - Added tests for valid manifest acceptance, invalid hash rejection, no secret-bearing raw content embedding, required redaction status for sensitive artifacts, path/reference-only artifact refs, enforced non-authoritative/non-executable flags, report-to-evidence linking, missing evidence link rejection, tamper detection, ReportRedactor reuse, Telegram-safe manifest summary, and no direct execution surface.
+
+## Test Results (Phase 8H)
+- LLM suite: `31 passed`
+- Relevant subset (`tests/llm tests/prompt_security tests/session`): `55 passed`
+- Full suite: `327 passed, 3 warnings`
+- Added tests for auth nonretry/redaction, timeout retry within bounds, rate-limit max retry exhaustion, invalid response classification, context-too-large classification, unsafe output safe fallback, no infinite retry loops, evidence redaction, R4/R5 no-downgrade recovery, and no real LLM calls from ambient env.

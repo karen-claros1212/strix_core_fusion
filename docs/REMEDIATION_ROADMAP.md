@@ -98,3 +98,10 @@
 - Tampered artifact hashes are rejected for existing local artifact paths.
 - No Hermes code/runtime, direct execution, real Telegram, CloudOps, external pentest, tokens, or `.env` changes were introduced.
 - Next phase: 8H LLM Error Taxonomy + Recovery, preserving reporting-first behavior and no hidden provider fallback.
+
+## Phase 8H Outcome
+- Added `saga_fusion/llm/error_types.py`, `error_classifier.py`, `recovery_policy.py`, and `recovery_manager.py`.
+- Closed the planned LLM recovery lane with explicit retry bounds, redacted evidence metadata, metadata-only backoff, and safe deterministic fallback.
+- No hidden provider fallback, token rotation, real LLM unit-test calls, Hermes code/runtime/gateway/toolset, or direct execution path was introduced.
+- R4/R5 recovery fallback remains governed by action normalization and MissionPolicy; PromptSecurity and SandboxController remain authoritative.
+- Next phase: 8I Approval Timeout + Regression Depth, preserving timeout-to-deny semantics and adding deeper approval/session regression coverage.

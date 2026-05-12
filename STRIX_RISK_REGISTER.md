@@ -197,3 +197,10 @@
 - [CLOSED] RB-8G-02: Reporting manifests could leak raw secret-bearing artifact content. Mitigation: manifests store references/hashes/metadata only, block raw content/body metadata keys, and reuse ReportRedactor.
 - [CLOSED] RB-8G-03: Manifest metadata could be treated as executable instructions. Mitigation: manifest refs and manifests enforce `non_authoritative=True`, `execution_allowed=False`, and expose no execution surface.
 - [READY] Phase 8H LLM Error Taxonomy + Recovery may begin with reporting-first, bounded recovery semantics and no hidden credential/provider fallback.
+
+## Risk Register Update (Phase 8H)
+- [CLOSED] 8B-REV-R5 / RB-8H-01: LLM recovery could hide auth/billing failures. Mitigation: auth is classified critical, nonretryable, redacted, and surfaced in `llm_recovery` metadata with safe fallback.
+- [CLOSED] RB-8H-02: LLM retry logic could loop indefinitely. Mitigation: `LLMRecoveryPolicy.max_retry_count` and category caps bound all retries; max exhaustion stops and falls back.
+- [CLOSED] RB-8H-03: Fallback could leak secrets or downgrade safety. Mitigation: evidence redaction covers API keys/Bearer tokens and fallback uses deterministic non-executing router under MissionPolicy/action normalization.
+- [CLOSED] RB-8H-04: Unsafe LLM output could bypass PromptSecurity/MissionPolicy/SandboxController. Mitigation: unsafe-output classification triggers safe fallback and preserves existing authorities.
+- [READY] Phase 8I Approval Timeout + Regression Depth may begin with timeout-to-deny semantics and deeper approval/session regression coverage.
