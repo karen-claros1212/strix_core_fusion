@@ -70,3 +70,10 @@
 - Local STRIX Hermes Agent source was not found; Phase 8A used public Hermes Agent metadata/docs only and copied no code.
 - Recommended next step: Phase 8B documentation-first design for Hermes-inspired extension governance, toolset scopes, approval/cron/session recovery requirements, and evidence manifests.
 - Deferred/blocked: Hermes runtime compatibility, gateway integration, terminal backends, self-improvement loops, and real Telegram/CloudOps/external-pentest execution.
+
+<!-- PHASE_8B_REV_ROADMAP -->
+## Phase 8B-REV Hermes Pattern Design Outcome
+- Created `reports/PHASE_8B_REV_HERMES_PATTERN_DESIGN_RECONCILIATION.md` and `reports/PHASE_8B_REV_HERMES_PATTERN_BACKLOG.json`.
+- Updated Hermes architecture/extension docs with 8C–8I clean-room lanes.
+- Recommended next step: Phase 8C Skill/Plugin Metadata Governance as docs/schema-first work; no runtime plugin host.
+- Deferred/blocked: Hermes runtime compatibility, parallel gateway/toolset, live scheduler execution, self-improvement loop, real Telegram/CloudOps/external-pentest execution, and token/`.env` access.

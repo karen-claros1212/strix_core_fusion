@@ -197,3 +197,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - No real token/`.env` access occurred; only `.env.example` appeared in source-tree metadata.
 - STRIX core, Agent Zero, OpenCLAW, installed Hermes, Qwen/TurboQuant/llama.cpp/WSL2 were not touched.
 - Security posture: documentation-only audit with clean-room extraction plan; future candidates require separate implementation approval and tests.
+
+<!-- PHASE_8B_REV_SECURITY -->
+## Phase 8B-REV — Hermes Pattern Design Safety Regression
+- Reconciled Hermes patterns as clean-room design only.
+- No Hermes code was copied into Saga Fusion; no Hermes execution, dependency install, runtime, gateway, toolset, plugin host, scheduler, or terminal backend was created.
+- `external_sources/hermes-agent` remains ignored and must not be staged.
+- STRIX core, Agent Zero, OpenCLAW, Qwen/TurboQuant/llama.cpp/WSL2, real Telegram, real CloudOps, external pentest, tokens, and `.env` were not touched.
+- R4 approval, R5 blocking, `SandboxController`, EvidenceLogger/Reporting, redaction, and non-authoritative memory remain the governing controls for future phases.

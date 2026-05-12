@@ -1,0 +1,423 @@
+{
+  "phase": "8B-REV",
+  "title": "Hermes Pattern Implementation Design Reconciliation",
+  "status": "complete_design_only",
+  "source_baseline": {
+    "strix_previous_commit": "8dd2638",
+    "hermes_audited_commit": "bfc84bdc6f85c14715e06d5fa83192ea3e7c7f79",
+    "external_source_path": "external_sources/hermes-agent",
+    "external_source_git_policy": "ignored_not_staged"
+  },
+  "global_boundaries": [
+    "no_hermes_code_copy",
+    "no_hermes_execution",
+    "no_hermes_runtime_integration",
+    "no_parallel_gateway_or_toolset",
+    "no_external_sources_commit",
+    "no_real_telegram_cloudops_external_pentest",
+    "no_tokens_or_real_env",
+    "strix_core_authoritative",
+    "saga_fusion_own_layer",
+    "r4_approval_required",
+    "r5_blocked",
+    "sandboxcontroller_execution_boundary",
+    "docs_reports_only_for_8b_rev"
+  ],
+  "priorities": [
+    {
+      "id": "A",
+      "name": "Extension governance",
+      "target_phase": "8C"
+    },
+    {
+      "id": "B",
+      "name": "Skill/plugin metadata schema",
+      "target_phase": "8C"
+    },
+    {
+      "id": "C",
+      "name": "Toolset scoping",
+      "target_phase": "8D"
+    },
+    {
+      "id": "D",
+      "name": "Dry-run scheduler/cron patterns",
+      "target_phase": "8E"
+    },
+    {
+      "id": "E",
+      "name": "Session recovery",
+      "target_phase": "8F"
+    },
+    {
+      "id": "F",
+      "name": "Context compression safety",
+      "target_phase": "8F"
+    },
+    {
+      "id": "G",
+      "name": "Evidence manifests",
+      "target_phase": "8G"
+    },
+    {
+      "id": "H",
+      "name": "LLM error taxonomy",
+      "target_phase": "8H"
+    },
+    {
+      "id": "I",
+      "name": "Approval timeout tests",
+      "target_phase": "8I"
+    },
+    {
+      "id": "J",
+      "name": "Tool loop guardrails",
+      "target_phase": "8D"
+    }
+  ],
+  "phases": [
+    {
+      "phase": "8C",
+      "title": "Skill/Plugin Metadata Governance",
+      "objective": "Define STRIX-owned metadata and governance contracts for defensive skills, workflows, and future extensions without runtime plugin loading.",
+      "observed_hermes_pattern": "Hermes uses SKILL.md catalogs, optional skill roots, plugin.yaml manifests, indexes, reload commands, and provider/platform plugin directories.",
+      "current_equivalent": "STRIX has deterministic defensive workflows in saga_fusion/workflows, PatternRegistry entries, docs-only extensions/hermes_patterns, and no runtime plugin host.",
+      "gap": "No formal extension manifest schema, provenance fields, risk tier, disabled-by-default lifecycle, allowlisted roots, or safe authoring checklist.",
+      "clean_room_strategy": "Create a STRIX schema/documentation package and static validators for metadata only. Treat all extension text as untrusted data; no dynamic import, no execution, no Hermes content ingestion.",
+      "expected_files": [
+        "extensions/hermes_patterns/README.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "reports/PHASE_8C_SKILL_PLUGIN_METADATA_GOVERNANCE_REPORT.md",
+        "tests/* only if a later implementation phase explicitly adds validators"
+      ],
+      "required_tests": [
+        "metadata schema validation rejects missing provenance/risk tier",
+        "untrusted skill text cannot enter system/developer prompts",
+        "extension remains disabled by default",
+        "full pytest"
+      ],
+      "risks": [
+        "untrusted instructions imported as active prompts",
+        "side-effecting plugin imports",
+        "dependency or token creep"
+      ],
+      "acceptance_criteria": [
+        "schema documents owner/source/license/risk/default_disabled/allowed_capabilities",
+        "Hermes code/content absent",
+        "STRIX policy authority unchanged",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not load Hermes skills",
+        "do not implement a plugin host",
+        "do not import provider plugins",
+        "do not execute extension code"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has deterministic defensive workflows in saga_fusion/workflows, PatternRegistry entries, docs-only extensions/hermes_patterns, and no runtime plugin host.",
+      "do_not_do": [
+        "do not load Hermes skills",
+        "do not implement a plugin host",
+        "do not import provider plugins",
+        "do not execute extension code"
+      ],
+      "patterns_planned": [
+        "Extension governance",
+        "Skill/plugin metadata schema"
+      ]
+    },
+    {
+      "phase": "8D",
+      "title": "Toolset Scoping + Tool Loop Guardrails",
+      "objective": "Strengthen Saga Fusion tool scope design and loop/failure boundaries while preserving ToolRouter, ApprovalVerifier, and SandboxController authority.",
+      "observed_hermes_pattern": "Hermes has tool kind mappings, idempotent/mutating taxonomy, toolset scoping, API toolset checks, no-progress and repeated-failure guardrails.",
+      "current_equivalent": "STRIX has saga_fusion/tool_routing, tool_guard, MissionPolicy, DangerousActionPolicy, and declarative execution plans.",
+      "gap": "Limited explicit loop/no-progress counters, per-tool scope budgets, and mutating/idempotent evidence vocabulary for future adapters.",
+      "clean_room_strategy": "Design STRIX-native tool scope metadata and circuit-breaker criteria. Mutating tools always require policy/approval/sandbox checks; repeated failures become blocked evidence, not retries forever.",
+      "expected_files": [
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "reports/PHASE_8D_TOOLSET_SCOPING_GUARDRAILS_REPORT.md",
+        "tests/tool_routing/* if implementation approved"
+      ],
+      "required_tests": [
+        "same tool/no-progress loop halts",
+        "mutating tool cannot bypass R4/R5",
+        "unknown toolset is blocked",
+        "SandboxController remains mandatory",
+        "full pytest"
+      ],
+      "risks": [
+        "looping noisy evidence",
+        "repeated real operations in later adapters",
+        "toolset bypass of policy"
+      ],
+      "acceptance_criteria": [
+        "bounded retry/loop policy documented",
+        "tool scopes map to STRIX risk model",
+        "no external tool execution in tests",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not add Hermes gateway toolsets",
+        "do not add a parallel tool runtime",
+        "do not execute external pentest/CloudOps/Telegram real"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has saga_fusion/tool_routing, tool_guard, MissionPolicy, DangerousActionPolicy, and declarative execution plans.",
+      "do_not_do": [
+        "do not add Hermes gateway toolsets",
+        "do not add a parallel tool runtime",
+        "do not execute external pentest/CloudOps/Telegram real"
+      ],
+      "patterns_planned": [
+        "Toolset scoping",
+        "Tool loop guardrails"
+      ]
+    },
+    {
+      "phase": "8E",
+      "title": "Dry-Run Scheduler/Cron Patterns",
+      "objective": "Design non-executing scheduled audit specifications with explicit timezone, owner, scope, budgets, and evidence manifests.",
+      "observed_hermes_pattern": "Hermes includes cron scheduler/jobs/CLI tests for next-run calculation, workdir handling, context sources, inactivity timeout, file permissions, and delivery paths.",
+      "current_equivalent": "STRIX has no active Saga cron module; workflows/task plans/reporting are interactive and evidence-only.",
+      "gap": "No schedule policy, dry-run job spec, per-job evidence manifest, timezone capture, stale-approval handling, or delivery traceability.",
+      "clean_room_strategy": "Start with docs and dry-run schedule plan objects only. Scheduled jobs may produce plans/reports but may not execute actions; future execution requires R4 approval and SandboxController.",
+      "expected_files": [
+        "reports/PHASE_8E_DRY_RUN_SCHEDULER_CRON_PATTERNS_REPORT.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "saga_fusion/scheduler/* only in later approved implementation",
+        "tests/scheduler/* only in later approved implementation"
+      ],
+      "required_tests": [
+        "schedule spec records timezone",
+        "job is execution_allowed=false",
+        "R4/R5 scheduled intents do not execute",
+        "stale/pending approval blocks",
+        "full pytest"
+      ],
+      "risks": [
+        "unattended stale instructions",
+        "cron loops",
+        "misrouted reports",
+        "timezone drift"
+      ],
+      "acceptance_criteria": [
+        "dry-run only",
+        "owner/scope/budget/evidence required",
+        "no real CloudOps/Telegram/external calls",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not wire OS cron",
+        "do not execute scheduled commands",
+        "do not send real Telegram",
+        "do not create unattended CloudOps"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has no active Saga cron module; workflows/task plans/reporting are interactive and evidence-only.",
+      "do_not_do": [
+        "do not wire OS cron",
+        "do not execute scheduled commands",
+        "do not send real Telegram",
+        "do not create unattended CloudOps"
+      ],
+      "patterns_planned": [
+        "Dry-run scheduler/cron patterns"
+      ]
+    },
+    {
+      "phase": "8F",
+      "title": "Session Recovery + Context Compression Safety",
+      "objective": "Design STRIX-owned recovery and compaction rules that preserve user/session routing, approvals, policy constraints, and redaction boundaries.",
+      "observed_hermes_pattern": "Hermes has gateway session persistence, restart/pending drain, task-local context, session expiry, context compression, protected head/tail, structured summaries, tool-output pruning, and compaction tests.",
+      "current_equivalent": "STRIX has Telegram gating, mission memory, context windows, session summarizer, prompt builder, and non-authoritative memory policy.",
+      "gap": "No persistent restart-drain state machine, no route recovery design, no token-aware compressor, and no compaction-boundary regression matrix.",
+      "clean_room_strategy": "Design a STRIX recovery state machine and compaction template where summaries are explicitly non-authoritative. Never compress away R4/R5 policy, SandboxController boundary, redaction requirements, approval IDs/action hashes, or current user routing.",
+      "expected_files": [
+        "reports/PHASE_8F_SESSION_RECOVERY_CONTEXT_COMPRESSION_SAFETY_REPORT.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "tests/memory/* or tests/session_recovery/* if implementation approved"
+      ],
+      "required_tests": [
+        "summary cannot override policy",
+        "secret text is redacted before/after compaction",
+        "approval hash survives recovery",
+        "wrong-user session restore rejected",
+        "restart drain records pending state",
+        "full pytest"
+      ],
+      "risks": [
+        "cross-user report/approval routing",
+        "prompt injection promoted by summary",
+        "loss of denial reasons",
+        "secret leakage"
+      ],
+      "acceptance_criteria": [
+        "recovery states documented",
+        "compaction summary labeled non-authoritative",
+        "route/session identifiers redacted in evidence",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not import Hermes gateway",
+        "do not create multi-platform gateway",
+        "do not store raw secrets",
+        "do not let summaries change policy"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has Telegram gating, mission memory, context windows, session summarizer, prompt builder, and non-authoritative memory policy.",
+      "do_not_do": [
+        "do not import Hermes gateway",
+        "do not create multi-platform gateway",
+        "do not store raw secrets",
+        "do not let summaries change policy"
+      ],
+      "patterns_planned": [
+        "Session recovery",
+        "Context compression safety"
+      ]
+    },
+    {
+      "phase": "8G",
+      "title": "Evidence/Reporting Manifests",
+      "objective": "Standardize evidence/report artifact manifests with provenance, phase, redaction, validation, and delivery metadata.",
+      "observed_hermes_pattern": "Hermes uses trajectories/evidence stores, dashboard/package manifests, delivery notices, and reporting tests.",
+      "current_equivalent": "STRIX has saga_fusion/reporting, evidence logs, phase reports, TEST_RESULTS_SUMMARY, SECURITY_REGRESSION_REPORT, and risk register updates.",
+      "gap": "Artifact manifests are not yet a single standardized schema across phase reports, evidence JSON, redaction status, and test provenance.",
+      "clean_room_strategy": "Define a STRIX manifest schema for generated evidence and reports. Include source phase/commit, generator, redaction status, validation commands/results, and non-secret delivery references.",
+      "expected_files": [
+        "reports/PHASE_8G_EVIDENCE_REPORTING_MANIFESTS_REPORT.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "reports/evidence/* only if generated by STRIX-owned code"
+      ],
+      "required_tests": [
+        "manifest schema validates required fields",
+        "sensitive metadata redacted",
+        "report references manifest",
+        "missing test provenance fails validation",
+        "full pytest"
+      ],
+      "risks": [
+        "manifest leaks local paths/tokens",
+        "false provenance",
+        "report/evidence drift"
+      ],
+      "acceptance_criteria": [
+        "manifest schema documented",
+        "redaction status explicit",
+        "validation commands/results recorded",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not include real tokens/.env",
+        "do not include external_sources contents",
+        "do not add dashboard runtime"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has saga_fusion/reporting, evidence logs, phase reports, TEST_RESULTS_SUMMARY, SECURITY_REGRESSION_REPORT, and risk register updates.",
+      "do_not_do": [
+        "do not include real tokens/.env",
+        "do not include external_sources contents",
+        "do not add dashboard runtime"
+      ],
+      "patterns_planned": [
+        "Evidence manifests"
+      ]
+    },
+    {
+      "phase": "8H",
+      "title": "LLM Error Taxonomy + Recovery",
+      "objective": "Design centralized LLM/provider error classification and recovery reporting without automatic credential rotation or unapproved fallback.",
+      "observed_hermes_pattern": "Hermes classifies API errors and suggests retry, credential rotation, fallback, compression, abort, and provider-specific recovery paths.",
+      "current_equivalent": "STRIX LLM gateway is disabled by default, env-driven, redacted, mocked in tests, with safe router fallback and no tool execution from brain output.",
+      "gap": "No central error taxonomy, retry budget evidence, or safe fallback decision record for LLM failures.",
+      "clean_room_strategy": "Classify errors into transient, auth, rate-limit, context-length, safety, provider, and unknown categories. Recovery is reporting-first; no credential rotation, no hidden provider fallback, no policy downgrade.",
+      "expected_files": [
+        "reports/PHASE_8H_LLM_ERROR_TAXONOMY_RECOVERY_REPORT.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "saga_fusion/llm/* only if implementation approved",
+        "tests/llm/* only if implementation approved"
+      ],
+      "required_tests": [
+        "auth failures do not retry indefinitely",
+        "rate limit uses bounded budget",
+        "context error suggests compression without policy loss",
+        "fallback records reason",
+        "full pytest"
+      ],
+      "risks": [
+        "masking auth/billing problems",
+        "provider fallback data leakage",
+        "unsafe retry storms"
+      ],
+      "acceptance_criteria": [
+        "taxonomy documented",
+        "no automatic credential rotation",
+        "recovery decisions evidenced/redacted",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not touch Qwen/TurboQuant/llama.cpp/WSL2",
+        "do not call real LLM in tests",
+        "do not rotate or read secrets",
+        "do not add unapproved providers"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX LLM gateway is disabled by default, env-driven, redacted, mocked in tests, with safe router fallback and no tool execution from brain output.",
+      "do_not_do": [
+        "do not touch Qwen/TurboQuant/llama.cpp/WSL2",
+        "do not call real LLM in tests",
+        "do not rotate or read secrets",
+        "do not add unapproved providers"
+      ],
+      "patterns_planned": [
+        "LLM error taxonomy"
+      ]
+    },
+    {
+      "phase": "8I",
+      "title": "Approval Timeout + Regression Depth",
+      "objective": "Expand design and tests for timeout-to-deny, stale approvals, channel-specific audit outcomes, and risk-based regression categories.",
+      "observed_hermes_pattern": "Hermes approval tests cover allow/deny callbacks, timeout-to-deny behavior, CLI/gateway approval UI, restart cases, cron/session/tool regression breadth.",
+      "current_equivalent": "STRIX has ApprovalVerifier, Telegram approval workflow, approval IDs, action hashes, replay protection, R4 approval-required, and R5 blocked.",
+      "gap": "Need explicit multi-channel timeout-to-deny regression design, stale scheduled approval handling, and matrix coverage across scheduler/session/tool/error/manifest features.",
+      "clean_room_strategy": "Codify R4 timeout as deny, never allow-always. Require exact action hash and current session/user/channel; expand regression matrix with docs-first acceptance before future code.",
+      "expected_files": [
+        "reports/PHASE_8I_APPROVAL_TIMEOUT_REGRESSION_DEPTH_REPORT.md",
+        "docs/HERMES_PATTERN_INTEGRATION_ARCHITECTURE.md",
+        "tests/approval/* if implementation approved"
+      ],
+      "required_tests": [
+        "expired approval denies",
+        "timeout produces audit event",
+        "hash mismatch denies",
+        "wrong channel/user denies",
+        "R5 remains non-approvable",
+        "full pytest"
+      ],
+      "risks": [
+        "stale approval reuse",
+        "allow-always weakening",
+        "approval/report route mismatch",
+        "regression blind spots"
+      ],
+      "acceptance_criteria": [
+        "timeout-to-deny documented",
+        "approval evidence includes channel/session/hash",
+        "R5 non-approvable invariant preserved",
+        "tests green"
+      ],
+      "what_not_to_do": [
+        "do not implement allow-always",
+        "do not approve broad toolsets",
+        "do not bypass SandboxController",
+        "do not execute real actions"
+      ],
+      "current_strix_saga_fusion_equivalent": "STRIX has ApprovalVerifier, Telegram approval workflow, approval IDs, action hashes, replay protection, R4 approval-required, and R5 blocked.",
+      "do_not_do": [
+        "do not implement allow-always",
+        "do not approve broad toolsets",
+        "do not bypass SandboxController",
+        "do not execute real actions"
+      ],
+      "patterns_planned": [
+        "Approval timeout tests"
+      ]
+    }
+  ],
+  "patterns_planned_total": 10
+}

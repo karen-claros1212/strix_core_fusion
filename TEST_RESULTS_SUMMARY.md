@@ -156,3 +156,11 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Log: `reports/phase_8a_bis_full_tests.log`
 - Environment note: local user-level test dependencies `pytest` and `psutil` were installed because the container initially lacked them; no Hermes dependencies were installed.
 - Scope touched: documentation/reports/gitignore only; no STRIX core runtime changes.
+
+<!-- PHASE_8B_REV_TEST_RESULTS -->
+## Phase 8B-REV — Hermes Pattern Design Reconciliation
+- Command: `python3 -m json.tool reports/PHASE_8B_REV_HERMES_PATTERN_BACKLOG.json >/tmp/phase_8b_rev_backlog.validated.json`
+- Result: JSON backlog validation passed.
+- Command: `python3 -m pytest tests -q --tb=short`
+- Result: `250 passed, 3 warnings in 191.21s (0:03:11)`
+- Phase 8B-REV is docs/reports/status only: no functional logic changes, no Hermes code copy, no Hermes runtime, no Hermes integration.

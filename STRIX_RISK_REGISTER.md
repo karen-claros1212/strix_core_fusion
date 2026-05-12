@@ -152,3 +152,15 @@
 | 8A-BIS-R3 | Scheduled tasks can execute stale/destructive instructions. | HIGH | Open for 8D | Begin with dry-run scheduled audit specs and SandboxController gating. |
 | 8A-BIS-R4 | Memory/context compaction can promote untrusted text to instructions. | MEDIUM | Open for 8C | Non-authoritative summary template, context fences, scrubber tests, policy precedence. |
 | 8A-BIS-R5 | Gateway/session recovery can route approvals or reports to wrong recipient. | HIGH | Open for 8D | Redacted session IDs, task-local context, delivery manifests, restart-drain tests. |
+
+<!-- PHASE_8B_REV_RISKS -->
+## Phase 8B-REV — Hermes Pattern Design Risks
+| risk_id | risk | severity | status | mitigation |
+|---|---|---|---|---|
+| 8B-REV-R1 | Metadata/plugin governance could become runtime plugin loading by accident. | HIGH | Open for 8C | 8C must remain schema/docs-first, disabled by default, no dynamic import. |
+| 8B-REV-R2 | Toolset scoping could create a parallel Hermes-like tool path. | HIGH | Open for 8D | ToolRouter/ApprovalVerifier/SandboxController remain mandatory; no Hermes toolset. |
+| 8B-REV-R3 | Dry-run scheduler could drift into unattended execution. | HIGH | Open for 8E | Dry-run specs only; owner/timezone/budget/evidence required; no OS cron/live actions. |
+| 8B-REV-R4 | Recovery/compression could route approvals incorrectly or promote untrusted summary text. | HIGH | Open for 8F | Session ownership checks; non-authoritative summaries; preserve R4/R5/redaction invariants. |
+| 8B-REV-R5 | LLM error recovery could hide auth/billing or leak data via fallback. | MEDIUM | Open for 8H | Reporting-first taxonomy; no credential rotation or unapproved provider fallback. |
+| 8B-REV-R6 | Approval timeout semantics could weaken into allow-always. | HIGH | Open for 8I | Timeout-to-deny only; R5 non-approvable; exact action hash/user/channel/session checks. |
+| READY | Phase 8C may proceed only with explicit approval and without Hermes runtime/code copy. | INFO | Ready | Use the 8B-REV backlog and acceptance criteria. |

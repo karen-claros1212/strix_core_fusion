@@ -254,3 +254,12 @@
 - Full suite: `250 passed, 3 warnings in 491.20s (0:08:11)`
 - Test log: `reports/phase_8a_bis_full_tests.log`
 - Verdict: APTO PARA 8C CLEAN-ROOM PATTERN DESIGN: SI
+
+<!-- PHASE_8B_REV_STATUS -->
+## Phase 8B-REV Status
+- Hermes pattern design reconciliation: COMPLETED
+- Deliverables: `reports/PHASE_8B_REV_HERMES_PATTERN_DESIGN_RECONCILIATION.md`, `reports/PHASE_8B_REV_HERMES_PATTERN_BACKLOG.json`, updated Hermes docs/status files
+- Scope: documentation/reporting only; no functional code implementation
+- Safety: no Hermes code copy/execution/runtime/gateway/toolset/plugin/scheduler; `external_sources/hermes-agent` ignored/uncommitted
+- Validation: full suite status recorded in `TEST_RESULTS_SUMMARY.md`
+- Verdict: APTO PARA PHASE 8C SKILL/PLUGIN METADATA GOVERNANCE DESIGN/SCHEMA WORK: SI, pending explicit approval
