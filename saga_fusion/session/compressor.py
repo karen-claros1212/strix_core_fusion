@@ -25,6 +25,15 @@ class ContextCompressor:
             preferred = item.get("content") or item.get("text") or item.get("summary") or item.get("user_intent")
             return str(preferred if preferred is not None else item)
         if is_dataclass(item):
+            # Fast path for the common context dataclass shape.  This preserves
+            # the existing precedence while avoiding a full asdict() copy for
+            # dataclasses that already expose content/text attributes.
+            content = getattr(item, "content", None)
+            if content is not None:
+                return str(content)
+            text = getattr(item, "text", None)
+            if text is not None:
+                return str(text)
             payload = asdict(item)
             return str(payload.get("content") or payload.get("text") or payload)
         return str(item)
@@ -33,6 +42,11 @@ class ContextCompressor:
         budget = max(0, int(self.policy.default_budget_chars if budget_chars is None else budget_chars))
         items = context if isinstance(context, (list, tuple, set)) else (context,)
         rendered: list[str] = []
+        rendered_append = rendered.append
+        extract_text = self._extract_text
+        redact_text = self.redactor.redact_text
+        secret_blocked = MemorySensitivity.SECRET_BLOCKED
+        neutralize = neutralize_instruction_text
         original_chars = 0
         excluded = 0
         redacted_any = False
@@ -40,20 +54,20 @@ class ContextCompressor:
         for item in items:
             if item is None:
                 continue
-            if getattr(item, "sensitivity", None) == MemorySensitivity.SECRET_BLOCKED:
+            if getattr(item, "sensitivity", None) == secret_blocked:
                 excluded += 1
                 continue
-            text = self._extract_text(item)
+            text = extract_text(item)
             original_chars += len(text)
-            redacted = self.redactor.redact_text(text)
+            redacted = redact_text(text)
             if redacted.secret_blocked:
                 excluded += 1
                 redacted_any = True
                 # Secret-bearing recovered context is excluded rather than persisted in summaries.
                 continue
-            inert = neutralize_instruction_text(redacted.text)
-            if inert.strip():
-                rendered.append(f"[UNTRUSTED_QUOTED_CONTEXT] {inert.strip()}")
+            inert = neutralize(redacted.text).strip()
+            if inert:
+                rendered_append(f"[UNTRUSTED_QUOTED_CONTEXT] {inert}")
 
         joined = "\n".join(rendered)
         truncated = len(joined) > budget
