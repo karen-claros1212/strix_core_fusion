@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..memory import ContextWindow, MemoryPolicy
+from ..session import CompressedContext
 
 
 class PromptBuilder:
@@ -18,10 +19,15 @@ class PromptBuilder:
     def _context_text(self, context=None) -> str:
         if context is None:
             return ""
+        if isinstance(context, CompressedContext):
+            return context.to_context_text()
         if isinstance(context, (list, tuple)):
-            items = [item for item in context if hasattr(item, "content")]
-            other = [str(item) for item in context if not hasattr(item, "content")]
+            compressed = [item.to_context_text() for item in context if isinstance(item, CompressedContext)]
+            items = [item for item in context if hasattr(item, "content") and not isinstance(item, CompressedContext)]
+            other = [str(item) for item in context if not hasattr(item, "content") and not isinstance(item, CompressedContext)]
             rendered = self.context_window.render(items) if items else self.memory_policy.non_authoritative_banner()
+            if compressed:
+                rendered += "\n" + "\n".join(compressed)
             if other:
                 rendered += "\n" + "\n".join(other)
             return rendered

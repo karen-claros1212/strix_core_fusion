@@ -296,3 +296,14 @@
 - Validation: scheduler 13 passed; skills+tool_routing+tool_scoping+scheduler 51 passed; full suite 291 passed, 3 warnings
 - Hermes copied/executed: NO / NO
 - Verdict: APTO PARA 8F SESSION RECOVERY + CONTEXT COMPRESSION SAFETY: SI
+
+## Phase 8F Status
+- Session Recovery + Context Compression Safety: COMPLETED
+- Path: `saga_fusion/session/`
+- Type: metadata/state safety only; no execution and no external action
+- Snapshot safety: checksum verification, expiry, safe serialization, raw context exclusion
+- Context safety: budgeted compression, secret-bearing context exclusion, non-authoritative/non-executable metadata
+- Prompt safety: recovered summaries are user-context-only and neutralized against system/developer instruction injection
+- Risk safety: recovered context cannot downgrade R4/R5; MissionPolicy, PromptSecurity, and SandboxController remain authoritative
+- Tests: session `12 passed`; memory+llm+session `46 passed`; full suite `303 passed, 3 warnings`
+- Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO

@@ -84,3 +84,9 @@
 - Enforces owner required, timeout bounds, mandatory dry-run, `execution_allowed=False`, cancellation/no-execution, R4 approval-required, and R5/destructive blocking.
 - No OS cron jobs, workspace cron_tools scheduling, Hermes runtime/code copy, or direct execution path were introduced.
 - Recommended next step: Phase 8F Session Recovery + Context Compression Safety, preserving scheduler cancellation/status, R4/R5 gates, redaction, and non-authoritative recovered context.
+
+## Phase 8F Outcome
+- Added `saga_fusion/session/` for metadata-only session recovery and context compression safety.
+- Closed the planned Hermes-inspired session recovery lane without adopting Hermes code/runtime/gateway/toolset.
+- Controls now cover checksum tamper rejection, expiry rejection, secret-bearing context exclusion, non-authoritative compressed context, and R4/R5 downgrade prevention.
+- Next phase: 8G Evidence / Reporting Manifests, preserving redaction and non-secret artifact metadata rules.

@@ -165,3 +165,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - `execution_allowed` is forced false, `dry_run` is mandatory, and no execute/run method, OS cron job, workspace cron scheduling, or Hermes runtime/gateway/toolset was introduced.
 - R4 jobs require approval metadata; R5/destructive jobs are blocked; optional `ScopedToolRouter` integration remains non-executing.
 - Full suite: 291 passed, 3 warnings.
+
+## Phase 8F — Session Recovery + Context Compression Safety
+- Added clean-room Saga Fusion session safety package under `saga_fusion/session/`.
+- Session snapshots are metadata-only, checksummed, expiring, and file-serializable/in-memory safe.
+- Context compression enforces budgets, excludes secret-bearing context, and marks all recovered context non-authoritative and non-executable.
+- PromptBuilder can include `CompressedContext` only as untrusted user-context background; system/developer instruction injection from summaries is neutralized.
+- R4/R5 risk cannot be downgraded by recovered context; MissionPolicy, PromptSecurity, and SandboxController remain authoritative.
+- Validation: session `12 passed`; memory+llm+session `46 passed`; full suite `303 passed, 3 warnings`.

@@ -233,3 +233,14 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Evidence refs/arguments/metadata redact token/password/API-key/Authorization-like values.
 - Optional `ScopedToolRouter` integration records route/scope policy decisions only and still performs no execution.
 - No Hermes code copy/execution/runtime/gateway/toolset, no direct execution, no real Telegram, no CloudOps real action, no external pentest, no tokens/`.env`, and no STRIX core/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2 changes were introduced.
+
+## Security Regression Report (Phase 8F)
+- Session snapshots are metadata-only and do not persist raw context.
+- Recovered context is always non-authoritative and non-executable.
+- Tampered snapshots are rejected by checksum validation.
+- Expired snapshots are rejected.
+- Secret-bearing context is excluded and secret-bearing intent is replaced with a safe marker.
+- Summary text cannot become system/developer instructions; role-like recovered text is neutralized and remains user-context-only.
+- R4/R5 risk cannot be downgraded by recovered context.
+- Session recovery exposes no direct execution method and does not bypass MissionPolicy, PromptSecurity, or SandboxController.
+- Full regression remained green: `303 passed, 3 warnings`.

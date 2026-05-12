@@ -182,3 +182,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Skills + tool routing + tool scoping + scheduler: 51 passed
 - Full suite: 291 passed, 3 warnings
 - Added tests for valid dry-run jobs, invalid cron rejection, mandatory `execution_allowed=False`, owner requirement, timeout bounds, cancellation/no-next-run behavior, R4 approval-required jobs, R5/destructive blocking, absence of execute/run methods, evidence metadata redaction, and scoped-router integration without execution.
+
+## Test Results (Phase 8F)
+- Session suite: `12 passed`
+- Relevant subset (`tests/memory tests/llm tests/session`): `46 passed`
+- Full suite: `303 passed, 3 warnings`
+- Added tests for valid recovery, checksum tamper rejection, snapshot expiry rejection, secret exclusion/redaction, compression budget enforcement, non-authoritative compressed context, R4/R5 downgrade prevention, summary instruction neutralization, no execution surface, and redacted memory/context integration.

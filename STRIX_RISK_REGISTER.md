@@ -184,3 +184,10 @@
 - [CLOSED] RB-8E-02: Scheduled-job evidence could leak secrets. Mitigation: evidence refs, arguments, and metadata are redacted for token/password/API-key/Authorization-like values.
 - [MONITORED] RB-8E-03: Future session recovery/context compression could revive blocked or stale scheduler metadata. Mitigation: Phase 8F must preserve non-authoritative recovery summaries, cancellation status, R4/R5 gates, redaction, and `execution_allowed=False` invariants.
 - [READY] Phase 8F can proceed only with explicit approval and without weakening scheduler, approval, redaction, or SandboxController boundaries.
+
+## Risk Register Update (Phase 8F)
+- [CLOSED] RB-8F-01: Recovered or compressed context could be treated as authoritative instructions. Mitigation: `CompressedContext` and snapshot policy metadata force non-authoritative/non-executable handling and prompt builder renders it as user-context-only background.
+- [CLOSED] RB-8F-02: Snapshot tampering or stale recovery could restore unsafe state. Mitigation: canonical checksum verification and expiry rejection.
+- [CLOSED] RB-8F-03: Secret-bearing context could leak through session summaries. Mitigation: `MemoryRedactor` reuse, secret-bearing context exclusion, and redacted intent markers.
+- [CLOSED] RB-8F-04: Recovered context could downgrade R4/R5 policy. Mitigation: highest-risk-wins enforcement; MissionPolicy, PromptSecurity, and SandboxController remain authoritative.
+- [READY] Phase 8G Evidence / Reporting Manifests may begin.

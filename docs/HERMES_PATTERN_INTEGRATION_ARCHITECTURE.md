@@ -77,3 +77,10 @@ Phase 8D implements a STRIX-owned tool scoping and loop-guard layer under `saga_
 Phase 8E implements a STRIX-owned scheduler metadata layer under `saga_fusion/scheduler/`. It validates five-field cron expressions, stores owner/timeout/enabled/dry-run/evidence metadata, supports cancellation state, and computes next-run plans only.
 
 The scheduler is intentionally non-executing: `ScheduledJob.execution_allowed` cannot be set to true, `dry_run` cannot be disabled, `SchedulePlanner` has no execute/run method, no OS cron integration exists, and no workspace cron tools are used. R4 scheduled jobs become approval-required metadata, R5/destructive scheduled jobs are blocked, and optional `ScopedToolRouter` checks remain metadata-only. `SandboxController` remains the only possible execution boundary for any future execution phase.
+
+## Phase 8F completion — Session Recovery + Context Compression Safety
+Phase 8F implements a STRIX-owned session recovery safety layer under `saga_fusion/session/`. It is metadata/state-only and introduces no Hermes gateway, Hermes runtime, external scheduler, or execution path.
+
+Snapshots retain only safe state metadata and inert compressed context. Raw context is not persisted in snapshots. Secret-bearing context is excluded, secret-bearing intent is replaced with a redacted exclusion marker, checksums protect snapshot integrity, and expiry prevents stale recovery.
+
+Recovered context is explicitly non-authoritative (`non_authoritative=True`, `execution_allowed=False`) and is rendered only as untrusted user-context background for LLM prompt construction. It cannot act as a system/developer instruction, cannot override PromptSecurity/MissionPolicy/SandboxController, and cannot downgrade R4/R5 intent. Tampered, expired, authoritative, or executable snapshots are rejected.
