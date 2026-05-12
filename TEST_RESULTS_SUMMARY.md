@@ -170,3 +170,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Task planning + tool routing + skills: 33 passed
 - Full suite: 264 passed, 3 warnings
 - Added tests for valid manifest acceptance, duplicate rejection, disabled/unknown skill blocking, R4 approval requirement, R5 blocking, dangerous permission rejection, env-name-only handling without secret exposure, allowed_tools enforcement, metadata-only planning references, and no direct execution.
+
+## Test Results (Phase 8D)
+- Tool scoping suite: 14 passed
+- Skills + tool routing + tool scoping: 38 passed
+- Full suite: 278 passed, 3 warnings
+- Added tests for in-scope allow, out-of-scope blocking, unknown tool blocking, R4 approval requirement, R5 blocking, skill no-widen enforcement, repeated tool-loop blocking, recursion blocking, toolset registry defaults, scoped-router no-execution behavior, and existing ToolRouter/SkillPolicy regression integrity.

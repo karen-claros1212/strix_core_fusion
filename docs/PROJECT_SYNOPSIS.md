@@ -149,3 +149,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - TaskPlanner can carry skill metadata references; ToolRouter enforces `allowed_tools` in skill context.
 - No skill execution, plugin host, Hermes code copy, or Hermes execution was introduced.
 - Full suite: 264 passed, 3 warnings.
+
+## Phase 8D — Toolset Scoping + Tool Loop Guardrails
+- Added `saga_fusion/tool_scoping/` for STRIX-owned tool scope policy, loop guardrails, toolset registry, and scoped router wrapper.
+- Tool scopes can be constrained by mission, workflow, toolset, and skill metadata; unknown, denied, and out-of-scope tools are blocked.
+- R4 tools remain approval-required; R5/destructive requests remain blocked even when nominally in scope.
+- Tool loop guard blocks max per-mission tool-call budgets, repeated same tool+args loops, and recursive tool invocation attempts.
+- `ScopedToolRouter` preserves the existing `ToolRouter` and keeps execution plans dry-run/non-executing; no Hermes code/runtime/toolset or direct execution path was introduced.
+- Full suite: 278 passed, 3 warnings.

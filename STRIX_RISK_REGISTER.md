@@ -170,3 +170,10 @@
 - [CLOSED] RB-8C-02: Skill metadata could request direct secrets. Mitigation: validator/policy reject dangerous permissions and direct secret request metadata; required_env is name-only.
 - [CLOSED] RB-8C-03: Skill metadata could weaken R4/R5 controls. Mitigation: R4 requires approval, R5 blocked, unknown/disabled blocked.
 - [MONITORED] RB-8C-04: Future skill execution would expand attack surface. Current status: no execution path; any future execution must remain behind MissionPolicy, ApprovalVerifier, and SandboxController.
+
+## Risk Register Update (Phase 8D)
+- [CLOSED] RB-8D-01: Toolset scoping could create a parallel Hermes-like execution path. Mitigation: `ScopedToolRouter` wraps existing `ToolRouter` only and introduces no execution; `SandboxController` remains the boundary.
+- [CLOSED] RB-8D-02: Skills could widen their own tool scope. Mitigation: `ToolScopePolicy` blocks requested skill scopes that exceed the manifest `allowed_tools` set.
+- [CLOSED] RB-8D-03: Tool-routing loops could repeat or recurse indefinitely. Mitigation: `ToolLoopGuard` enforces per-mission max calls, repeated same tool+args limits, and active-stack recursion blocking.
+- [MONITORED] RB-8D-04: Future scheduler/cron work could bypass these scopes. Mitigation: Phase 8E must consume scoped-router/loop-guard semantics and remain dry-run/spec-only.
+- [READY] Phase 8E can proceed only with explicit approval and without OS cron/live actions or unattended execution.

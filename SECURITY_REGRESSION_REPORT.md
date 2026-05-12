@@ -215,3 +215,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - MissionPolicy/SandboxController bypass attempts in skill metadata are blocked.
 - ToolRouter enforces `allowed_tools` when skill context is provided.
 - No skill execution path, plugin host, Hermes runtime/gateway/toolset, Hermes code copy, or Hermes execution was introduced.
+
+## Security Regression Report (Phase 8D)
+- ToolScopePolicy blocks unknown tools and tools outside mission/workflow/toolset/skill scope.
+- R4 tools remain approval-required and R5/destructive requests remain blocked even when listed in a permitted planning toolset.
+- Skills cannot widen their own declared `allowed_tools` scope.
+- ToolLoopGuard blocks repeated same tool+args calls, per-mission call-budget excess, and recursive tool invocation attempts with evidence metadata.
+- ScopedToolRouter delegates only to existing ToolRouter policy after scope/loop gates and forces dry-run/non-executing execution plans.
+- No Hermes code copy/execution/runtime/gateway/toolset, no direct execution, no real Telegram, no CloudOps real action, no external pentest, no tokens/`.env`, and no STRIX core/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2 changes were introduced.

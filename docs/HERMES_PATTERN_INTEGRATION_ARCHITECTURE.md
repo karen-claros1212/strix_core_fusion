@@ -65,3 +65,10 @@ Every future Hermes-inspired implementation must include: source-pattern citatio
 Phase 8C implements a STRIX-owned metadata governance layer under `saga_fusion/skills/`. It provides manifest validation, registry lifecycle, and policy decisions only. It does not add a runtime plugin host, Hermes skill ingestion, Hermes gateway/toolset, or skill execution.
 
 Skill metadata is subordinate to STRIX controls: unknown and disabled skills are blocked, R4 skills require approval, R5 skills are blocked, direct secret requests are rejected, and bypass attempts against MissionPolicy or SandboxController are rejected. Task planning may reference skill metadata, and ToolRouter enforces `allowed_tools` when skill context is provided.
+
+## Phase 8D completion — Toolset Scoping + Tool Loop Guardrails
+Phase 8D implements a STRIX-owned tool scoping and loop-guard layer under `saga_fusion/tool_scoping/`. It is clean-room and does not introduce a Hermes gateway, Hermes toolset runtime, or direct execution path.
+
+`ToolScopePolicy` gates requests by mission, workflow, toolset, and skill `allowed_tools`; unknown, denied, and out-of-scope tools are blocked. R4 tools remain approval-required and R5/destructive requests remain blocked. Skills cannot widen their own declared tool scope.
+
+`ToolLoopGuard` blocks per-mission over-budget calls, repeated same tool+args loops, and recursive tool calls with evidence metadata. `ScopedToolRouter` wraps the existing `ToolRouter` by applying scope first, loop guard second, and the existing route policy last; all generated execution plans remain dry-run/non-executing and `SandboxController` remains the only execution boundary.

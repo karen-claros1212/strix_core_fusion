@@ -273,3 +273,14 @@
 - Hermes copy/execution: NO
 - Tests: skills 14 passed; task+tool+skills 33 passed; full suite 264 passed, 3 warnings
 - Verdict: APTO PARA 8D: SI
+
+## Phase 8D Status
+- Toolset Scoping + Tool Loop Guardrails: COMPLETED
+- ToolScopePolicy: YES; mission/workflow/toolset/skill scoping, unknown/out-of-scope/denied blocking, R4 approval, R5 block, skill no-widen rule
+- ToolLoopGuard: YES; max per-mission calls, repeated same tool+args detection, recursion detection
+- ToolsetScopeRegistry: YES; repo_audit, secret_audit, docker_audit, reporting, cloudops_plan, llm_only
+- ScopedToolRouter: YES; wraps existing ToolRouter, no direct execution, `execution_allowed=False` plans
+- Validation: tool_scoping 14 passed; skills+tool_routing+tool_scoping 38 passed; full suite 278 passed, 3 warnings
+- Hermes copied/executed: NO / NO
+- Direct execution introduced: NO
+- Verdict: APTO PARA 8E DRY-RUN SCHEDULER/CRON PATTERNS: SI
