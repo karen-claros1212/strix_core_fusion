@@ -204,6 +204,30 @@ class TelegramLabRuntime:
                 max_update_id = update["update_id"] if max_update_id is None else max(max_update_id, update["update_id"])
         return (max_update_id + 1) if max_update_id is not None else None
 
+    def acknowledge_offset(self, offset: int | None) -> bool:
+        """Confirm handled Telegram updates before a bounded lab run exits.
+
+        Telegram only marks updates as confirmed when a later getUpdates call
+        supplies an offset greater than the handled update ids.  The lab runtime
+        often exits immediately after max_messages is reached, so without this
+        final zero-timeout acknowledgement the same already-answered messages
+        remain pending and are answered again on the next bounded run.
+        """
+        if offset is None:
+            return False
+        ack = self.api.request(
+            "getUpdates",
+            {
+                "offset": offset,
+                "timeout": 0,
+                "limit": 1,
+                "allowed_updates": ["message"],
+            },
+        )
+        ok = ack.get("ok") is True
+        self.evidence.append({"event": "telegram_lab_ack", "offset": offset, "ack_ok": ok})
+        return ok
+
     async def run(
         self,
         *,
@@ -221,6 +245,8 @@ class TelegramLabRuntime:
         while handled < max_messages and time.time() < deadline:
             offset, count = await self.poll_once(offset=offset, timeout_seconds=poll_timeout_seconds)
             handled += count
+        if handled > 0:
+            self.acknowledge_offset(offset)
         return {
             "status": "ok" if handled >= max_messages else "timeout",
             "preflight": preflight.to_redacted_dict(),

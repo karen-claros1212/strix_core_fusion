@@ -110,3 +110,19 @@ def test_lab_runtime_status_message_returns_defense_capabilities():
     assert response["non_authoritative"] is True
     assert assert_lab_mode(response) is True
 
+
+def test_lab_runtime_acknowledges_handled_updates_before_bounded_exit():
+    config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
+    fake = FakeTelegramApi(updates=[_message(10, "estado defensa")])
+    runtime = TelegramLabRuntime(config=config, api=fake)
+
+    result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
+
+    ack_payloads = [
+        payload
+        for method, payload in fake.calls
+        if method == "getUpdates" and payload.get("offset") == 11 and payload.get("timeout") == 0
+    ]
+    assert result["status"] == "ok"
+    assert ack_payloads
+    assert result["evidence"][-1] == {"event": "telegram_lab_ack", "offset": 11, "ack_ok": True}
