@@ -125,3 +125,9 @@
 - Added defensive cyber knowledge and malware detection engineering as a self-contained Saga Fusion package.
 - Phase 10B candidates: advanced defensive workflows, curated ATT&CK/detection content, and broader planner/reporting integration tests.
 - Still blocked/deferred: malware execution, payload implementation, persistence, exfiltration, bypass engineering, real samples, real external tools, and real messaging/LLM integrations.
+
+## Phase 10B Outcome
+- Added advanced defensive workflows using `cyber_knowledge` for classification, MITRE mapping, defensive rules, playbooks, evidence, and reports.
+- Unknown workflows are blocked; every workflow remains non-executing with required evidence/report output.
+- Next phase: 10C defensive Telegram commands / lab mode only, preserving no real Telegram calls in tests, no real external tools, and `execution_allowed=False` by default.
+- Still blocked/deferred: malware/sample/attachment execution, offensive payloads, bypass, persistence, exfiltration, real CloudOps, external pentest, and automatic remediation.

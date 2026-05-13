@@ -356,3 +356,15 @@
 - Minimal integrations: TaskPlanner playbook metadata references; ReportBuilder threat report wrapper.
 - Tests: `tests/cyber_knowledge` 10 passed; full suite 369 passed, 3 existing warnings.
 - Malware execution/download/payload creation/exfiltration/bypass: NO
+
+## Phase 10B Status
+- Advanced Defensive Workflows: COMPLETED
+- Package: `saga_fusion/defensive_workflows/`
+- Workflows: malware_triage, suspicious_process, credential_theft, ransomware_response, webshell_investigation, phishing_attachment
+- Defensive workflows tests: 10 passed
+- Cyber knowledge + defensive workflows tests: 20 passed
+- Full suite: 379 passed, 3 warnings
+- Malware/sample/attachment/webshell execution: NO
+- Offensive payload/bypass/persistence/exfiltration: NO
+- Real CloudOps/Telegram/external pentest/tools: NO
+- Verdict: APTO PARA 10C DEFENSIVE TELEGRAM COMMANDS / LAB MODE: SI

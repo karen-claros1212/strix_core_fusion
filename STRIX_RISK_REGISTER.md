@@ -223,3 +223,9 @@
 - [CLOSED] RB-10A-01: STRIX lacked a native defensive cyber knowledge package for malware taxonomy, ATT&CK mapping, detection-rule templates, IoC reports, and playbook references. Mitigation: added `saga_fusion/cyber_knowledge/` with non-executing builders and tests.
 - [OPEN] RB-10A-02: Detection content remains template-level and non-authoritative. Mitigation: reports and rules label defensive/non-authoritative status; Phase 10B may add curated defensive workflows with additional validation.
 - [ENFORCED] RB-10A-03: Malware execution, payload creation, persistence, exfiltration, and bypass functionality remain blocked by scope and builder validation.
+
+## Risk Register Update (Phase 10B)
+- [CLOSED] RB-10A-01 partial: Cyber knowledge is now used by advanced defensive workflows without adding malware execution or offensive capability.
+- [OPEN] RB-10B-01: Future lab/Telegram commands could accidentally convert workflow recommendations into actions. Mitigation: keep `execution_allowed=False`, ToolRouter non-executing, ApprovalVerifier/SandboxController gates, and add command-level lab-mode regressions in Phase 10C.
+- [MONITORED] RB-10B-02: Detection templates are non-authoritative and require analyst validation to avoid false positives.
+- [READY] Phase 10C can add defensive Telegram commands / lab mode only if these workflows remain plan/report/evidence only by default.

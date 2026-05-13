@@ -157,7 +157,28 @@ class TaskPlanner:
         registry = DefensiveWorkflowRegistry()
         template = registry.get(workflow_id)
         if template is None:
-            return None
+            try:
+                from ..defensive_workflows import DefensiveWorkflowRegistry as AdvancedDefensiveWorkflowRegistry
+
+                advanced = AdvancedDefensiveWorkflowRegistry()
+                definition = advanced.get(workflow_id)
+                if definition is None:
+                    return None
+                source = target or arguments or text or "unspecified"
+                kwargs = {
+                    "observations": text or source,
+                    "summary": text or source,
+                    "incident_summary": text or source,
+                    "process_name": source,
+                    "affected_scope": source,
+                    "web_root": source,
+                    "attachment_name": source,
+                }
+                accepted = definition.runner.__code__.co_varnames[:definition.runner.__code__.co_argcount]
+                advanced_plan = definition.run(**{key: value for key, value in kwargs.items() if key in accepted})
+                return advanced_plan.to_dict()
+            except Exception:
+                return None
         scope_value = target or arguments or text or "unspecified"
         inputs: dict[str, str] = {}
         for required in template.required_inputs:

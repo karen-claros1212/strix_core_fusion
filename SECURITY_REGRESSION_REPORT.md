@@ -303,3 +303,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - YARA/Sigma builders reject offensive, payload, bypass, exfiltration, and execution requests.
 - Threat reports redact secret-like values, are non-authoritative, and set `execution_allowed=False`.
 - Real Telegram, real LLM/Qwen/TurboQuant/llama.cpp, external pentest, Agent Zero/OpenCLAW/Hermes, tokens, and `.env` remained untouched.
+
+## Security Regression Report (Phase 10B)
+- Advanced defensive workflows generate plans, evidence, reports, detections, and recommendations only.
+- Every workflow keeps `execution_allowed=False`, `evidence_required=True`, and `report_required=True`.
+- Malware triage does not download or execute samples; phishing does not execute attachments; ransomware does not delete, encrypt, or decrypt files; webshell investigation does not generate or invoke webshells; credential-theft workflow does not display secrets or exfiltrate data.
+- ToolRouter remains non-executing and TaskPlanner integration is metadata/report-only.
+- No real Telegram, CloudOps, external pentest, offensive payload, bypass, persistence, tokens, `.env`, Qwen/TurboQuant/llama.cpp, Agent Zero, OpenCLAW, or Hermes changes.

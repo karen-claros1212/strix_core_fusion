@@ -224,3 +224,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Cyber knowledge suite: 10 passed
 - Full suite: 369 passed, 3 warnings
 - Added tests for malware taxonomy classification, MITRE mapping, defensive YARA/Sigma output and rejection paths, incident playbook non-execution, and redacted non-authoritative threat reports.
+
+## Test Results (Phase 10B)
+- Defensive workflows: 10 passed
+- Cyber knowledge + defensive workflows: 20 passed
+- Full suite: 379 passed, 3 warnings
+- Added tests for each workflow plan, safety flags, unknown registry blocking, reporter redaction, no sample execution, no attachment execution, no file deletion/encryption/decryption, no webshell generation, and no secret exposure.

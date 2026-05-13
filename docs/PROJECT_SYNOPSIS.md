@@ -208,3 +208,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Builders are metadata/string/log-template only and reject offensive/payload/bypass/exfiltration/execution requests.
 - TaskPlanner can reference selected defensive cyber playbooks; ReportBuilder can generate cyber threat reports.
 - Current full suite: 369 passed, 3 warnings.
+
+## Phase 10B — Advanced Defensive Workflows
+- Added `saga_fusion/defensive_workflows/` with six advanced defensive workflows: malware triage, suspicious process review, credential theft investigation, ransomware response, webshell investigation, and phishing attachment review.
+- Workflows use `cyber_knowledge` taxonomy, MITRE mappings, defensive YARA/Sigma builders, and playbooks to generate plans, evidence, reports, and recommendations only.
+- `execution_allowed=False`, `evidence_required=True`, `report_required=True`, active redaction, and `non_authoritative=True` are preserved across workflow plans and reports.
+- TaskPlanner can reference the new workflows, Reporting can generate `DefensiveWorkflowReport`, and ToolRouter still executes nothing.
+- Current full suite: 379 passed, 3 existing warnings.

@@ -5,5 +5,6 @@ from .executive_summary import ExecutiveSummary
 from .technical_report import TechnicalReport
 from .evidence_reporter import EvidenceReporter
 from .telegram_report_formatter import TelegramReportFormatter
+from ..defensive_workflows import DefensiveWorkflowReport, DefensiveWorkflowReporter
 
-__all__ = ['ReportSeverity','ReportAudience','ReportSection','ReportArtifact','MissionReport','ReportRedactor','ReportBuilder','ExecutiveSummary','TechnicalReport','EvidenceReporter','TelegramReportFormatter']
+__all__ = ['ReportSeverity','ReportAudience','ReportSection','ReportArtifact','MissionReport','ReportRedactor','ReportBuilder','ExecutiveSummary','TechnicalReport','EvidenceReporter','TelegramReportFormatter','DefensiveWorkflowReport','DefensiveWorkflowReporter']

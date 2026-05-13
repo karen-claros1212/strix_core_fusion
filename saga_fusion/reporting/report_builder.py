@@ -69,6 +69,11 @@ class ReportBuilder:
 
         return ThreatReportBuilder().build_report(title, classification, behaviors=behaviors, iocs=iocs, notes=notes)
 
+    def build_defensive_workflow_report(self, workflow_plan):
+        from ..defensive_workflows import DefensiveWorkflowReporter
+
+        return DefensiveWorkflowReporter().build_report(workflow_plan)
+
 
     def _summary(self, mission, findings, approvals):
         return {'finding_count': len(findings or []), 'approval_count': len(approvals or []), 'status': mission.get('status','unknown') if isinstance(mission, dict) else 'unknown'}
