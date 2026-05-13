@@ -247,3 +247,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Report technical evidence is metadata-only; report packs use stable deterministic pack/report/manifest summary refs for identical redacted inputs and keep SHA-256 refs body-free.
 - Added regressions for no raw artifact bodies, no secret exposure, stable SHA-256 refs, deterministic output, unknown/invalid workflow blocking, defensive lab non-execution, and advanced-authorized path preservation.
 - Validation: targeted defensive/reporting/telegram `108 passed`; full suite `425 passed, 3 existing warnings`.
+
+## Phase 10D-5 — Final Closure Report + Phase 10E Gate
+- Closed Phase 10D as a defensive report-pack lane consolidating 10D-1 design/golden tests, 10D-2 runtime aggregation, 10D-3 capability audit, and 10D-4 integration hardening.
+- Added `docs/reports/PHASE_10D_CLOSURE_REPORT.md` with what was implemented, what was not implemented, preserved capabilities, evidence/report-ref behavior, pending risks, and the Phase 10E GO/NO-GO gate.
+- STRIX core is not globally capped; `advanced_authorized` paths remain preserved behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, ApprovalVerifier, SandboxController, manifest validation, and redaction.
+- Validation: full suite `425 passed, 3 existing warnings`.
+- Phase 10E recommendation: GO for docs/status/reporting/golden-test-first planning only; NO-GO for new runtime, real Telegram/LLM, real CloudOps, external pentest, malware/sample/attachment execution, payload/webshell generation, destructive commands, raw artifact bodies, or weakened gates.

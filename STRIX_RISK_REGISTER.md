@@ -257,3 +257,8 @@
 - Risk: report-pack integration could accidentally embed raw artifacts or secrets. Status: mitigated with metadata-only evidence reporting, SHA-256 refs, redaction, and regression tests.
 - Risk: defensive lab/report packs could cap STRIX globally. Status: mitigated; advanced authorized paths remain approval-gated, not globally blocked.
 - Risk: unknown/invalid defensive workflows could bypass contracts. Status: mitigated with registry validation and blocking tests.
+
+## Phase 10D-5 Risk Register Update
+- [CLOSED] RB-10D-07: Phase 10D needed consolidated closure and a Phase 10E gate. Mitigation: added `docs/reports/PHASE_10D_CLOSURE_REPORT.md` with implementation summary, non-goals, preserved capabilities, evidence/ref behavior, pending risks, and GO/NO-GO criteria.
+- [MONITORED] RB-10D-06: Future report-pack expansion could drift into remediation execution. Gate: Phase 10E is GO only for docs/status/reporting/golden-test-first planning unless separately approved; no new runtime or real execution.
+- [ENFORCED] Phase 10E must not cap STRIX globally and must preserve `advanced_authorized`, R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, redaction, and evidence-only report packs.

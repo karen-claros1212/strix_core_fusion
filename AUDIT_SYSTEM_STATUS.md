@@ -402,3 +402,11 @@
 - Parallel reporting created: NO.
 - DefensiveReportPack remains evidence-only/reference-only/non-executing.
 - Validation: targeted defensive/reporting/telegram `108 passed`; full suite `425 passed, 3 existing warnings`.
+
+## Phase 10D-5 Status — Final Closure Report + Phase 10E Gate
+- Status: COMPLETED.
+- Report: `docs/reports/PHASE_10D_CLOSURE_REPORT.md`.
+- Consolidated commits: 10D-1 `c37e396950e74b9b29500fc202e7a319cf4fadeb`, 10D-2 `436a1aa6e392dfd209c151d92b793577b791aed9`, 10D-3 `1c1407e8207fcb3fe637677530b671259f40409a`, 10D-4 `6a4b73426b26f56033b48e96686b48e0c0aaf456`.
+- Controls preserved: no global STRIX cap; `advanced_authorized` remains behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, ApprovalVerifier, SandboxController, manifest validation, and redaction.
+- Validation: `python3 -m pytest tests -q` — 425 passed, 3 existing warnings.
+- Verdict: PHASE 10D CLOSED. PHASE 10E GO only for docs/status/reporting/golden-test-first planning unless separately approved; NO-GO for new runtime or real external execution.

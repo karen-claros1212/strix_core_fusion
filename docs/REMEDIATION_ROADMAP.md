@@ -161,3 +161,9 @@
 - Existing reporting/manifest/redaction primitives were reused; no parallel reporting layer was created.
 - Defensive report packs remain reference-only, deterministic for identical redacted inputs, redacted, non-authoritative, and non-executing.
 - Next work can proceed only if it preserves R4/R5, SandboxController, PromptSecurity, approval flow, manifest validation, redaction, and no global STRIX capability cap.
+
+## Phase 10D-5 Closure Outcome
+- Closed Phase 10D with final closure report `docs/reports/PHASE_10D_CLOSURE_REPORT.md`.
+- Consolidated 10D-1 through 10D-4: report-pack design/golden characterization, minimal runtime aggregation, capability-preservation audit, and integration hardening.
+- Roadmap gate for Phase 10E: proceed only with docs/status/reporting/golden-test-first planning unless separately approved; preserve evidence-only refs, no raw artifact bodies, R4/R5, PromptSecurity, MissionPolicy, approval flow, SandboxController, manifest validation, redaction, and no global STRIX cap.
+- Current validation: full suite `425 passed, 3 existing warnings`.

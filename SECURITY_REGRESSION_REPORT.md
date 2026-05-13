@@ -346,3 +346,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Defensive Telegram lab-mode paths remain non-executing and mock-only in tests.
 - R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, and redaction remain preserved.
 - Validation: targeted 108 passed; full suite 425 passed, 3 existing warnings.
+
+## Phase 10D-5 Security Regression / Closure
+- Final Phase 10D closure is documentation/status/reporting only.
+- No new runtime, real Telegram, real LLM, CloudOps, external pentest, malware/sample/attachment execution, payload/webshell generation, destructive command, token, `.env`, or config change was introduced.
+- Defensive report packs remain evidence-only/reference-only and do not embed raw artifact bodies or secrets.
+- STRIX is not globally capped; advanced authorized paths remain preserved behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, approval verification, ToolRouter/ScopedToolRouter, SandboxController, manifest validation, and redaction.
+- Full regression remained green: 425 passed, 3 existing warnings.
