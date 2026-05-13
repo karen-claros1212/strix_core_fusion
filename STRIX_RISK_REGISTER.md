@@ -247,3 +247,8 @@
 - [CLOSED] RB-10D-02: Report packs could embed raw artifact bodies or secrets. Mitigation: pack refs are metadata/ref/SHA-256 only; runtime tests block raw body/content slots and verify token/password redaction.
 - [MONITORED] RB-10D-03: Future pack expansion could drift into executable remediation. Mitigation: current runtime enforces non-execution and future phases must preserve MissionPolicy, approvals, SandboxController, and manifest validation.
 - [READY] Next phase may proceed as planning or another golden-test-first increment only.
+
+## Risk Register Update (Phase 10D-3)
+- [CLOSED] RB-10D-04: Phase 10D report packs could be misread as a global STRIX capability cap. Mitigation: capability audit confirms `execution_allowed=False` is scoped to defensive workflows/lab/report/manifest evidence surfaces, not a global cap.
+- [CLOSED] RB-10D-05: DefensiveReportPack could replace advanced authorized paths. Mitigation: report packs are additive/reference-only; R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, and SandboxController remain active.
+- [MONITORED] RB-10D-06: Future report-pack expansion could drift into remediation execution. Mitigation: future phases must preserve evidence-only defaults and require explicit approval plus existing STRIX gates for any execution path.

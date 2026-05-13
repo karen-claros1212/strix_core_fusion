@@ -235,3 +235,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added deterministic registry resolution including `defense_status`; all workflows remain non-executing, evidence-required, report-required, and non-authoritative.
 - Evidence/report refs are metadata/ref/SHA-256 only; raw artifact bodies, attachments, samples, secrets, and credentials are not embedded.
 - Validation: golden 14 passed; targeted defensive/cyber_knowledge/reporting/telegram 110 passed; full suite 417 passed, 3 existing warnings.
+
+## Phase 10D-3 — Capability Preservation + Version Audit
+- Audited Phase 10D against STRIX base capability preservation and version/remotes status.
+- Current audited HEAD: `436a1aa6e392dfd209c151d92b793577b791aed9` on `main`; configured upstream is `origin/main`.
+- No protected `strix/` core files were modified by Phase 10D; report packs remain a thin, non-executing aggregation layer.
+- Validation: full suite `417 passed, 3 existing warnings`.

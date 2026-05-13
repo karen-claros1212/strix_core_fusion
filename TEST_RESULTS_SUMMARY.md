@@ -247,3 +247,7 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/reporting tests/telegram -q` — 110 passed. (`tests/cyber` was absent; `tests/cyber_knowledge` used.)
 - `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.
 - Added runtime pack tests covering required fields, per-workflow generation including `defense_status`, reference/hash-only evidence/report refs, redaction, no execution, deterministic registry resolution, unknown blocking, and unsafe-input rejection.
+
+## Phase 10D-3 Test Results
+- `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.
+- Capability audit confirmed Phase 10D did not globally cap STRIX and did not alter protected core runtime files.

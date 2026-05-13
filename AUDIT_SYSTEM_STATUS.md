@@ -385,3 +385,12 @@
 - Validation: golden 14 passed; targeted 110 passed; full suite 417 passed, 3 existing warnings.
 - Real Telegram/LLM/network/malware/attachment/payload/webshell/destructive execution/config changes: NO.
 - Verdict: APTO PARA NEXT PHASE PLANNING: SI.
+
+## Phase 10D-3 Status — Capability Preservation + Version Audit
+- Status: Completed.
+- Report: `docs/reports/PHASE_10D_3_CAPABILITY_PRESERVATION_AUDIT.md`.
+- Current audited HEAD before audit commit: `436a1aa6e392dfd209c151d92b793577b791aed9` on `main`.
+- Protected STRIX core touched by Phase 10D: NO.
+- Global STRIX capability cap found: NO.
+- DefensiveReportPack remains evidence-only/reference-only/non-executing.
+- Validation: `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.

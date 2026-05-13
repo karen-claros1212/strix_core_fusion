@@ -149,3 +149,9 @@
 - Packs aggregate existing workflow plans, `DefensiveWorkflowReporter` redacted sections, and manifest-backed reference/hash metadata only.
 - `defense_status` is available as a safe control-surface workflow; unknown workflows remain blocked.
 - Next phase may proceed to planning only if it preserves no real Telegram/LLM/tool execution and no raw artifact body embedding.
+
+## Phase 10D-3 Outcome
+- Closed capability-preservation audit in `docs/reports/PHASE_10D_3_CAPABILITY_PRESERVATION_AUDIT.md`.
+- Findings: no global STRIX capability cap, no protected core changes, and no DefensiveReportPack replacement of base capabilities.
+- Advanced authorized paths remain behind R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, and SandboxController.
+- Next work should remain planning/golden-test-first unless explicitly authorized.

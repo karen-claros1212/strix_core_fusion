@@ -332,3 +332,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Existing `ReportRedactor` and manifest redaction/validation primitives are reused; dummy token/password/Bearer values are redacted in pack outputs.
 - R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, and manifest validation were not weakened.
 - Full regression remained green: 417 passed, 3 existing warnings.
+
+## Security Regression Report (Phase 10D-3)
+- Capability preservation audit found no global STRIX capability cap and no protected `strix/` core modifications in Phase 10D.
+- DefensiveReportPack remains a non-executing, evidence-only aggregation over existing workflow/report/manifest layers.
+- R4/R5, PromptSecurity, MissionPolicy, approval flow, SandboxController, ToolRouter/ScopedToolRouter, manifest validation, and redaction remain preserved.
+- No real Telegram, real LLM, malware/payload/webshell/attachment execution, destructive command, CloudOps execution, external pentest, token, `.env`, or config change was introduced.
+- Full regression remained green: 417 passed, 3 existing warnings.
