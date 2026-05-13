@@ -223,3 +223,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Every response is lab/evidence-only/report-only with `lab_mode=True`, `execution_allowed=False`, `evidence_required=True`, `report_required=True`, and `non_authoritative=True`.
 - Tests use mock/in-process routing only: no real Telegram calls, no malware/sample/attachment execution, no payload/webshell generation, no external pentest, no CloudOps.
 - Validation: Telegram 56 passed; defensive+cyber+telegram 76 passed; full suite 393 passed, 3 warnings.
+
+## Phase 10D-1 — Defensive Report Packs Design / Golden Tests
+- Added planning for minimal defensive report packs using existing defensive workflow, reporting, and manifest primitives.
+- Added golden characterization tests for all Phase 10B/10C defensive workflow surfaces and `defense_status`.
+- Report packs are future work for 10D-2; 10D-1 did not add runtime pack generation.
+- Current full suite: 407 passed, 3 warnings.

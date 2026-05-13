@@ -236,3 +236,8 @@
 - [CLOSED] RB-10C-02: Telegram tests could call real Telegram. Mitigation: tests use mock/in-process routing; mock mode remains token-free and injected real API clients are not called.
 - [CLOSED] RB-10C-03: Defensive outputs could leak raw secrets or attachment/sample data. Mitigation: workflow/report redaction plus no attachment processing/download/execution path.
 - [READY] Phase 10D defensive report packs may proceed if they preserve lab/report-only constraints.
+
+## Risk Register Update (Phase 10D-1)
+- [OPEN] RB-10D-01: Future DefensiveReportPack runtime could duplicate report/redaction logic and drift from existing controls. Mitigation: design requires thin aggregation over `DefensiveWorkflowReporter`, `ReportRedactor`, `EvidenceReporter`, and `ManifestBuilder`.
+- [OPEN] RB-10D-02: Report packs could accidentally embed raw artifact bodies or secret-bearing content. Mitigation: 10D-1 golden tests characterize safe current inputs; 10D-2 must add manifest-backed refs/hash tests and raw-body/secret blocking tests before runtime is accepted.
+- [READY] Phase 10D-2 may implement minimal DefensiveReportPack runtime only if it remains non-executing, redacted, manifest-backed, and full suite stays green.

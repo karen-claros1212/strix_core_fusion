@@ -236,3 +236,8 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - `python3 -m pytest tests/telegram -q --tb=short` — 56 passed.
 - `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/telegram -q --tb=short` — 76 passed.
 - `python3 -m pytest tests -q --tb=short` — 393 passed, 3 warnings.
+
+## Phase 10D-1 Test Results
+- Targeted defensive/reporting suite: `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/reporting tests/telegram -q --tb=short` — 100 passed.
+- Full suite: `python3 -m pytest tests -q --tb=short` — 407 passed, 3 existing warnings.
+- Added characterization/golden tests only; no DefensiveReportPack runtime was implemented.

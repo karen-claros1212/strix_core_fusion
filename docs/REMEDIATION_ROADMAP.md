@@ -137,3 +137,9 @@
 - Defensive Telegram routing is report-only/lab-only and does not introduce remediation execution.
 - Unknown defensive commands are blocked or require clarification.
 - Future 10D work may add defensive report packs, but must preserve mock tests, no real Telegram, no real tool execution, no malware/attachment execution, and no CloudOps/pentest actions.
+
+## Phase 10D-1 Outcome
+- Created defensive report-pack design and golden characterization tests.
+- No runtime report-pack generation was implemented in 10D-1.
+- Future 10D-2 should implement a minimal aggregation layer over existing workflow/reporting/manifest primitives, not a parallel report engine.
+- Required 10D-2 controls: evidence refs/hash only, mandatory redaction, no raw artifact bodies, per-workflow coverage, Telegram-safe summary, full suite green.

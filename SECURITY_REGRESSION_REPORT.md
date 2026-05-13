@@ -317,3 +317,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Defensive Telegram lab routing returns non-authoritative report/evidence plans only.
 - No real Telegram calls, real tool execution, malware execution, attachment execution/processing, offensive payloads, webshell generation, external pentest, CloudOps, token/.env changes, Qwen/TurboQuant/llama.cpp changes, or Agent Zero/OpenCLAW/Hermes changes were introduced.
 - Response redaction blocks raw tokens/password-like values.
+
+## Security Regression Report (Phase 10D-1)
+- Phase 10D-1 added design documentation and golden characterization tests only; no report-pack runtime generator or execution path was introduced.
+- Golden tests assert defensive workflow and Telegram lab-mode pack inputs preserve `execution_allowed=False`, `executed=False`, `evidence_required=True`, `report_required=True`, and `non_authoritative=True`.
+- Future report packs must use evidence/report refs, hashes, and redacted metadata only; raw artifact bodies, attachment contents, sample bytes, credentials, tokens, and secrets remain blocked.
+- No real Telegram, malware execution, payload/webshell generation, attachment execution/processing, destructive command, external network execution, config change, `.env` change, token exposure, or secret printing was performed.
+- R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, and redaction remain unchanged.

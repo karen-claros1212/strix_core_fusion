@@ -89,3 +89,20 @@ Safety status:
 - R5 remains blocked.
 - Unknown patterns require policy review and are non-executing.
 - ToolRouter still does not execute tools.
+
+## Phase 10D-1 — Defensive Report Packs Design / Golden Tests
+Status: IMPLEMENTED (design + tests only)
+Date: 2026-05-13
+
+Validated controls:
+- Defensive workflow outputs expose stable pack-ready fields.
+- Existing defensive reporter is the report-building primitive for future packs.
+- Telegram defensive lab-mode responses remain safe pack inputs.
+- Evidence/report requirements and non-execution flags remain enforced.
+
+Validation:
+- Targeted defensive/reporting suite: 100 passed.
+- Full suite: 407 passed, 3 existing warnings.
+
+Runtime status:
+- No DefensiveReportPack runtime generator was added in this phase.
