@@ -241,3 +241,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Current audited HEAD: `436a1aa6e392dfd209c151d92b793577b791aed9` on `main`; configured upstream is `origin/main`.
 - No protected `strix/` core files were modified by Phase 10D; report packs remain a thin, non-executing aggregation layer.
 - Validation: full suite `417 passed, 3 existing warnings`.
+
+## Phase 10D-4 — Defensive Report Packs Integration Hardening
+- Hardened DefensiveReportPack integration with existing DefensiveWorkflowReporter, manifests, EvidenceReporter/ManifestBuilder, ReportRedactor, Telegram lab summaries, and DefensiveWorkflowRegistry.
+- Report technical evidence is metadata-only; report packs use stable deterministic pack/report/manifest summary refs for identical redacted inputs and keep SHA-256 refs body-free.
+- Added regressions for no raw artifact bodies, no secret exposure, stable SHA-256 refs, deterministic output, unknown/invalid workflow blocking, defensive lab non-execution, and advanced-authorized path preservation.
+- Validation: targeted defensive/reporting/telegram `108 passed`; full suite `425 passed, 3 existing warnings`.

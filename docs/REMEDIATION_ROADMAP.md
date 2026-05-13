@@ -155,3 +155,9 @@
 - Findings: no global STRIX capability cap, no protected core changes, and no DefensiveReportPack replacement of base capabilities.
 - Advanced authorized paths remain behind R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, and SandboxController.
 - Next work should remain planning/golden-test-first unless explicitly authorized.
+
+## Phase 10D-4 Outcome
+- Closed Defensive Report Packs Integration Hardening with report `docs/reports/PHASE_10D_4_REPORT_PACK_INTEGRATION_HARDENING.md`.
+- Existing reporting/manifest/redaction primitives were reused; no parallel reporting layer was created.
+- Defensive report packs remain reference-only, deterministic for identical redacted inputs, redacted, non-authoritative, and non-executing.
+- Next work can proceed only if it preserves R4/R5, SandboxController, PromptSecurity, approval flow, manifest validation, redaction, and no global STRIX capability cap.

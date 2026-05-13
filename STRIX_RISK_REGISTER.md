@@ -252,3 +252,8 @@
 - [CLOSED] RB-10D-04: Phase 10D report packs could be misread as a global STRIX capability cap. Mitigation: capability audit confirms `execution_allowed=False` is scoped to defensive workflows/lab/report/manifest evidence surfaces, not a global cap.
 - [CLOSED] RB-10D-05: DefensiveReportPack could replace advanced authorized paths. Mitigation: report packs are additive/reference-only; R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, and SandboxController remain active.
 - [MONITORED] RB-10D-06: Future report-pack expansion could drift into remediation execution. Mitigation: future phases must preserve evidence-only defaults and require explicit approval plus existing STRIX gates for any execution path.
+
+## Phase 10D-4 Risk Register Update
+- Risk: report-pack integration could accidentally embed raw artifacts or secrets. Status: mitigated with metadata-only evidence reporting, SHA-256 refs, redaction, and regression tests.
+- Risk: defensive lab/report packs could cap STRIX globally. Status: mitigated; advanced authorized paths remain approval-gated, not globally blocked.
+- Risk: unknown/invalid defensive workflows could bypass contracts. Status: mitigated with registry validation and blocking tests.

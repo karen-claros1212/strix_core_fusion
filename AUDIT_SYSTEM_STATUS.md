@@ -394,3 +394,11 @@
 - Global STRIX capability cap found: NO.
 - DefensiveReportPack remains evidence-only/reference-only/non-executing.
 - Validation: `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.
+
+## Phase 10D-4 Status — Defensive Report Packs Integration Hardening
+- Status: Completed.
+- Report: `docs/reports/PHASE_10D_4_REPORT_PACK_INTEGRATION_HARDENING.md`.
+- Protected STRIX core touched: NO.
+- Parallel reporting created: NO.
+- DefensiveReportPack remains evidence-only/reference-only/non-executing.
+- Validation: targeted defensive/reporting/telegram `108 passed`; full suite `425 passed, 3 existing warnings`.

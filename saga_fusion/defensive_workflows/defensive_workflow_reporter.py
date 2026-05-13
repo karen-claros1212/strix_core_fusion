@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
+from dataclasses import replace
 from typing import Any
 
 from .defensive_workflow_types import DefensiveReportPack, DefensiveWorkflowPlan, DefensiveWorkflowReport, redact_obj, redact_text
@@ -22,7 +23,7 @@ class DefensiveWorkflowReporter:
             "classification": payload.get("classification", {}),
             "mitre_mappings": payload.get("mitre_mappings", []),
             "indicators": payload.get("indicators", []),
-            "evidence": payload.get("evidence", {}),
+            "evidence": self._evidence_metadata(payload),
             "yara_rules": payload.get("yara_rules", []),
             "sigma_rules": payload.get("sigma_rules", []),
             "checklist": payload.get("checklist", []),
@@ -62,9 +63,13 @@ class DefensiveWorkflowReporter:
         payload = ReportRedactor().redact(payload)
         self._assert_workflow_contract(payload)
 
-        report = self.build_report(payload)
-        report_payload = report.to_dict()
         workflow_category = self._workflow_category(str(payload.get("workflow_id", "unknown")))
+        stable_seed = self._stable_seed(payload)
+        report = replace(
+            self.build_report(payload),
+            report_id=self._stable_id("defensive-report", {"seed": stable_seed, "kind": "report"}),
+        )
+        report_payload = report.to_dict()
 
         from saga_fusion.manifests import ManifestBuilder, RedactionStatus, ReportArtifactRef, SecretScanStatus
 
@@ -115,7 +120,7 @@ class DefensiveWorkflowReporter:
 
         technical_findings = self._technical_findings(payload)
         pack = DefensiveReportPack(
-            pack_id=f"defensive-pack-{uuid.uuid4().hex[:12]}",
+            pack_id=self._stable_id("defensive-pack", {"seed": stable_seed, "kind": "pack"}),
             workflow_category=workflow_category,
             workflow_id=str(payload.get("workflow_id", "unknown")),
             report_id=report.report_id,
@@ -157,6 +162,23 @@ class DefensiveWorkflowReporter:
     def _sha256(value: Any) -> str:
         encoded = json.dumps(redact_obj(value), sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(encoded).hexdigest()
+
+    def _stable_seed(self, payload: dict[str, Any]) -> str:
+        return self._sha256({
+            "workflow_id": payload.get("workflow_id", "unknown"),
+            "workflow_category": self._workflow_category(str(payload.get("workflow_id", "unknown"))),
+            "title": payload.get("title", ""),
+            "summary": payload.get("summary", ""),
+            "classification": payload.get("classification", {}),
+            "mitre_mappings": payload.get("mitre_mappings", []),
+            "indicators": payload.get("indicators", []),
+            "evidence_metadata": self._evidence_metadata(payload),
+            "recommendations": payload.get("recommendations", []),
+            "checklist": payload.get("checklist", []),
+        })
+
+    def _stable_id(self, prefix: str, value: Any) -> str:
+        return f"{prefix}-{self._sha256(value)[:12]}"
 
     @staticmethod
     def _workflow_category(workflow_id: str) -> str:
@@ -215,17 +237,28 @@ class DefensiveWorkflowReporter:
 
     def _evidence_metadata(self, payload: dict[str, Any]) -> dict[str, Any]:
         evidence = payload.get("evidence") or {}
-        return redact_obj({
+        forbidden_keys = {"raw", "raw_body", "body", "artifact_body", "attachment_body", "sample_body", "file_contents", "attachment_contents", "sample_contents", "content", "text"}
+        serialized_evidence = json.dumps(evidence, sort_keys=True, default=str)
+        redacted_evidence = redact_text(serialized_evidence)
+        metadata = {
             "workflow_id": payload.get("workflow_id"),
             "classification": payload.get("classification"),
-            "evidence_keys": sorted(str(key) for key in evidence.keys()),
+            "evidence_keys": sorted(
+                str(key)
+                for key in evidence.keys()
+                if str(key).lower().replace("-", "_") not in forbidden_keys
+            ),
+            "filtered_raw_evidence_keys": True,
             "indicator_count": len(payload.get("indicators", []) or []),
             "mitre_count": len(payload.get("mitre_mappings", []) or []),
             "report_required": True,
             "evidence_required": True,
             "execution_allowed": False,
             "body_embedded": False,
-        })
+        }
+        if redacted_evidence != serialized_evidence or "[REDACTED]" in serialized_evidence:
+            metadata["redaction_marker"] = "[REDACTED]"
+        return redact_obj(metadata)
 
     def _report_metadata(self, report_payload: dict[str, Any]) -> dict[str, Any]:
         return redact_obj({
@@ -260,13 +293,14 @@ class DefensiveWorkflowReporter:
         payload["evidence_refs"] = list(ref.evidence_refs)
         return payload
 
-    @staticmethod
-    def _manifest_summary(manifest, kind: str) -> dict[str, Any]:
+    def _manifest_summary(self, manifest, kind: str) -> dict[str, Any]:
+        artifacts = list(getattr(manifest, "artifacts", ())) + list(getattr(manifest, "reports", ())) + list(getattr(manifest, "evidence_refs", ()))
+        artifact_ids = [getattr(artifact, "artifact_id", "") for artifact in artifacts]
         return {
-            "manifest_id": manifest.manifest_id,
+            "manifest_id": self._stable_id(f"{kind}-manifest", {"kind": kind, "source_phase": manifest.source_phase, "artifact_ids": artifact_ids, "version": manifest.version}),
             "kind": kind,
             "source_phase": manifest.source_phase,
-            "artifact_count": len(getattr(manifest, "artifacts", ())) + len(getattr(manifest, "reports", ())) + len(getattr(manifest, "evidence_refs", ())),
+            "artifact_count": len(artifacts),
             "non_authoritative": manifest.non_authoritative,
             "execution_allowed": manifest.execution_allowed,
             "version": manifest.version,

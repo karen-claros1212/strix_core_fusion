@@ -251,3 +251,8 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 ## Phase 10D-3 Test Results
 - `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.
 - Capability audit confirmed Phase 10D did not globally cap STRIX and did not alter protected core runtime files.
+
+## Phase 10D-4 Test Results
+- `python3 -m pytest tests/defensive_workflows tests/reporting tests/telegram -q` — 108 passed.
+- `python3 -m pytest tests -q` — 425 passed, 3 existing warnings.
+- Added integration hardening tests for raw artifact body exclusion, secret redaction, SHA-256 ref stability, deterministic pack output, invalid workflow blocking, defensive lab non-execution, and advanced authorized path preservation.

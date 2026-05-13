@@ -26,7 +26,7 @@ class EvidenceReporter:
             items = evidence or []
         return {'item_count': len(items), 'actions': [item.get('action_type') or item.get('event_type') for item in items if isinstance(item, dict)], 'evidence_ref_preserved': True}
 
-    def build_manifest_ref(self, evidence_path, *, source_phase='unknown', mission_id=None, session_id=None, classification='internal', risk='R0'):
+    def build_manifest_ref(self, evidence_path, *, source_phase='unknown', mission_id=None, session_id=None, classification='internal', risk='R0', metadata=None):
         """Return an inert manifest reference for evidence without embedding artifact content."""
         from saga_fusion.manifests import ManifestBuilder
         builder = ManifestBuilder()
@@ -37,5 +37,6 @@ class EvidenceReporter:
             session_id=session_id,
             classification=classification,
             risk=risk,
+            metadata=metadata,
         )
 

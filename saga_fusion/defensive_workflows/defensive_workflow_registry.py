@@ -25,7 +25,13 @@ class DefensiveWorkflowDefinition:
 
     def run(self, **kwargs) -> DefensiveWorkflowPlan:
         plan = self.runner(**kwargs)
-        if plan.execution_allowed or not plan.report_required or not plan.evidence_required:
+        if (
+            plan.execution_allowed
+            or not plan.report_required
+            or not plan.evidence_required
+            or not plan.non_authoritative
+            or plan.executed is not False
+        ):
             raise ValueError("invalid defensive workflow safety contract")
         return plan
 
@@ -51,9 +57,17 @@ class DefensiveWorkflowRegistry:
         ]
 
     def register(self, definition: DefensiveWorkflowDefinition) -> None:
-        if definition.execution_allowed or not definition.report_required or not definition.evidence_required:
-            raise ValueError("defensive workflows must be non-executing with evidence/report requirements")
-        self._definitions[definition.workflow_id] = definition
+        workflow_id = str(definition.workflow_id or "").strip()
+        if not workflow_id:
+            raise ValueError("defensive workflow_id is required")
+        if (
+            definition.execution_allowed
+            or not definition.report_required
+            or not definition.evidence_required
+            or not definition.non_authoritative
+        ):
+            raise ValueError("defensive workflows must be non-executing, non-authoritative, with evidence/report requirements")
+        self._definitions[workflow_id] = definition
 
     def resolve(self, workflow_id: str) -> DefensiveWorkflowDefinition | None:
         return self._definitions.get(str(workflow_id or "").strip())
