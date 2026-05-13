@@ -229,3 +229,10 @@
 - [OPEN] RB-10B-01: Future lab/Telegram commands could accidentally convert workflow recommendations into actions. Mitigation: keep `execution_allowed=False`, ToolRouter non-executing, ApprovalVerifier/SandboxController gates, and add command-level lab-mode regressions in Phase 10C.
 - [MONITORED] RB-10B-02: Detection templates are non-authoritative and require analyst validation to avoid false positives.
 - [READY] Phase 10C can add defensive Telegram commands / lab mode only if these workflows remain plan/report/evidence only by default.
+
+
+## Risk Register Update (Phase 10C)
+- [CLOSED] RB-10C-01: Defensive Telegram commands could execute workflows as real actions. Mitigation: `DefensiveLabMode` forces `execution_allowed=False`, `executed=False`, report/evidence requirements, and no real tool flags.
+- [CLOSED] RB-10C-02: Telegram tests could call real Telegram. Mitigation: tests use mock/in-process routing; mock mode remains token-free and injected real API clients are not called.
+- [CLOSED] RB-10C-03: Defensive outputs could leak raw secrets or attachment/sample data. Mitigation: workflow/report redaction plus no attachment processing/download/execution path.
+- [READY] Phase 10D defensive report packs may proceed if they preserve lab/report-only constraints.

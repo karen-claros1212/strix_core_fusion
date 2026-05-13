@@ -310,3 +310,10 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Malware triage does not download or execute samples; phishing does not execute attachments; ransomware does not delete, encrypt, or decrypt files; webshell investigation does not generate or invoke webshells; credential-theft workflow does not display secrets or exfiltrate data.
 - ToolRouter remains non-executing and TaskPlanner integration is metadata/report-only.
 - No real Telegram, CloudOps, external pentest, offensive payload, bypass, persistence, tokens, `.env`, Qwen/TurboQuant/llama.cpp, Agent Zero, OpenCLAW, or Hermes changes.
+
+
+## Phase 10C Security Regression
+- R4/R5 regression remains intact: R4 requires approval; R5 is blocked.
+- Defensive Telegram lab routing returns non-authoritative report/evidence plans only.
+- No real Telegram calls, real tool execution, malware execution, attachment execution/processing, offensive payloads, webshell generation, external pentest, CloudOps, token/.env changes, Qwen/TurboQuant/llama.cpp changes, or Agent Zero/OpenCLAW/Hermes changes were introduced.
+- Response redaction blocks raw tokens/password-like values.

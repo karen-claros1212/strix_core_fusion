@@ -14,6 +14,7 @@ from .telegram_security import TelegramSecurity
 from .telegram_audit import TelegramAudit
 from .mock_telegram_adapter import MockTelegramAdapter
 from .report_sender import ReportSender
+from .defensive_command_router import DefensiveCommandRouter
 
 __all__ = [
     "MissionStatus",
@@ -34,4 +35,5 @@ __all__ = [
     "TelegramAudit",
     "MockTelegramAdapter",
     "ReportSender",
+    "DefensiveCommandRouter",
 ]

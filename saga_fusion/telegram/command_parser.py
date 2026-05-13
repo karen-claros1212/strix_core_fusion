@@ -5,7 +5,7 @@ class CommandParser:
     def __init__(self):
         self.commands = [
             'start', 'status', 'mission', 'scope', 'evidence', 'findings', 'report', 'approve', 'deny', 'logs',
-            'create', 'run'
+            'create', 'run', 'defense_status', 'malware_triage', 'ransomware_response', 'phishing_review', 'webshell_investigation', 'credential_theft_review', 'suspicious_process_review'
         ]
 
     def parse(self, text: str):

@@ -230,3 +230,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Cyber knowledge + defensive workflows: 20 passed
 - Full suite: 379 passed, 3 warnings
 - Added tests for each workflow plan, safety flags, unknown registry blocking, reporter redaction, no sample execution, no attachment execution, no file deletion/encryption/decryption, no webshell generation, and no secret exposure.
+
+
+## Phase 10C Test Results
+- `python3 -m pytest tests/telegram -q --tb=short` — 56 passed.
+- `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/telegram -q --tb=short` — 76 passed.
+- `python3 -m pytest tests -q --tb=short` — 393 passed, 3 warnings.

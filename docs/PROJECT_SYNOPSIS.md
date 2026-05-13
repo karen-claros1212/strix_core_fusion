@@ -14,7 +14,7 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Phase 5: CloudOps / InfraOps Operator
 - Phase 6B-2: Telegram mock mode completed
 - Phase 6B-3: gated real Telegram integration completed
-- Current full suite: 369 passed, 3 warnings
+- Current full suite: 393 passed, 3 warnings
 
 ## Architecture
 - `strix/`: STRIX core; not modified in Phase 6B-3
@@ -207,11 +207,19 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added `saga_fusion/cyber_knowledge/` for defensive malware/threat taxonomy, conservative MITRE ATT&CK behavior mapping, safe IoC modeling, YARA/Sigma detection templates, incident playbooks, and redacted threat reports.
 - Builders are metadata/string/log-template only and reject offensive/payload/bypass/exfiltration/execution requests.
 - TaskPlanner can reference selected defensive cyber playbooks; ReportBuilder can generate cyber threat reports.
-- Current full suite: 369 passed, 3 warnings.
+- Current full suite: 393 passed, 3 warnings.
 
 ## Phase 10B — Advanced Defensive Workflows
 - Added `saga_fusion/defensive_workflows/` with six advanced defensive workflows: malware triage, suspicious process review, credential theft investigation, ransomware response, webshell investigation, and phishing attachment review.
 - Workflows use `cyber_knowledge` taxonomy, MITRE mappings, defensive YARA/Sigma builders, and playbooks to generate plans, evidence, reports, and recommendations only.
 - `execution_allowed=False`, `evidence_required=True`, `report_required=True`, active redaction, and `non_authoritative=True` are preserved across workflow plans and reports.
 - TaskPlanner can reference the new workflows, Reporting can generate `DefensiveWorkflowReport`, and ToolRouter still executes nothing.
-- Current full suite: 379 passed, 3 existing warnings.
+- Current full suite: 393 passed, 3 existing warnings.
+
+
+## Phase 10C — Defensive Telegram Commands / Lab Mode
+- Added `saga_fusion/telegram/defensive_commands.py`, `lab_mode.py`, and `defensive_command_router.py` to connect Phase 10B defensive workflows to Telegram commands and Spanish natural-language defensive requests.
+- Supported commands: `/defense_status`, `/malware_triage`, `/ransomware_response`, `/phishing_review`, `/webshell_investigation`, `/credential_theft_review`, `/suspicious_process_review`.
+- Every response is lab/evidence-only/report-only with `lab_mode=True`, `execution_allowed=False`, `evidence_required=True`, `report_required=True`, and `non_authoritative=True`.
+- Tests use mock/in-process routing only: no real Telegram calls, no malware/sample/attachment execution, no payload/webshell generation, no external pentest, no CloudOps.
+- Validation: Telegram 56 passed; defensive+cyber+telegram 76 passed; full suite 393 passed, 3 warnings.

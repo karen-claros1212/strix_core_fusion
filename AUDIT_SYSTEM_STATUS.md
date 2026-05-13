@@ -368,3 +368,11 @@
 - Offensive payload/bypass/persistence/exfiltration: NO
 - Real CloudOps/Telegram/external pentest/tools: NO
 - Verdict: APTO PARA 10C DEFENSIVE TELEGRAM COMMANDS / LAB MODE: SI
+
+
+## Phase 10C Status — Defensive Telegram Commands / Lab Mode
+- Status: COMPLETED.
+- Added lab-mode Telegram routing for Phase 10B defensive workflows.
+- Safety: no real Telegram in tests, no real tool execution, no malware execution, no attachment execution/processing, no payload or webshell generation, no external pentest, no CloudOps.
+- Governance preserved: PromptSecurity, MissionPolicy, DangerousActionPolicy, ToolRouter, ApprovalVerifier, SandboxController; R4/R5 unchanged.
+- Validation: Telegram 56 passed; defensive+cyber+telegram 76 passed; full suite 393 passed, 3 warnings.

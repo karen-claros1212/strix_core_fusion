@@ -10,6 +10,7 @@ from .replay_guard import ReplayGuard
 from .rate_limiter import RateLimiter
 from .telegram_security import TelegramSecurity
 from .mission_parser import MissionParser
+from .defensive_command_router import DefensiveCommandRouter
 from ..llm.llm_router import LLMRouter
 from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 from ..tool_routing import ToolRouter
@@ -47,6 +48,7 @@ class TelegramMissionOperator:
         self.memory_retriever = MemoryRetriever(self.memory_store)
         self.context_window = ContextWindow(char_budget=1200)
         self.session_summarizer = SessionSummarizer()
+        self.defensive_command_router = DefensiveCommandRouter()
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -116,6 +118,23 @@ class TelegramMissionOperator:
             return "DENIED: Unauthorized user."
 
         normalized_text = (text or "").strip()
+        if self.defensive_command_router.can_handle(normalized_text):
+            result = self.defensive_command_router.route(normalized_text, chat_id=str(chat_id), user_id=str(user_id))
+            self.evidence_logger._record(
+                "defensive_telegram_workflow",
+                {
+                    "chat_id": str(chat_id),
+                    "user_id": str(user_id),
+                    "status": result.get("status"),
+                    "workflow_category": result.get("workflow_category"),
+                    "workflow_id": result.get("workflow_id"),
+                    "execution_allowed": False,
+                    "lab_mode": True,
+                    "artifact_ref": result.get("artifact_ref"),
+                },
+            )
+            return self._serialize_response(result)
+
         parsed = self.command_parser.parse(normalized_text)
 
         if parsed is not None and not getattr(parsed, "known", False):

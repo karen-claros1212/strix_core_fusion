@@ -131,3 +131,9 @@
 - Unknown workflows are blocked; every workflow remains non-executing with required evidence/report output.
 - Next phase: 10C defensive Telegram commands / lab mode only, preserving no real Telegram calls in tests, no real external tools, and `execution_allowed=False` by default.
 - Still blocked/deferred: malware/sample/attachment execution, offensive payloads, bypass, persistence, exfiltration, real CloudOps, external pentest, and automatic remediation.
+
+
+## Phase 10C Defensive Telegram Lab Mode Outcome
+- Defensive Telegram routing is report-only/lab-only and does not introduce remediation execution.
+- Unknown defensive commands are blocked or require clarification.
+- Future 10D work may add defensive report packs, but must preserve mock tests, no real Telegram, no real tool execution, no malware/attachment execution, and no CloudOps/pentest actions.
