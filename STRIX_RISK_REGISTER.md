@@ -262,3 +262,7 @@
 - [CLOSED] RB-10D-07: Phase 10D needed consolidated closure and a Phase 10E gate. Mitigation: added `docs/reports/PHASE_10D_CLOSURE_REPORT.md` with implementation summary, non-goals, preserved capabilities, evidence/ref behavior, pending risks, and GO/NO-GO criteria.
 - [MONITORED] RB-10D-06: Future report-pack expansion could drift into remediation execution. Gate: Phase 10E is GO only for docs/status/reporting/golden-test-first planning unless separately approved; no new runtime or real execution.
 - [ENFORCED] Phase 10E must not cap STRIX globally and must preserve `advanced_authorized`, R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, redaction, and evidence-only report packs.
+
+## Risk Register Update (Phase 10E)
+- [CLOSED] RB-10E-01: Lack of minimal local end-to-end proof for defensive workflows; mitigated with a local `phishing_attachment` smoke covering simulated input through report-pack/final output.
+- [MONITORED] RB-10E-02: Future E2E expansion must remain mock/local unless separately approved; no real services or artifact execution are allowed by this phase.

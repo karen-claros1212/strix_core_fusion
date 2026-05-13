@@ -167,3 +167,8 @@
 - Consolidated 10D-1 through 10D-4: report-pack design/golden characterization, minimal runtime aggregation, capability-preservation audit, and integration hardening.
 - Roadmap gate for Phase 10E: proceed only with docs/status/reporting/golden-test-first planning unless separately approved; preserve evidence-only refs, no raw artifact bodies, R4/R5, PromptSecurity, MissionPolicy, approval flow, SandboxController, manifest validation, redaction, and no global STRIX cap.
 - Current validation: full suite `425 passed, 3 existing warnings`.
+
+## Phase 10E Outcome
+- Added minimal local E2E smoke coverage for `phishing_attachment` from simulated input through router/workflow/report pack/final output.
+- Kept Phase 10E test-only/docs/status: no runtime change and no real services.
+- Next recommended step: Phase 10F planning/golden-test-first only unless separately approved.

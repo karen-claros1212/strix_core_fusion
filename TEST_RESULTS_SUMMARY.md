@@ -261,3 +261,8 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - `python3 -m pytest tests -q` — 425 passed, 3 existing warnings.
 - Closure was documentation/status/reporting only; no new runtime code or tests were added.
 - Phase 10D closure report: `docs/reports/PHASE_10D_CLOSURE_REPORT.md`.
+
+## Test Results (Phase 10E)
+- Targeted defensive/reporting/Telegram: 109 passed
+- Full suite: 426 passed, 3 existing warnings
+- Added `tests/defensive_workflows/test_phase_10e_local_e2e_smoke.py` for local system smoke coverage.

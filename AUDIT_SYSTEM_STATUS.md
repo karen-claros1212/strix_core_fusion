@@ -410,3 +410,11 @@
 - Controls preserved: no global STRIX cap; `advanced_authorized` remains behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, ApprovalVerifier, SandboxController, manifest validation, and redaction.
 - Validation: `python3 -m pytest tests -q` — 425 passed, 3 existing warnings.
 - Verdict: PHASE 10D CLOSED. PHASE 10E GO only for docs/status/reporting/golden-test-first planning unless separately approved; NO-GO for new runtime or real external execution.
+
+## Phase 10E Status
+- Local E2E Smoke: COMPLETED
+- Scope: local/mock/in-memory defensive `phishing_attachment` smoke only
+- Coverage: simulated input -> classification/router -> workflow -> evidence refs -> report pack -> final output
+- Tests: targeted defensive/reporting/Telegram 109 passed; full suite 426 passed, 3 existing warnings
+- Real services/actions: NO
+- Raw artifact bodies/secrets: NOT emitted

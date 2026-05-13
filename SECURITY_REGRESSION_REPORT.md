@@ -353,3 +353,9 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Defensive report packs remain evidence-only/reference-only and do not embed raw artifact bodies or secrets.
 - STRIX is not globally capped; advanced authorized paths remain preserved behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, approval verification, ToolRouter/ScopedToolRouter, SandboxController, manifest validation, and redaction.
 - Full regression remained green: 425 passed, 3 existing warnings.
+
+## Security Regression Report (Phase 10E)
+- Local smoke stayed mock/in-memory and did not call real Telegram, real LLM, external services, or destructive tooling.
+- Verified `execution_allowed=False`, `executed=False`, `non_authoritative=True`, `evidence_required=True`, and `report_required=True` across final output/report-pack path.
+- Report pack and final output use reference-only evidence/report/manifest refs; no raw artifact bodies or secrets are emitted.
+- R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, and redaction were not weakened.

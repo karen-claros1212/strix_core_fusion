@@ -254,3 +254,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - STRIX core is not globally capped; `advanced_authorized` paths remain preserved behind PromptSecurity, MissionPolicy, R4 approval, R5 blocking, ToolRouter/ScopedToolRouter, ApprovalVerifier, SandboxController, manifest validation, and redaction.
 - Validation: full suite `425 passed, 3 existing warnings`.
 - Phase 10E recommendation: GO for docs/status/reporting/golden-test-first planning only; NO-GO for new runtime, real Telegram/LLM, real CloudOps, external pentest, malware/sample/attachment execution, payload/webshell generation, destructive commands, raw artifact bodies, or weakened gates.
+
+## Phase 10E — Local E2E Smoke
+- Added a local/mock/in-memory E2E smoke test for the `phishing_attachment` defensive workflow.
+- The smoke covers simulated Telegram-style input, deterministic defensive routing, workflow plan creation, reference-only evidence/report refs, report pack creation, and final output assembly.
+- Current full suite after Phase 10E: 426 passed, 3 existing warnings.
+- No real Telegram, real LLM, attachment execution, malware execution, payload generation, webshell generation, destructive command, token/env/config change, or protected STRIX core change was performed.
