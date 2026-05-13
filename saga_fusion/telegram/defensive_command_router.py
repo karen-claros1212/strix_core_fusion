@@ -81,6 +81,7 @@ class DefensiveCommandRouter:
         plan = self._run_workflow(workflow_id, request.raw_text)
         report = self.reporter.build_report(plan)
         plan_payload = plan.to_dict()
+        report_pack = self.reporter.build_report_pack(plan_payload).to_dict()
         mitre = plan_payload.get("mitre_mappings", [])
         report_ref = f"reports/defensive_telegram/{report.report_id}.md"
         summary = self._telegram_summary(plan_payload, report.report_id, mitre)
@@ -93,7 +94,11 @@ class DefensiveCommandRouter:
             "workflow_id": plan.workflow_id,
             "plan": plan_payload,
             "report_id": report.report_id,
+            "pack_id": report_pack.get("pack_id"),
             "artifact_ref": report_ref,
+            "evidence_refs": report_pack.get("evidence_refs", []),
+            "report_refs": report_pack.get("report_refs", []),
+            "manifest_refs": report_pack.get("manifest_refs", []),
             "telegram_summary": summary,
             "mitre_mappings": mitre,
             "recommendations": plan_payload.get("recommendations", []),

@@ -172,3 +172,8 @@
 - Added minimal local E2E smoke coverage for `phishing_attachment` from simulated input through router/workflow/report pack/final output.
 - Kept Phase 10E test-only/docs/status: no runtime change and no real services.
 - Next recommended step: Phase 10F planning/golden-test-first only unless separately approved.
+
+## Phase 10F Outcome
+- Implemented controlled Telegram lab E2E runtime for defensive evidence-only flows.
+- Next operational step: rerun live smoke with the allowlisted Telegram user sending the two required fresh messages during polling.
+- Keep NO-GO for malware/attachment execution, payload/webshell generation, real LLM, CloudOps, pentest, destructive commands, or gate weakening.

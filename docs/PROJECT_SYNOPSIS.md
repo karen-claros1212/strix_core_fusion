@@ -260,3 +260,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - The smoke covers simulated Telegram-style input, deterministic defensive routing, workflow plan creation, reference-only evidence/report refs, report pack creation, and final output assembly.
 - Current full suite after Phase 10E: 426 passed, 3 existing warnings.
 - No real Telegram, real LLM, attachment execution, malware execution, payload generation, webshell generation, destructive command, token/env/config change, or protected STRIX core change was performed.
+
+## Phase 10F Telegram Lab E2E Real
+- Added controlled real Telegram lab runtime for defensive evidence-only messages.
+- `revisa un adjunto sospechoso en modo seguro` routes to `phishing_attachment` and returns report-pack refs in lab mode.
+- `estado defensa` returns defensive status/capabilities without execution.
+- Current validation: targeted Telegram/defensive/reporting suite 113 passed; full suite 430 passed with 3 existing warnings.
+- Live preflight passed for `@RadamanthysCyberBot`, but bounded live smoke timed out with 0 fresh messages; no live result was fabricated.

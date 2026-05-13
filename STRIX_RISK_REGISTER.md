@@ -266,3 +266,11 @@
 ## Risk Register Update (Phase 10E)
 - [CLOSED] RB-10E-01: Lack of minimal local end-to-end proof for defensive workflows; mitigated with a local `phishing_attachment` smoke covering simulated input through report-pack/final output.
 - [MONITORED] RB-10E-02: Future E2E expansion must remain mock/local unless separately approved; no real services or artifact execution are allowed by this phase.
+
+## Phase 10F Telegram Lab Risk Update
+- **Risk:** Real Telegram lab transport could be mistaken for operational execution.
+  - **Mitigation:** Dedicated lab runtime, env/preflight gate, allowlist, polling-only lab mode, and immutable non-execution flags.
+- **Risk:** Live smoke evidence could be fabricated when user messages are unavailable.
+  - **Mitigation:** Report marks live smoke NO-GO/incomplete when no fresh messages are received.
+- **Risk:** Telegram responses could expose raw artifacts or secrets.
+  - **Mitigation:** Secret redaction, report-pack references only, no raw attachment processing/execution.

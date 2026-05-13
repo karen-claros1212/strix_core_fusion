@@ -36,3 +36,4 @@ def test_natural_language_required_mappings():
     assert map_natural_language("investiga posible robo de credenciales").workflow_id == "credential_theft"
     assert map_natural_language("revisa posible webshell").workflow_id == "webshell_investigation"
     assert map_natural_language("analiza proceso sospechoso").workflow_id == "suspicious_process"
+    assert map_natural_language("estado defensa").command == "defense_status"

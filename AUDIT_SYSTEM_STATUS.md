@@ -418,3 +418,13 @@
 - Tests: targeted defensive/reporting/Telegram 109 passed; full suite 426 passed, 3 existing warnings
 - Real services/actions: NO
 - Raw artifact bodies/secrets: NOT emitted
+
+## Phase 10F Telegram Lab E2E Real
+**Status:** Code/tests complete; live smoke incomplete due no fresh user messages during bounded polling.  
+**Date:** 2026-05-13
+
+Controls validated:
+- Env-only token loading and redacted preflight.
+- Real Telegram runtime requires `TELEGRAM_MODE=real`, token, allowlist, polling enabled, webhook disabled, and `getMe` success.
+- Defensive lab responses preserve `execution_allowed=False`, `executed=False`, `non_authoritative=True`, `evidence_required=True`, `report_required=True`.
+- Report-pack refs are included in phishing attachment Telegram lab responses.

@@ -359,3 +359,14 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Verified `execution_allowed=False`, `executed=False`, `non_authoritative=True`, `evidence_required=True`, and `report_required=True` across final output/report-pack path.
 - Report pack and final output use reference-only evidence/report/manifest refs; no raw artifact bodies or secrets are emitted.
 - R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, and redaction were not weakened.
+
+## Phase 10F Telegram Lab E2E Security Regression
+Date: 2026-05-13
+
+- Added explicit real Telegram lab runtime; it refuses live polling unless env preflight passes.
+- Token remains env-only and is redacted from preflight, logs, evidence, and responses.
+- Unit tests use fake Bot API clients only; no real Telegram in tests.
+- Defensive Telegram flow remains evidence/report-only and non-executing.
+- `phishing_attachment` responses include DefensiveReportPack refs without raw artifact bodies.
+- `estado defensa` returns capabilities/status without executing anything.
+- Live smoke is incomplete because no fresh allowlisted messages were received during bounded polling; no result was fabricated.

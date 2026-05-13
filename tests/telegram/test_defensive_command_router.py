@@ -41,6 +41,8 @@ def test_required_commands_route_to_correct_workflows():
         assert result["status"] == "workflow_plan"
         assert result["workflow_category"] == workflow
         assert result["report_id"].startswith("defensive-report-")
+        assert result["pack_id"].startswith("defensive-pack-")
+        assert result["evidence_refs"] and result["report_refs"] and result["manifest_refs"]
         assert "telegram_summary" in result
         assert result["mitre_mappings"]
         assert result["recommendations"]

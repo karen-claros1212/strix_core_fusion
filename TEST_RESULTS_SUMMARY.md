@@ -266,3 +266,19 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Targeted defensive/reporting/Telegram: 109 passed
 - Full suite: 426 passed, 3 existing warnings
 - Added `tests/defensive_workflows/test_phase_10e_local_e2e_smoke.py` for local system smoke coverage.
+
+## Test Results (Phase 10F)
+Date: 2026-05-13  
+Root: `/mnt/Proyectos/strix_core_fusion`
+
+### Commands
+- `python3 -m pytest tests/telegram tests/defensive_workflows tests/reporting -q`
+- `python3 -m pytest tests -q`
+
+### Results
+- Targeted Telegram + defensive workflows + reporting: 113 passed
+- Full suite: 430 passed, 3 existing warnings
+
+### Live Lab Smoke
+- Telegram preflight passed for `@RadamanthysCyberBot` with token redacted.
+- Bounded polling run timed out with 0 fresh messages; live smoke remains NO-GO/incomplete until the allowed user sends the required messages during polling.

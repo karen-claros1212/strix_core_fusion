@@ -22,6 +22,7 @@ COMMAND_TO_WORKFLOW: dict[str, str] = {
 DEFENSIVE_COMMANDS = frozenset({DEFENSE_STATUS_COMMAND, *COMMAND_TO_WORKFLOW.keys()})
 
 _NATURAL_LANGUAGE_RULES: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("estado", "defensa"), DefensiveWorkflowKind.DEFENSE_STATUS.value),
     (("ransomware",), DefensiveWorkflowKind.RANSOMWARE_RESPONSE.value),
     (("adjunto", "sospechoso"), DefensiveWorkflowKind.PHISHING_ATTACHMENT.value),
     (("phishing", "adjunto"), DefensiveWorkflowKind.PHISHING_ATTACHMENT.value),
@@ -89,6 +90,8 @@ def map_natural_language(text: str) -> DefensiveCommandRequest | None:
     # Preserve explicit Spanish mappings while keeping matching deterministic and local-only.
     for required_terms, workflow_id in _NATURAL_LANGUAGE_RULES:
         if all(re.search(r"\b" + re.escape(term) + r"\b", normalized) for term in required_terms):
+            if workflow_id == DefensiveWorkflowKind.DEFENSE_STATUS.value:
+                return DefensiveCommandRequest(raw_text=raw, command=DEFENSE_STATUS_COMMAND, workflow_id=None, source="natural_language")
             return DefensiveCommandRequest(raw_text=raw, workflow_id=workflow_id, source="natural_language")
     return None
 
