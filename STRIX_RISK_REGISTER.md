@@ -241,3 +241,9 @@
 - [OPEN] RB-10D-01: Future DefensiveReportPack runtime could duplicate report/redaction logic and drift from existing controls. Mitigation: design requires thin aggregation over `DefensiveWorkflowReporter`, `ReportRedactor`, `EvidenceReporter`, and `ManifestBuilder`.
 - [OPEN] RB-10D-02: Report packs could accidentally embed raw artifact bodies or secret-bearing content. Mitigation: 10D-1 golden tests characterize safe current inputs; 10D-2 must add manifest-backed refs/hash tests and raw-body/secret blocking tests before runtime is accepted.
 - [READY] Phase 10D-2 may implement minimal DefensiveReportPack runtime only if it remains non-executing, redacted, manifest-backed, and full suite stays green.
+
+## Risk Register Update (Phase 10D-2)
+- [CLOSED] RB-10D-01: DefensiveReportPack runtime could duplicate report/redaction logic. Mitigation: implemented as a thin layer over existing `DefensiveWorkflowReporter`, `ReportRedactor`, and `ManifestBuilder` primitives.
+- [CLOSED] RB-10D-02: Report packs could embed raw artifact bodies or secrets. Mitigation: pack refs are metadata/ref/SHA-256 only; runtime tests block raw body/content slots and verify token/password redaction.
+- [MONITORED] RB-10D-03: Future pack expansion could drift into executable remediation. Mitigation: current runtime enforces non-execution and future phases must preserve MissionPolicy, approvals, SandboxController, and manifest validation.
+- [READY] Next phase may proceed as planning or another golden-test-first increment only.

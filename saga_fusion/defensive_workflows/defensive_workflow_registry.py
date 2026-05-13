@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from .credential_theft_workflow import run_credential_theft_workflow
+from .defense_status_workflow import run_defense_status_workflow
 from .defensive_workflow_types import DefensiveWorkflowKind, DefensiveWorkflowPlan
 from .malware_triage_workflow import run_malware_triage_workflow
 from .phishing_attachment_workflow import run_phishing_attachment_workflow
@@ -41,11 +42,12 @@ class DefensiveWorkflowRegistry:
     def default_definitions() -> list[DefensiveWorkflowDefinition]:
         return [
             DefensiveWorkflowDefinition(DefensiveWorkflowKind.MALWARE_TRIAGE.value, "Malware Triage", run_malware_triage_workflow),
-            DefensiveWorkflowDefinition(DefensiveWorkflowKind.SUSPICIOUS_PROCESS.value, "Suspicious Process", run_suspicious_process_workflow),
-            DefensiveWorkflowDefinition(DefensiveWorkflowKind.CREDENTIAL_THEFT.value, "Credential Theft", run_credential_theft_workflow),
             DefensiveWorkflowDefinition(DefensiveWorkflowKind.RANSOMWARE_RESPONSE.value, "Ransomware Response", run_ransomware_response_workflow),
-            DefensiveWorkflowDefinition(DefensiveWorkflowKind.WEBSHELL_INVESTIGATION.value, "Webshell Investigation", run_webshell_investigation_workflow),
             DefensiveWorkflowDefinition(DefensiveWorkflowKind.PHISHING_ATTACHMENT.value, "Phishing Attachment", run_phishing_attachment_workflow),
+            DefensiveWorkflowDefinition(DefensiveWorkflowKind.WEBSHELL_INVESTIGATION.value, "Webshell Investigation", run_webshell_investigation_workflow),
+            DefensiveWorkflowDefinition(DefensiveWorkflowKind.CREDENTIAL_THEFT.value, "Credential Theft", run_credential_theft_workflow),
+            DefensiveWorkflowDefinition(DefensiveWorkflowKind.SUSPICIOUS_PROCESS.value, "Suspicious Process", run_suspicious_process_workflow),
+            DefensiveWorkflowDefinition(DefensiveWorkflowKind.DEFENSE_STATUS.value, "Defense Status", run_defense_status_workflow),
         ]
 
     def register(self, definition: DefensiveWorkflowDefinition) -> None:
@@ -53,8 +55,11 @@ class DefensiveWorkflowRegistry:
             raise ValueError("defensive workflows must be non-executing with evidence/report requirements")
         self._definitions[definition.workflow_id] = definition
 
-    def get(self, workflow_id: str) -> DefensiveWorkflowDefinition | None:
+    def resolve(self, workflow_id: str) -> DefensiveWorkflowDefinition | None:
         return self._definitions.get(str(workflow_id or "").strip())
+
+    def get(self, workflow_id: str) -> DefensiveWorkflowDefinition | None:
+        return self.resolve(workflow_id)
 
     def list_workflows(self) -> list[DefensiveWorkflowDefinition]:
         return list(self._definitions.values())

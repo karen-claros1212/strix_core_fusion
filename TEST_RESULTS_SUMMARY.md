@@ -241,3 +241,9 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Targeted defensive/reporting suite: `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/reporting tests/telegram -q --tb=short` — 100 passed.
 - Full suite: `python3 -m pytest tests -q --tb=short` — 407 passed, 3 existing warnings.
 - Added characterization/golden tests only; no DefensiveReportPack runtime was implemented.
+
+## Phase 10D-2 Test Results
+- `python3 -m pytest tests/defensive_workflows/test_defensive_report_pack_golden.py -q` — 14 passed.
+- `python3 -m pytest tests/defensive_workflows tests/cyber_knowledge tests/reporting tests/telegram -q` — 110 passed. (`tests/cyber` was absent; `tests/cyber_knowledge` used.)
+- `python3 -m pytest tests -q` — 417 passed, 3 existing warnings.
+- Added runtime pack tests covering required fields, per-workflow generation including `defense_status`, reference/hash-only evidence/report refs, redaction, no execution, deterministic registry resolution, unknown blocking, and unsafe-input rejection.

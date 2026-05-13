@@ -324,3 +324,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Future report packs must use evidence/report refs, hashes, and redacted metadata only; raw artifact bodies, attachment contents, sample bytes, credentials, tokens, and secrets remain blocked.
 - No real Telegram, malware execution, payload/webshell generation, attachment execution/processing, destructive command, external network execution, config change, `.env` change, token exposure, or secret printing was performed.
 - R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, manifest validation, and redaction remain unchanged.
+
+## Security Regression Report (Phase 10D-2)
+- `DefensiveReportPack` is a reference-only aggregation layer; it does not execute workflows, tools, Telegram, LLMs, attachments, samples, payloads, webshells, destructive commands, or network calls.
+- Safety flags are enforced: `execution_allowed=False`, `executed=False`, `non_authoritative=True`, `evidence_required=True`, and `report_required=True`.
+- Evidence/report artifacts are represented by refs, SHA-256 hashes, sizes, redaction status, secret-scan status, and manifest summaries only; raw body/content keys are blocked from tests and not emitted.
+- Existing `ReportRedactor` and manifest redaction/validation primitives are reused; dummy token/password/Bearer values are redacted in pack outputs.
+- R4/R5, PromptSecurity, MissionPolicy, SandboxController, approval flow, and manifest validation were not weakened.
+- Full regression remained green: 417 passed, 3 existing warnings.

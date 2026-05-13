@@ -143,3 +143,9 @@
 - No runtime report-pack generation was implemented in 10D-1.
 - Future 10D-2 should implement a minimal aggregation layer over existing workflow/reporting/manifest primitives, not a parallel report engine.
 - Required 10D-2 controls: evidence refs/hash only, mandatory redaction, no raw artifact bodies, per-workflow coverage, Telegram-safe summary, full suite green.
+
+## Phase 10D-2 Outcome
+- Closed minimal DefensiveReportPack runtime implementation without creating a parallel report system.
+- Packs aggregate existing workflow plans, `DefensiveWorkflowReporter` redacted sections, and manifest-backed reference/hash metadata only.
+- `defense_status` is available as a safe control-surface workflow; unknown workflows remain blocked.
+- Next phase may proceed to planning only if it preserves no real Telegram/LLM/tool execution and no raw artifact body embedding.

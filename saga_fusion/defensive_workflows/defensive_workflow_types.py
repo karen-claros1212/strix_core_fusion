@@ -9,11 +9,12 @@ from typing import Any
 
 class DefensiveWorkflowKind(str, Enum):
     MALWARE_TRIAGE = "malware_triage"
-    SUSPICIOUS_PROCESS = "suspicious_process"
-    CREDENTIAL_THEFT = "credential_theft"
     RANSOMWARE_RESPONSE = "ransomware_response"
-    WEBSHELL_INVESTIGATION = "webshell_investigation"
     PHISHING_ATTACHMENT = "phishing_attachment"
+    WEBSHELL_INVESTIGATION = "webshell_investigation"
+    CREDENTIAL_THEFT = "credential_theft"
+    SUSPICIOUS_PROCESS = "suspicious_process"
+    DEFENSE_STATUS = "defense_status"
 
 
 @dataclass(frozen=True)
@@ -71,6 +72,47 @@ class DefensiveWorkflowPlan:
         return redact_obj(payload)
 
 
+
+
+@dataclass(frozen=True)
+class DefensiveReportPack:
+    pack_id: str
+    workflow_category: str
+    workflow_id: str
+    report_id: str
+    executive_summary: str
+    technical_findings: dict[str, Any]
+    risk_classification: dict[str, Any]
+    recommended_actions: list[str]
+    containment_steps: list[str]
+    recovery_steps: list[str]
+    lessons_learned: list[str]
+    evidence_refs: list[dict[str, Any]] = field(default_factory=list)
+    report_refs: list[dict[str, Any]] = field(default_factory=list)
+    manifest_refs: list[dict[str, Any]] = field(default_factory=list)
+    non_authoritative: bool = True
+    execution_allowed: bool = False
+    executed: bool = False
+    evidence_required: bool = True
+    report_required: bool = True
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if self.execution_allowed or self.executed:
+            raise ValueError("defensive report packs must be non-executing")
+        if not self.non_authoritative or not self.evidence_required or not self.report_required:
+            raise ValueError("defensive report packs require non-authoritative evidence/report contracts")
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = asdict(self)
+        payload["execution_allowed"] = False
+        payload["executed"] = False
+        payload["non_authoritative"] = True
+        payload["evidence_required"] = True
+        payload["report_required"] = True
+        return redact_obj(payload)
+
+
 @dataclass(frozen=True)
 class DefensiveWorkflowReport:
     report_id: str
@@ -109,7 +151,9 @@ def redact_obj(value: Any) -> Any:
         out: dict[str, Any] = {}
         for key, item in value.items():
             key_text = str(key).lower().replace("-", "_")
-            if any(term in key_text for term in ("token", "secret", "password", "api_key", "apikey", "authorization", "private_key")):
+            if key_text in {"secret_scan_status"}:
+                out[key] = redact_obj(item)
+            elif any(term in key_text for term in ("token", "secret", "password", "api_key", "apikey", "authorization", "private_key")):
                 out[key] = "[REDACTED]" if item else item
             else:
                 out[key] = redact_obj(item)

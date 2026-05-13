@@ -229,3 +229,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added golden characterization tests for all Phase 10B/10C defensive workflow surfaces and `defense_status`.
 - Report packs are future work for 10D-2; 10D-1 did not add runtime pack generation.
 - Current full suite: 407 passed, 3 warnings.
+
+## Phase 10D-2 — Defensive Report Pack Runtime
+- Implemented minimal runtime `DefensiveReportPack` as a thin aggregation layer over existing defensive workflows, redacted workflow reports, and manifest refs.
+- Added deterministic registry resolution including `defense_status`; all workflows remain non-executing, evidence-required, report-required, and non-authoritative.
+- Evidence/report refs are metadata/ref/SHA-256 only; raw artifact bodies, attachments, samples, secrets, and credentials are not embedded.
+- Validation: golden 14 passed; targeted defensive/cyber_knowledge/reporting/telegram 110 passed; full suite 417 passed, 3 existing warnings.
