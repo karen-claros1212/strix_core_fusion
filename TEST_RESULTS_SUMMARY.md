@@ -212,3 +212,10 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Relevant subset (`tests/approval tests/telegram tests/manifests`): `69 passed in 0.12s`
 - Full suite: `334 passed, 3 warnings in 2.34s`
 - Approval regression tests now disable ambient LLM config in-process and use `/mission` command inputs for Telegram approval coverage, preventing unit tests from reaching local LLM gateways.
+
+
+## Test Results (Phase 9C)
+- Golden policy evaluation: `13 passed in 0.07s`.
+- Targeted policy/security/approval/telegram: `84 passed, 1 existing warning in 0.13s`.
+- Full first-party suite: `359 passed, 3 existing warnings in 2.36s`.
+- Canonical full validation command used: `python3 -m pytest tests -q`.

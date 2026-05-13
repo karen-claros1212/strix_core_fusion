@@ -286,3 +286,12 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Telegram approval regression coverage uses `/mission` command inputs, avoiding natural-language LLM routing in approval unit tests.
 - Production behavior is unchanged; no real LLM, real Telegram, CloudOps, external pentest, token, or `.env` change was introduced.
 - Approval suite runtime improved to `14 passed in 0.08s` while preserving full-suite status: `334 passed, 3 warnings`.
+
+
+## Security Regression Report (Phase 9C)
+- Policy evaluation optimization preserved MissionPolicy and PromptSecurity authority.
+- R4 approval-required and R5 blocked/non-approvable semantics remained unchanged.
+- Approval hash, expiry, actor authorization, denied/expired terminal states, and replay blocking remained unchanged.
+- Tool scope, unknown-tool blocking, redaction, manifest non-authoritative/non-executable metadata, and SandboxController boundaries remained unchanged.
+- No real Telegram, real LLM, CloudOps, external pentest, Hermes code copy/execution, direct execution, token/`.env`, Agent Zero, OpenCLAW, Qwen, TurboQuant, or llama.cpp changes were introduced.
+- Full regression remained green: `359 passed, 3 existing warnings`.

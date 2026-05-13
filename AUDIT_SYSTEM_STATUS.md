@@ -339,3 +339,12 @@
 - Validation: approval `14 passed`; approval+telegram+manifests `69 passed`; full suite `334 passed, 3 warnings`.
 - Hermes/Agent Zero/OpenCLAW/Qwen/TurboQuant/llama.cpp/WSL2/real Telegram/CloudOps/external pentest changes: NO.
 - Verdict: APTO PARA PHASE 9 ORIGINAL STRIX OPTIMIZATION OR PHASE 8 CLOSURE: SI.
+
+
+## Phase 9C Status — Policy Evaluation Optimization
+- Status: Completed and closed by `docs/reports/PHASE_9C_CLOSEOUT_REPORT.md`.
+- Commit: `f14ddb693f171f58f2dfc5f6103add92d6e73fcc` (`phase 9c: optimize policy evaluation paths`).
+- Scope: policy evaluation micro-optimizations only; closeout update is documentation-only.
+- Validation: golden `13 passed`; targeted policy/security/approval/telegram `84 passed, 1 existing warning`; full suite `359 passed, 3 existing warnings`.
+- Not done: no real Telegram, real LLM, CloudOps, external pentest, Hermes copy/execution, direct execution, R4/R5 semantic change, or capability reduction.
+- Verdict: APTO PARA PHASE 9D PLANNING ONLY: SI. Additional policy optimization: NO without new profiling and golden coverage.

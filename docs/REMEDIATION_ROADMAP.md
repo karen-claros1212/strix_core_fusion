@@ -113,3 +113,10 @@
 - R4 remains the only approvable risk level; R5 missions create no approvals and approval attempts are blocked.
 - Approval regression depth now covers R4/R5/expired/replay/hash/user/deny/nonexistent cases.
 - Next phase: Phase 9 original STRIX optimization or Phase 8 closure, preserving SandboxController, R4 approval, R5 blocking, and no direct production execution.
+
+
+## Phase 9C Outcome
+- Closed Phase 9C Policy Evaluation Optimization with report `docs/reports/PHASE_9C_CLOSEOUT_REPORT.md`.
+- Commit `f14ddb693f171f58f2dfc5f6103add92d6e73fcc` optimized policy-evaluation internals only; no runtime capability or security boundary changed.
+- Preserved MissionPolicy, PromptSecurity, R4/R5, approvals, redaction, manifests, and SandboxController invariants.
+- Next phase: Phase 9D planning only. Further policy optimization is blocked until new profiling and golden coverage exist.

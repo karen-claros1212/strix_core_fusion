@@ -14,7 +14,7 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Phase 5: CloudOps / InfraOps Operator
 - Phase 6B-2: Telegram mock mode completed
 - Phase 6B-3: gated real Telegram integration completed
-- Current full suite: 141 passed, 3 warnings
+- Current full suite: 359 passed, 3 warnings
 
 ## Architecture
 - `strix/`: STRIX core; not modified in Phase 6B-3
@@ -195,3 +195,10 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Added metadata-only `ApprovalRegressionMatrix` and evidence-safe approval audit summary.
 - Telegram approval success remains non-executing (`executed=False`) and marks approvals used to prevent replay.
 - Validation: approval `14 passed`; approval+telegram+manifests `69 passed`; full suite `334 passed, 3 warnings`.
+
+
+## Phase 9C — Policy Evaluation Optimization
+- Closed narrow policy evaluation optimization in commit `f14ddb693f171f58f2dfc5f6103add92d6e73fcc`.
+- Optimized dangerous-action prefiltering, category/pattern membership checks, request text construction, and tool-scope classification handling without changing policy semantics.
+- Validation: golden `13 passed`; policy/security/approval/telegram `84 passed, 1 existing warning`; full suite `359 passed, 3 existing warnings`.
+- Verdict: GO for Phase 9D planning only; NO-GO for more policy optimization without new profiling and golden coverage.

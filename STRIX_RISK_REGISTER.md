@@ -211,3 +211,10 @@
 - [CLOSED] RB-8I-03: Hash mismatch or wrong actor could approve a different action. Mitigation: exact action hash and allowlisted actor checks are deterministic; mismatches are terminal and unauthorized actors are blocked.
 - [CLOSED] RB-8I-04: R5 or nonexistent approvals could be approved through command paths. Mitigation: R5 missions create no approval, R5 approval attempts are blocked, and missing IDs are blocked.
 - [READY] Phase 9 original STRIX optimization or Phase 8 closure may proceed with SandboxController, R4 HITL approval, R5 non-approvable blocking, and no direct execution unchanged.
+
+
+## Risk Register Update (Phase 9C)
+- [CLOSED] RB-9C-01: Policy optimization could downgrade R5/R4 decisions. Mitigation: golden policy evaluation tests passed and dangerous-action decision semantics remained unchanged.
+- [CLOSED] RB-9C-02: Faster tool classification/scoping could skip unknown-tool or scope gates. Mitigation: targeted policy/security/approval/telegram suite passed and ToolScopePolicy remains non-executing.
+- [CLOSED] RB-9C-03: Optimization could weaken approvals, redaction, manifest, or sandbox boundaries. Mitigation: full first-party suite passed and no runtime capability or config changes were introduced.
+- [READY] Phase 9D planning may proceed only as planning. Further policy optimization requires new profiling and golden coverage.
