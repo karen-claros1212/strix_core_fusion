@@ -295,3 +295,11 @@ Security regression status: PASS for Phase 6B-3 gated real Telegram preflight.
 - Tool scope, unknown-tool blocking, redaction, manifest non-authoritative/non-executable metadata, and SandboxController boundaries remained unchanged.
 - No real Telegram, real LLM, CloudOps, external pentest, Hermes code copy/execution, direct execution, token/`.env`, Agent Zero, OpenCLAW, Qwen, TurboQuant, or llama.cpp changes were introduced.
 - Full regression remained green: `359 passed, 3 existing warnings`.
+
+## Security Regression Report (Phase 10A)
+- Cyber knowledge layer is defensive classification/detection/reporting only.
+- No malware samples were downloaded or executed.
+- No functional malware payloads, persistence, exfiltration, AV/EDR bypass, or exploit code were created.
+- YARA/Sigma builders reject offensive, payload, bypass, exfiltration, and execution requests.
+- Threat reports redact secret-like values, are non-authoritative, and set `execution_allowed=False`.
+- Real Telegram, real LLM/Qwen/TurboQuant/llama.cpp, external pentest, Agent Zero/OpenCLAW/Hermes, tokens, and `.env` remained untouched.

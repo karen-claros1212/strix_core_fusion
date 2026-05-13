@@ -64,6 +64,11 @@ class ReportBuilder:
             ReportSection('residual_risk', 'Residual Risk', {'status': 'controlled', 'notes': 'Workflow is plan/evidence/report only; execution_allowed=False.'}),
         ]
         return MissionReport(str(uuid.uuid4()), audience_enum, f"Workflow Plan {plan_data.get('workflow_id','unknown')}", sections, [], {'schema_version': '7i', 'execution_allowed': False})
+    def build_threat_report(self, title, classification, behaviors=None, iocs=None, notes=""):
+        from ..cyber_knowledge import ThreatReportBuilder
+
+        return ThreatReportBuilder().build_report(title, classification, behaviors=behaviors, iocs=iocs, notes=notes)
+
 
     def _summary(self, mission, findings, approvals):
         return {'finding_count': len(findings or []), 'approval_count': len(approvals or []), 'status': mission.get('status','unknown') if isinstance(mission, dict) else 'unknown'}

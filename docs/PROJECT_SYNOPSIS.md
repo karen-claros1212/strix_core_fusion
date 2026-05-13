@@ -14,7 +14,7 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Phase 5: CloudOps / InfraOps Operator
 - Phase 6B-2: Telegram mock mode completed
 - Phase 6B-3: gated real Telegram integration completed
-- Current full suite: 359 passed, 3 warnings
+- Current full suite: 369 passed, 3 warnings
 
 ## Architecture
 - `strix/`: STRIX core; not modified in Phase 6B-3
@@ -202,3 +202,9 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Optimized dangerous-action prefiltering, category/pattern membership checks, request text construction, and tool-scope classification handling without changing policy semantics.
 - Validation: golden `13 passed`; policy/security/approval/telegram `84 passed, 1 existing warning`; full suite `359 passed, 3 existing warnings`.
 - Verdict: GO for Phase 9D planning only; NO-GO for more policy optimization without new profiling and golden coverage.
+
+## Phase 10A — Cyber Knowledge + Malware Detection Engineering
+- Added `saga_fusion/cyber_knowledge/` for defensive malware/threat taxonomy, conservative MITRE ATT&CK behavior mapping, safe IoC modeling, YARA/Sigma detection templates, incident playbooks, and redacted threat reports.
+- Builders are metadata/string/log-template only and reject offensive/payload/bypass/exfiltration/execution requests.
+- TaskPlanner can reference selected defensive cyber playbooks; ReportBuilder can generate cyber threat reports.
+- Current full suite: 369 passed, 3 warnings.

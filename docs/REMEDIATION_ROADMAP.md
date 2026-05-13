@@ -120,3 +120,8 @@
 - Commit `f14ddb693f171f58f2dfc5f6103add92d6e73fcc` optimized policy-evaluation internals only; no runtime capability or security boundary changed.
 - Preserved MissionPolicy, PromptSecurity, R4/R5, approvals, redaction, manifests, and SandboxController invariants.
 - Next phase: Phase 9D planning only. Further policy optimization is blocked until new profiling and golden coverage exist.
+
+## Phase 10A Outcome
+- Added defensive cyber knowledge and malware detection engineering as a self-contained Saga Fusion package.
+- Phase 10B candidates: advanced defensive workflows, curated ATT&CK/detection content, and broader planner/reporting integration tests.
+- Still blocked/deferred: malware execution, payload implementation, persistence, exfiltration, bypass engineering, real samples, real external tools, and real messaging/LLM integrations.

@@ -98,9 +98,14 @@ class TaskPlanner:
 
         report_tags = tuple(pattern.reporting_tags) if pattern else ("unknown", "policy_review")
         workflow_plan_payload = None
+        cyber_playbook_payload = None
         if pattern and pattern.category == TaskCategory.DEFENSIVE_WORKFLOW:
-            workflow_id = pattern.tool_name.split(":", 1)[1] if ":" in pattern.tool_name else pattern.pattern_id
-            workflow_plan_payload = self._build_workflow_plan_payload(workflow_id, source_text, target, arguments)
+            if pattern.tool_name.startswith("cyber_playbook:"):
+                playbook_id = pattern.tool_name.split(":", 1)[1]
+                cyber_playbook_payload = self._build_cyber_playbook_payload(playbook_id)
+            else:
+                workflow_id = pattern.tool_name.split(":", 1)[1] if ":" in pattern.tool_name else pattern.pattern_id
+                workflow_plan_payload = self._build_workflow_plan_payload(workflow_id, source_text, target, arguments)
         return TaskPlan(
             plan_id=f"plan-{uuid.uuid4().hex[:12]}",
             source_text=source_text,
@@ -124,12 +129,26 @@ class TaskPlanner:
                 "source": "saga_fusion_task_planner",
                 "context_keys": sorted((context or {}).keys()),
                 "workflow_plan": workflow_plan_payload,
+                "cyber_playbook": cyber_playbook_payload,
                 "skill_metadata": dict(pattern.skill_metadata) if pattern else {},
             },
         )
 
     def build_execution_intent(self, plan: TaskPlan) -> ExecutionIntent:
         return self.intent_builder.build(plan)
+
+
+    @staticmethod
+    def _build_cyber_playbook_payload(playbook_id: str) -> dict | None:
+        from ..cyber_knowledge import IncidentPlaybookRegistry
+
+        playbook = IncidentPlaybookRegistry().get(playbook_id)
+        if playbook is None:
+            return None
+        payload = playbook.to_dict()
+        payload["selected_by_task_planner"] = True
+        payload["execution_allowed"] = False
+        return payload
 
     @staticmethod
     def _build_workflow_plan_payload(workflow_id: str, text: str, target: str, arguments: str) -> dict | None:

@@ -219,3 +219,8 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - Targeted policy/security/approval/telegram: `84 passed, 1 existing warning in 0.13s`.
 - Full first-party suite: `359 passed, 3 existing warnings in 2.36s`.
 - Canonical full validation command used: `python3 -m pytest tests -q`.
+
+## Test Results (Phase 10A)
+- Cyber knowledge suite: 10 passed
+- Full suite: 369 passed, 3 warnings
+- Added tests for malware taxonomy classification, MITRE mapping, defensive YARA/Sigma output and rejection paths, incident playbook non-execution, and redacted non-authoritative threat reports.

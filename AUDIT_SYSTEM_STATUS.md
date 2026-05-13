@@ -348,3 +348,11 @@
 - Validation: golden `13 passed`; targeted policy/security/approval/telegram `84 passed, 1 existing warning`; full suite `359 passed, 3 existing warnings`.
 - Not done: no real Telegram, real LLM, CloudOps, external pentest, Hermes copy/execution, direct execution, R4/R5 semantic change, or capability reduction.
 - Verdict: APTO PARA PHASE 9D PLANNING ONLY: SI. Additional policy optimization: NO without new profiling and golden coverage.
+
+## Phase 10A Status
+- Cyber Knowledge + Malware Detection Engineering: COMPLETED
+- Package: `saga_fusion/cyber_knowledge/`
+- Capabilities: defensive malware taxonomy, conservative MITRE ATT&CK mapping, IoC modeling, YARA/Sigma detection templates, incident playbooks, and redacted threat reports.
+- Minimal integrations: TaskPlanner playbook metadata references; ReportBuilder threat report wrapper.
+- Tests: `tests/cyber_knowledge` 10 passed; full suite 369 passed, 3 existing warnings.
+- Malware execution/download/payload creation/exfiltration/bypass: NO
