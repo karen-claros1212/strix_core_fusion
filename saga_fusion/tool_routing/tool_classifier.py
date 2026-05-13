@@ -38,8 +38,8 @@ class ToolClassifier:
                 'matched': dangerous.reason,
                 'dangerous_action': dangerous,
             }
-        if explicit and self.registry.exists(explicit):
-            tool = self.registry.get(explicit)
+        tool = self.registry.get(explicit) if explicit else None
+        if tool is not None:
             return {'tool_name': tool.name, 'category': tool.category, 'risk_level': tool.default_risk, 'matched': 'explicit_tool'}
         lowered = text.lower()
         if any(v in lowered for v in DELETE_VERBS):
@@ -62,10 +62,8 @@ class ToolClassifier:
 
     def _request_text(self, request) -> str:
         if isinstance(request, dict):
-            parts = [request.get('tool_name',''), request.get('action',''), request.get('target',''), request.get('arguments',''), request.get('raw_text','')]
-        else:
-            parts = [getattr(request,'tool_name',''), getattr(request,'action_type',''), getattr(request,'target',''), getattr(request,'arguments',''), getattr(request,'raw_text','')]
-        return ' '.join(str(p or '') for p in parts)
+            return f"{request.get('tool_name','') or ''} {request.get('action','') or ''} {request.get('target','') or ''} {request.get('arguments','') or ''} {request.get('raw_text','') or ''}"
+        return f"{getattr(request,'tool_name','') or ''} {getattr(request,'action_type','') or ''} {getattr(request,'target','') or ''} {getattr(request,'arguments','') or ''} {getattr(request,'raw_text','') or ''}"
 
     def _explicit_tool(self, request) -> str:
         if isinstance(request, dict):

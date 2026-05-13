@@ -9,16 +9,12 @@ class MissionPolicy:
 
     def classify_risk(self, request: MissionRequest) -> RiskLevel:
         """Classify risk based on action and arguments."""
+        action_type = getattr(request, "action_type", "")
+        target = getattr(request, "target", "")
+        arguments = getattr(request, "arguments", "")
+        raw_text = getattr(request, "raw_text", "")
         dangerous = self.dangerous_action_policy.evaluate(
-            " ".join(
-                str(part or "")
-                for part in (
-                    getattr(request, "action_type", ""),
-                    getattr(request, "target", ""),
-                    getattr(request, "arguments", ""),
-                    getattr(request, "raw_text", ""),
-                )
-            )
+            f"{action_type or ''} {target or ''} {arguments or ''} {raw_text or ''}"
         )
         if dangerous.blocked:
             return RiskLevel.R5
@@ -26,10 +22,10 @@ class MissionPolicy:
             return RiskLevel.R4
 
         action = canonicalize_action(
-            request.action_type,
-            request.target,
-            request.arguments,
-            getattr(request, "raw_text", ""),
+            action_type,
+            target,
+            arguments,
+            raw_text,
         )
 
         if action == "delete":

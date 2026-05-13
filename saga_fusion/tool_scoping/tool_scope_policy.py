@@ -19,7 +19,7 @@ class ToolScopePolicy:
 
     def decide(self, request, context: dict | None = None, classification: dict | None = None) -> ToolRouteDecision:
         context = dict(context or {})
-        classification = dict(classification or self.classifier.classify(request, context=context))
+        classification = classification or self.classifier.classify(request, context=context)
         tool_name = str(classification.get("tool_name") or self._explicit_tool(request) or "unknown").strip().lower()
         tool = self.registry.get(tool_name)
         category = classification.get("category") or (tool.category if tool else ToolCategory.UNKNOWN)
@@ -62,6 +62,9 @@ class ToolScopePolicy:
         allowed_sets: list[set[str]] = []
         denied: set[str] = set()
         sources: set[str] = set()
+
+        if not context:
+            return set(), denied, sources, set()
 
         mission_id = str(context.get("mission_id") or "").strip()
         mission_scopes = context.get("mission_tool_scopes") or context.get("mission_allowed_tools_by_id") or {}

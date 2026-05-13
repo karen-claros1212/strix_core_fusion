@@ -34,11 +34,33 @@ class DangerousActionDetector:
             (DangerousActionCategory.EVIDENCE_SUPPRESSION, DangerousActionSeverity.CRITICAL, 'evidence_suppression', re.compile(r'(?i)(no|do not|dont|don\'t|disable|desactiva).*(registr(es|ar)? evidencia|evidence|logs?|logging)')),
             (DangerousActionCategory.PRIVILEGE_ESCALATION, DangerousActionSeverity.CRITICAL, 'privilege_escalation', re.compile(r'(?i)(privilege escalation|escalar privilegios|sudo su|root shell|setuid)')),
         ]
+        self._prefilter_terms: dict[str, tuple[str, ...]] = {
+            'rm_rf': ('rm',),
+            'wipe_format_shred': ('wipe', 'format', 'shred', 'delete all', 'borrar todo', 'eliminar archivos'),
+            'secret_exfil': ('envía', 'envia', 'send', 'upload', 'curl', 'exfiltrate', 'leak', 'filtra', 'exfiltra'),
+            'secret_read_and_send': ('lee', 'read', 'cat', 'muestra', 'show'),
+            'secret_access': ('lee', 'read', 'cat', 'muestra', 'show'),
+            'infra_destroy': ('elimina', 'borra', 'destruye', 'delete', 'destroy', 'terminate'),
+            'cloud_delete': ('delete', 'destroy', 'terminate', 'elimina', 'borra'),
+            'backup_delete': ('borra', 'elimina', 'delete', 'wipe', 'remove'),
+            'disable_firewall': ('disable', 'desactiva', 'apaga'),
+            'expose_ssh': ('abre', 'open', 'expose', 'allow'),
+            'allow_all_inbound': ('allow all inbound', 'permitir todo entrante', '0.0.0.0/0'),
+            'cloud_create': ('create', 'crear', 'provision', 'provisionar', 'deploy', 'desplegar'),
+            'mission_policy_bypass': ('omite', 'ignora', 'bypass', 'skip', 'disable', 'desactiva', 'no use'),
+            'sandbox_bypass': ('bypass', 'omite', 'ignora', 'skip', 'disable', 'desactiva', 'no use'),
+            'evidence_suppression': ('no', 'do not', 'dont', "don't", 'disable', 'desactiva'),
+            'privilege_escalation': ('privilege escalation', 'escalar privilegios', 'sudo su', 'root shell', 'setuid'),
+        }
 
     def detect(self, text: str) -> list[DangerousActionMatch]:
         value = text or ''
         matches=[]
+        lowered = value.lower()
+        prefilter_terms_by_name = self._prefilter_terms
         for category, severity, name, pattern in self.patterns:
+            if not any(term in lowered for term in prefilter_terms_by_name[name]):
+                continue
             match = pattern.search(value)
             if match:
                 matches.append(DangerousActionMatch(category, severity, name, match.group(0)))

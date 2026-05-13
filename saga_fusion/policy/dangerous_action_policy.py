@@ -39,22 +39,25 @@ class DangerousActionPolicy:
                 return DangerousActionDecision(True, [DangerousActionCategory.UNKNOWN_HIGH_RISK], DangerousActionSeverity.HIGH, 'R4', False, True, 'unknown_high_risk_requires_approval', ['unknown_high_risk'])
             return DangerousActionDecision(False)
         categories = []
+        category_set = set()
         patterns = []
         severity = DangerousActionSeverity.LOW
         for match in matches:
-            if match.category not in categories:
+            if match.category not in category_set:
                 categories.append(match.category)
+                category_set.add(match.category)
             patterns.append(match.pattern_name)
             if SEVERITY_ORDER[match.severity] > SEVERITY_ORDER[severity]:
                 severity = match.severity
-        if DangerousActionCategory.FIREWALL_EXPOSURE in categories:
-            if any(pattern in {'disable_firewall','allow_all_inbound'} for pattern in patterns):
+        pattern_set = set(patterns)
+        if DangerousActionCategory.FIREWALL_EXPOSURE in category_set:
+            if pattern_set & {'disable_firewall','allow_all_inbound'}:
                 return DangerousActionDecision(True, categories, DangerousActionSeverity.CRITICAL, 'R5', True, False, 'firewall_exposure_r5_blocked', patterns)
             return DangerousActionDecision(True, categories, severity, 'R4', False, True, 'firewall_exposure_requires_approval', patterns)
-        if DangerousActionCategory.SECRET_ACCESS in categories and DangerousActionCategory.CREDENTIAL_EXFILTRATION not in categories:
+        if DangerousActionCategory.SECRET_ACCESS in category_set and DangerousActionCategory.CREDENTIAL_EXFILTRATION not in category_set:
             return DangerousActionDecision(True, categories, severity, 'R5', True, False, 'secret_access_blocked_without_explicit_audit_scope', patterns)
-        if any(category in BLOCK_CATEGORIES for category in categories):
+        if category_set & BLOCK_CATEGORIES:
             return DangerousActionDecision(True, categories, DangerousActionSeverity.CRITICAL, 'R5', True, False, 'dangerous_action_r5_blocked', patterns)
-        if any(category in R4_CATEGORIES for category in categories):
+        if category_set & R4_CATEGORIES:
             return DangerousActionDecision(True, categories, severity, 'R4', False, True, 'dangerous_action_r4_requires_approval', patterns)
         return DangerousActionDecision(True, categories, severity, 'R4', False, True, 'dangerous_action_escalated_to_r4', patterns)
