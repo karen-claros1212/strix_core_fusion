@@ -67,9 +67,9 @@ def test_preflight_uses_get_me_and_redacts_token_marker():
     assert config.bot_token not in json.dumps(payload)
 
 
-def test_lab_runtime_routes_real_update_to_phishing_report_pack_without_real_calls():
+def test_lab_runtime_routes_natural_language_to_strix_main_engine_phishing_report_pack_without_real_calls():
     config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
-    fake = FakeTelegramApi(updates=[_message(1, "revisa un adjunto sospechoso en modo seguro")])
+    fake = FakeTelegramApi(updates=[_message(1, "analiza si esto parece phishing")])
     runtime = TelegramLabRuntime(config=config, api=fake)
 
     result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
@@ -78,6 +78,9 @@ def test_lab_runtime_routes_real_update_to_phishing_report_pack_without_real_cal
     assert result["messages_handled"] == 1
     send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
     response = json.loads(send_payload["text"])
+    assert response["routed_by"] == "strix_main_engine"
+    assert response["strix_main_engine_primary"] is True
+    assert response["saga_control_layer"] is True
     assert response["workflow_category"] == "phishing_attachment"
     assert response["pack_id"].startswith("defensive-pack-")
     assert response["evidence_refs"] and response["report_refs"] and response["manifest_refs"]
@@ -92,9 +95,9 @@ def test_lab_runtime_routes_real_update_to_phishing_report_pack_without_real_cal
     assert config.bot_token not in json.dumps(result)
 
 
-def test_lab_runtime_status_message_returns_defense_capabilities():
+def test_lab_runtime_natural_status_message_uses_strix_main_engine_not_defensive_router():
     config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
-    fake = FakeTelegramApi(updates=[_message(2, "estado defensa")])
+    fake = FakeTelegramApi(updates=[_message(2, "revisa el estado del sistema")])
     runtime = TelegramLabRuntime(config=config, api=fake)
 
     result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
@@ -102,13 +105,12 @@ def test_lab_runtime_status_message_returns_defense_capabilities():
     assert result["status"] == "ok"
     send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
     response = json.loads(send_payload["text"])
-    assert response["status"] == "ok"
-    assert response["workflow_category"] == "defense_status"
-    assert "phishing_attachment" in response["available_workflows"]
-    assert response["execution_allowed"] is False
-    assert response["executed"] is False
-    assert response["non_authoritative"] is True
-    assert assert_lab_mode(response) is True
+    assert response["result"]["routed_by"] == "strix_main_engine"
+    assert response["result"]["strix_main_engine_primary"] is True
+    assert response["result"]["saga_control_layer"] is True
+    assert response["result"]["execution_allowed"] is False
+    assert response["result"]["executed"] is False
+    assert response["result"]["non_authoritative"] is True
 
 
 def test_lab_runtime_acknowledges_handled_updates_before_bounded_exit():
@@ -139,7 +141,7 @@ def test_service_mode_parser_does_not_require_bounded_limits():
 
 def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window():
     config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
-    fake = FakeTelegramApi(updates=[_message(20, "estado defensa")])
+    fake = FakeTelegramApi(updates=[_message(20, "/defense_status")])
     runtime = TelegramLabRuntime(config=config, api=fake)
 
     result = asyncio.run(runtime.run_service(max_polls=2, poll_timeout_seconds=1, idle_sleep_seconds=0))
@@ -150,6 +152,7 @@ def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window(
     assert result["messages_handled"] == 1
     send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
     response = json.loads(send_payload["text"])
+    assert response["routed_by"] == "defensive_command_router_fallback"
     assert response["workflow_category"] == "defense_status"
     assert response["execution_allowed"] is False
     assert response["executed"] is False
@@ -164,3 +167,56 @@ def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window(
     ]
     assert ack_payloads
     assert config.bot_token not in json.dumps(result)
+
+
+
+def test_lab_runtime_free_text_capabilities_goes_to_strix_main_engine():
+    config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
+    fake = FakeTelegramApi(updates=[_message(30, "que puedes hacer")])
+    runtime = TelegramLabRuntime(config=config, api=fake)
+
+    result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
+
+    assert result["status"] == "ok"
+    send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
+    response = json.loads(send_payload["text"])
+    assert response["routed_by"] == "strix_main_engine"
+    assert response["strix_main_engine_primary"] is True
+    assert response["saga_control_layer"] is True
+    assert response["execution_allowed"] is False
+    assert "analiza si esto parece phishing" in response["examples"]
+
+
+def test_lab_runtime_free_text_suspicious_process_goes_to_strix_main_engine_report_pack():
+    config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
+    fake = FakeTelegramApi(updates=[_message(31, "quiero revisar procesos raros")])
+    runtime = TelegramLabRuntime(config=config, api=fake)
+
+    result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
+
+    assert result["status"] == "ok"
+    send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
+    response = json.loads(send_payload["text"])
+    assert response["routed_by"] == "strix_main_engine"
+    assert response["workflow_category"] == "suspicious_process"
+    assert response["pack_id"].startswith("defensive-pack-")
+    assert response["execution_allowed"] is False
+    assert response["executed"] is False
+    assert response["evidence_refs"] and response["report_refs"] and response["manifest_refs"]
+
+
+def test_lab_runtime_defensive_router_is_only_fallback_when_main_engine_unavailable():
+    config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
+    fake = FakeTelegramApi(updates=[_message(32, "estado defensa")])
+    runtime = TelegramLabRuntime(config=config, api=fake)
+    runtime.operator.main_engine_available = False
+
+    result = asyncio.run(runtime.run(max_messages=1, max_seconds=5, poll_timeout_seconds=1))
+
+    assert result["status"] == "ok"
+    send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
+    response = json.loads(send_payload["text"])
+    assert response["routed_by"] == "defensive_command_router_fallback"
+    assert response["strix_main_engine_primary"] is False
+    assert response["workflow_category"] == "defense_status"
+    assert response["execution_allowed"] is False

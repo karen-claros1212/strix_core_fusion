@@ -11,11 +11,12 @@ from .rate_limiter import RateLimiter
 from .telegram_security import TelegramSecurity
 from .mission_parser import MissionParser
 from .defensive_command_router import DefensiveCommandRouter
+from .defensive_commands import DEFENSIVE_COMMANDS
 from ..llm.llm_router import LLMRouter
 from ..prompt_security import PromptRiskLevel, PromptSecurityLayer
 from ..tool_routing import ToolRouter
 from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, ApprovalVerifier
-from ..reporting import ReportBuilder, TelegramReportFormatter
+from ..reporting import DefensiveWorkflowReporter, ReportBuilder, TelegramReportFormatter
 from ..task_planning import TaskPlanner
 from ..memory import MemoryStore, MissionMemory, MemoryRetriever, ContextWindow, SessionSummarizer
 
@@ -42,6 +43,7 @@ class TelegramMissionOperator:
         self.approval_audit = ApprovalAudit()
         self.report_builder = ReportBuilder()
         self.telegram_report_formatter = TelegramReportFormatter()
+        self.defensive_workflow_reporter = DefensiveWorkflowReporter()
         self.task_planner = TaskPlanner()
         self.memory_store = MemoryStore()
         self.mission_memory = MissionMemory(self.memory_store)
@@ -49,6 +51,7 @@ class TelegramMissionOperator:
         self.context_window = ContextWindow(char_budget=1200)
         self.session_summarizer = SessionSummarizer()
         self.defensive_command_router = DefensiveCommandRouter()
+        self.main_engine_available = True
 
     def _serialize_response(self, payload: dict) -> str:
         redacted = self.security.redact_secrets(json.dumps(payload, sort_keys=True))
@@ -105,6 +108,50 @@ class TelegramMissionOperator:
             "risk_level": request.risk_level.value,
         }
 
+    def _fallback_defensive_response(self, text: str, chat_id: str, user_id: str) -> str:
+        result = self.defensive_command_router.route(text, chat_id=str(chat_id), user_id=str(user_id))
+        result["routed_by"] = "defensive_command_router_fallback"
+        result["strix_main_engine_primary"] = False
+        self.evidence_logger._record(
+            "defensive_telegram_workflow_fallback",
+            {
+                "chat_id": str(chat_id),
+                "user_id": str(user_id),
+                "status": result.get("status"),
+                "workflow_category": result.get("workflow_category"),
+                "workflow_id": result.get("workflow_id"),
+                "execution_allowed": False,
+                "lab_mode": True,
+                "artifact_ref": result.get("artifact_ref"),
+                "fallback_only": True,
+            },
+        )
+        return self._serialize_response(result)
+
+    def _capabilities_response(self, chat_id: str, user_id: str) -> str:
+        payload = {
+            "status": "ok",
+            "routed_by": "strix_main_engine",
+            "strix_main_engine_primary": True,
+            "saga_control_layer": True,
+            "message": "STRIX escucha lenguaje natural; Saga Fusion aplica política, aprobaciones, sandbox, evidencia, reportes y redacción.",
+            "examples": [
+                "revisa el estado del sistema",
+                "analiza si esto parece phishing",
+                "quiero revisar procesos raros",
+                "prepara un plan defensivo sin ejecutar acciones reales",
+            ],
+            "execution_allowed": False,
+            "executed": False,
+            "evidence_required": True,
+            "report_required": True,
+        }
+        self.evidence_logger._record(
+            "strix_main_engine_capabilities",
+            {"chat_id": str(chat_id), "user_id": str(user_id), "execution_allowed": False, "executed": False},
+        )
+        return self._serialize_response(payload)
+
     async def handle_message(self, chat_id: str, user_id: str, text: str) -> str:
         self.evidence_logger.log_incoming_message(chat_id, user_id, text)
 
@@ -118,30 +165,13 @@ class TelegramMissionOperator:
             return "DENIED: Unauthorized user."
 
         normalized_text = (text or "").strip()
-        if self.defensive_command_router.can_handle(normalized_text):
-            result = self.defensive_command_router.route(normalized_text, chat_id=str(chat_id), user_id=str(user_id))
-            self.evidence_logger._record(
-                "defensive_telegram_workflow",
-                {
-                    "chat_id": str(chat_id),
-                    "user_id": str(user_id),
-                    "status": result.get("status"),
-                    "workflow_category": result.get("workflow_category"),
-                    "workflow_id": result.get("workflow_id"),
-                    "execution_allowed": False,
-                    "lab_mode": True,
-                    "artifact_ref": result.get("artifact_ref"),
-                },
-            )
-            return self._serialize_response(result)
-
         parsed = self.command_parser.parse(normalized_text)
 
         if parsed is not None and not getattr(parsed, "known", False):
             return f"Error: Unknown command: {parsed.command}"
 
         if parsed is not None and getattr(parsed, "command", "") == "status":
-            return self._serialize_response({"status": "ok", "message": "System Status: Operational"})
+            return self._serialize_response({"status": "ok", "message": "System Status: Operational", "routed_by": "saga_control_command", "strix_main_engine_primary": False})
 
         if parsed is not None and getattr(parsed, "command", "") == "approve":
             if not getattr(parsed, "args", []):
@@ -178,6 +208,29 @@ class TelegramMissionOperator:
             )
             return self.telegram_report_formatter.format(report, artifact_ref="telegram:evidence")
 
+        # Explicit lab/control defensive commands may invoke the legacy defensive router.
+        if parsed is not None and getattr(parsed, "command", "") in DEFENSIVE_COMMANDS:
+            return self._fallback_defensive_response(normalized_text, chat_id, user_id)
+
+        try:
+            return await self._handle_main_engine_message(chat_id, user_id, normalized_text, parsed)
+        except Exception as exc:
+            self.evidence_logger._record(
+                "strix_main_engine_unavailable",
+                {"chat_id": str(chat_id), "user_id": str(user_id), "error_type": type(exc).__name__, "fallback_available": self.defensive_command_router.can_handle(normalized_text)},
+            )
+            if self.defensive_command_router.can_handle(normalized_text):
+                return self._fallback_defensive_response(normalized_text, chat_id, user_id)
+            return self._serialize_response({"status": "blocked", "reason": "strix_main_engine_unavailable", "executed": False, "execution_allowed": False})
+
+    async def _handle_main_engine_message(self, chat_id: str, user_id: str, normalized_text: str, parsed) -> str:
+        if not self.main_engine_available:
+            raise RuntimeError("STRIX main engine unavailable")
+
+        lowered = normalized_text.lower().strip("¿? ")
+        if parsed is None and any(phrase in lowered for phrase in ("que puedes hacer", "qué puedes hacer", "ayuda", "help")):
+            return self._capabilities_response(chat_id, user_id)
+
         if parsed is not None and getattr(parsed, "command", "") == "mission":
             mission_text = " ".join(getattr(parsed, "args", []))
             request = self.mission_parser.parse(mission_text, requester_id=user_id, chat_id=chat_id)
@@ -196,6 +249,7 @@ class TelegramMissionOperator:
                     "reason": decision.reason,
                     "threats": [threat.value for threat in decision.threats],
                     "matched_patterns": decision.matched_patterns,
+                    "routed_by": "strix_main_engine",
                 },
             )
             if decision.risk_level == PromptRiskLevel.BLOCK:
@@ -205,6 +259,8 @@ class TelegramMissionOperator:
                         "risk_level": "prompt_security",
                         "reason": decision.reason,
                         "executed": False,
+                        "execution_allowed": False,
+                        "routed_by": "strix_main_engine",
                         "message": "blocked by prompt security",
                     }
                 )
@@ -232,6 +288,10 @@ class TelegramMissionOperator:
         else:
             return "Unknown command."
 
+        self.evidence_logger._record(
+            "strix_main_engine_selected",
+            {"chat_id": str(chat_id), "user_id": str(user_id), "mission_id": request.mission_id, "raw_text": self.security.redact_secrets(normalized_text), "saga_control_layer": True},
+        )
         task_plan = self.task_planner.plan(
             getattr(request, "raw_text", "") or " ".join([request.action_type, request.target, request.arguments]),
             target=request.target,
@@ -262,24 +322,43 @@ class TelegramMissionOperator:
                 "reason": task_plan.reason,
             },
         )
-        if task_plan.metadata.get("workflow_plan") and not task_plan.blocked:
+        planned_mission_risk = self.policy.classify_risk(request)
+        request.risk_level = planned_mission_risk
+        if task_plan.metadata.get("workflow_plan") and not self.policy.is_blocked(planned_mission_risk):
             workflow_plan = task_plan.metadata["workflow_plan"]
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "workflow_plan_only")
             self._remember_mission(request, policy_decision="workflow_plan_only", outcome="planned", evidence_refs=(f"mission:{request.mission_id}",), next_step="manual_review")
+            report_pack = {}
+            try:
+                report_pack = self.defensive_workflow_reporter.build_report_pack(workflow_plan).to_dict()
+            except Exception as exc:
+                self.evidence_logger._record(
+                    "report_pack_not_available",
+                    {"mission_id": request.mission_id, "workflow_id": workflow_plan.get("workflow_id"), "error_type": type(exc).__name__},
+                )
             return self._serialize_response({
                 "status": "workflow_plan",
+                "routed_by": "strix_main_engine",
+                "strix_main_engine_primary": True,
+                "saga_control_layer": True,
                 "mission_id": request.mission_id,
                 "pattern_id": task_plan.pattern_id,
+                "workflow_category": report_pack.get("workflow_category") or workflow_plan.get("workflow_id"),
                 "workflow_id": workflow_plan.get("workflow_id"),
                 "risk_level": workflow_plan.get("risk"),
                 "step_count": len(workflow_plan.get("steps", [])),
                 "evidence_required": workflow_plan.get("evidence_required"),
                 "report_required": workflow_plan.get("report_required"),
+                "pack_id": report_pack.get("pack_id"),
+                "report_id": report_pack.get("report_id"),
+                "evidence_refs": report_pack.get("evidence_refs", []),
+                "report_refs": report_pack.get("report_refs", []),
+                "manifest_refs": report_pack.get("manifest_refs", []),
+                "non_authoritative": workflow_plan.get("non_authoritative", True),
                 "execution_allowed": False,
                 "executed": False,
             })
 
-        request.risk_level = self.policy.classify_risk(request)
         tool_decision = self.tool_router.route_tool_request(request)
         tool_plan = self.tool_router.build_execution_plan(tool_decision, request)
         self.evidence_logger._record(
@@ -306,7 +385,7 @@ class TelegramMissionOperator:
 
         if self.policy.is_blocked(request.risk_level):
             request.status = MissionStatus.REJECTED
-            result = {"status": "blocked", "executed": False, "reason": "risk_r5_blocked"}
+            result = {"status": "blocked", "executed": False, "execution_allowed": False, "reason": "risk_r5_blocked", "routed_by": "strix_main_engine", "strix_main_engine_primary": True, "saga_control_layer": True}
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "blocked")
             self.evidence_logger.log_mission(request, result)
             self._remember_mission(request, policy_decision="blocked", outcome="blocked", evidence_refs=(f"mission:{request.mission_id}",), next_step="no_execution")
@@ -339,6 +418,10 @@ class TelegramMissionOperator:
             result = {
                 "status": "approval_required",
                 "executed": False,
+                "execution_allowed": False,
+                "routed_by": "strix_main_engine",
+                "strix_main_engine_primary": True,
+                "saga_control_layer": True,
                 "approval_id": approval_id,
                 "action_hash": request.action_hash,
                 "evidence_ref": approval_request.evidence_ref,
@@ -352,6 +435,7 @@ class TelegramMissionOperator:
 
         request.status = MissionStatus.EXECUTING
         result = self.sandbox_dispatcher.dispatch(request)
+        result.update({"routed_by": "strix_main_engine", "strix_main_engine_primary": True, "saga_control_layer": True, "evidence_required": True, "report_required": True, "non_authoritative": True, "execution_allowed": False})
         request.status = MissionStatus.COMPLETED if result.get("status") == "dry_run" else MissionStatus.FAILED
         self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "sandbox_dispatch")
         self.evidence_logger.log_sandbox_dispatch_result(request.mission_id, result)
