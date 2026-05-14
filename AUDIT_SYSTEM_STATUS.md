@@ -428,3 +428,22 @@ Controls validated:
 - Real Telegram runtime requires `TELEGRAM_MODE=real`, token, allowlist, polling enabled, webhook disabled, and `getMe` success.
 - Defensive lab responses preserve `execution_allowed=False`, `executed=False`, `non_authoritative=True`, `evidence_required=True`, `report_required=True`.
 - Report-pack refs are included in phishing attachment Telegram lab responses.
+
+## Phase 10F-3 Status
+- Pushed: `4e42a2ab4e8bc49f8fb090bd89468247aff144c3` (`phase 10f-3: promote Telegram adapter to STRIX integration path`).
+- Tests full: 449 passed / 0 failed / 3 warnings (pre-push).
+- Telegram directo a STRIX core: SI.
+- Saga Fusion cerebro principal: NO.
+- Verdict: PHASE 10F-3 CERRADA REMOTO: SI; APTO PARA 10F-4: SI.
+
+## Phase 10F-4 Status — Hybrid STRIX Brain
+- Status: COMPLETED.
+- Commit: 10F-4 (pending push).
+- Point of connection: `StrixCoreGateway._get_or_create_session()` in `strix/integrations/telegram/strix_core_gateway.py`.
+- Factory: `build_hybrid_llm_config()` in `strix/brain/hybrid_brain_config_factory.py`.
+- Providers: Qwen local (primary), DeepSeek/Dixit (fallback).
+- Fail-closed: `STRIX_LLM_FAIL_CLOSED=true` (default).
+- New module: `strix/brain/` (4 files).
+- Tests: `tests/brain` 9 passed; `tests/telegram/test_strix_gateway_hybrid_brain.py` 6 passed; full suite 464 passed, 0 failed, 347 warnings.
+- Safety: API keys redacted, no .env read direct, no token printed, `execution_allowed=False` preserved, R4/R5 untouched.
+- Verdict: APTO PARA LIVE TELEGRAM + HYBRID BRAIN SMOKE: SI.

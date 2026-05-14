@@ -28,6 +28,22 @@
 
 ## 7. Approval Replay / Tampering
 - **Risk:** Approval callback reused or action payload changed after approval request.
+
+## 8. Hybrid LLM Credential Leakage
+- **Risk:** Qwen local or DeepSeek API keys leaked via logs, repr, or metadata.
+- **Status:** MITIGATED in Phase 10F-4.
+- **Mitigation:** `BrainConfig.__repr__` and `redacted_dict()` redact `local_api_key` and `deepseek_api_key`. Factory logs exclude API keys. Config loader reads `os.environ` only — no `.env` file loading.
+
+## 9. Unsupported LLM Config Fields
+- **Risk:** Hybrid factory passes fields that real `LLMConfig` dataclass may not accept.
+- **Status:** MITIGATED in Phase 10F-4.
+- **Mitigation:** `StrixCoreGateway._instantiate()` has multi-stage fallback chain that silently drops unsupported fields and returns a valid instance.
+
+## 10. Both Providers Unreachable
+- **Risk:** Qwen local (primary) and DeepSeek (fallback) both unreachable at runtime.
+- **Status:** MITIGATED in Phase 10F-4.
+- **Risk level:** LOW — Qwen runs locally; DeepSeek is remote. Both failing is improbable.
+- **Mitigation:** `STRIX_LLM_FAIL_CLOSED=true` by default. Agent gracefully returns error without hanging or leaking.
 - **Status:** CLOSED in Phase 6B-3.
 - **Mitigation:** Approval action hashes, replay guard, and hash mismatch rejection.
 

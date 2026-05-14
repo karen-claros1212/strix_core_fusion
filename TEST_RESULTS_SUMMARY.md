@@ -18,6 +18,31 @@ Root: `/mnt/Proyectos/strix_core_fusion`
 - 3 existing coroutine-not-awaited warnings in integration/security tests.
 - No Phase 6B-3 test failures.
 
+## Phase 10F-4 Validation
+Date: 2026-05-14
+Root: `/home/jesus/Proyectos/strix_core_fusion`
+
+### Commands
+- `python3 -m pytest tests/brain -q --tb=short`
+- `python3 -m pytest tests/telegram/test_strix_gateway_hybrid_brain.py -q --tb=short`
+- `python3 -m pytest tests -q --tb=short`
+
+### Results
+- Brain suite: 9 passed, 0 failed
+- Telegram brain suite: 6 passed, 0 failed
+- Full suite: 464 passed, 0 failed, 347 warnings
+
+### Coverage Added/Updated
+- BrainConfig repr redacts API keys.
+- Factory builds config without env vars.
+- Factory uses injected env vars via monkeypatch.
+- Gateway calls `build_hybrid_llm_config`.
+- Gateway preserves `execution_allowed=False` and `dry_run=True`.
+- Gateway falls back when brain module import fails.
+- Gateway metadata includes brain_mode fields.
+- No .env read direct, no token printed.
+- No R4/R5 changed.
+
 ### Coverage Added/Updated
 - Real mode without token blocks startup.
 - Real mode without allowed users blocks startup.

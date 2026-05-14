@@ -18,6 +18,31 @@ Date: 2026-05-07
 
 ### Rate Limiting
 - Gateway/operator use per-user rate limiting.
+
+## Phase 10F-4 Hybrid Brain — Security Validation
+Date: 2026-05-14
+
+### Secrets / Credentials
+- `BrainConfig.__repr__` and `redacted_dict()` redact all API key fields.
+- `build_hybrid_llm_config` logs mode/provider info, never API keys.
+- `brain_config.py` reads `os.environ` directly — no `.env` file loading.
+- No token printed in tests or code paths.
+
+### Execution Safety
+- `execution_allowed=False` preserved in `StrixCoreGateway` metadata.
+- `executed=False` preserved.
+- `dry_run=True` preserved in agent config.
+- R4/R5 unchanged — approval and execution pipelines not touched.
+
+### Isolation
+- `strix/brain/` module is lightweight config-only — no runtime or execution logic.
+- Gateway wraps factory in try/except — falls back to safe default on import failure.
+
+### Tests Cover
+- API keys not exposed in repr/logs.
+- Factory tolerates missing env vars.
+- All execution safety flags preserved.
+- No R4/R5 changed.
 - `TELEGRAM_RATE_LIMIT_PER_MINUTE` is supported.
 
 ### Replay Protection and Approvals

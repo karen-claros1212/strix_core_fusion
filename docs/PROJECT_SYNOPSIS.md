@@ -14,7 +14,11 @@ STRIX Elite Cyber Agent is the single STRIX core with Saga Fusion as the owned s
 - Phase 5: CloudOps / InfraOps Operator
 - Phase 6B-2: Telegram mock mode completed
 - Phase 6B-3: gated real Telegram integration completed
-- Current full suite: 393 passed, 3 warnings
+- Phase 10F-3: Telegram direct to STRIX core push closed
+- Phase 10F-4: Hybrid Brain (Qwen local + DeepSeek fallback) implemented
+- New module: `strix/brain/` — brain config types and hybrid factory
+- Brain injection point: `StrixCoreGateway._get_or_create_session()`
+- Current full suite: 464 passed, 0 failed, 347 warnings
 
 ## Architecture
 - `strix/`: STRIX core; not modified in Phase 6B-3

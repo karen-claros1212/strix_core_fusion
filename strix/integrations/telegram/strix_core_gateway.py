@@ -6,6 +6,8 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
+# Hybrid brain config is imported lazily in _get_or_create_session
+
 
 @dataclass(frozen=True)
 class StrixCoreGatewayResult:
@@ -144,7 +146,11 @@ class StrixCoreGateway:
             return self._sessions[key]
 
         StrixAgent, LLMConfig, Tracer, set_global_tracer = imports
-        llm_config = self._instantiate(LLMConfig, interactive=True)
+        try:
+            from strix.brain.hybrid_brain_config_factory import build_hybrid_llm_config  # type: ignore
+            llm_config = build_hybrid_llm_config(LLMConfig, self._instantiate)
+        except Exception:
+            llm_config = self._instantiate(LLMConfig, interactive=True)
         agent_config = {
             "llm_config": llm_config,
             "interactive": True,
@@ -153,6 +159,9 @@ class StrixCoreGateway:
             "telegram_user_id": str(user_id),
             "execution_allowed": False,
             "dry_run": True,
+            "brain_mode": "hybrid",
+            "primary_provider": "qwen_local",
+            "fallback_provider": "deepseek",
         }
         agent = self._instantiate(StrixAgent, agent_config)
         tracer = self._instantiate(Tracer, session_id=f"telegram-lab-{chat_id}")
@@ -245,6 +254,11 @@ class StrixCoreGateway:
             try:
                 return cls(**kwargs)
             except TypeError:
+                if kwargs.get("interactive"):
+                    try:
+                        return cls(interactive=True)
+                    except TypeError:
+                        pass
                 return cls()
 
     @staticmethod
