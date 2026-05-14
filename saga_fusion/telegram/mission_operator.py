@@ -19,7 +19,7 @@ from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, App
 from ..reporting import DefensiveWorkflowReporter, ReportBuilder, TelegramReportFormatter
 from ..task_planning import TaskPlanner
 from ..memory import MemoryStore, MissionMemory, MemoryRetriever, ContextWindow, SessionSummarizer
-from ..strix_engine import StrixAgentAdapter
+from strix.integrations.telegram import StrixTelegramAdapter
 
 
 class TelegramMissionOperator:
@@ -52,7 +52,7 @@ class TelegramMissionOperator:
         self.context_window = ContextWindow(char_budget=1200)
         self.session_summarizer = SessionSummarizer()
         self.defensive_command_router = DefensiveCommandRouter()
-        self.strix_agent_adapter = StrixAgentAdapter()
+        self.strix_agent_adapter = StrixTelegramAdapter()
         self.main_engine_available = True
 
     def _serialize_response(self, payload: dict) -> str:

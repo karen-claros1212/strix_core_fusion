@@ -40,3 +40,12 @@ If these imports are absent, no exception escapes to Telegram; Saga Fusion fallb
 
 ## Verdict
 GO for controlled live verification only after the real STRIX agent package is available in the runtime environment and credentials are managed out-of-band.
+
+## 10F-3 Surgical Patch: Canonical STRIX Integration Path
+- Official canonical route: `strix/integrations/telegram/`.
+- Canonical adapter: `strix.integrations.telegram.StrixTelegramAdapter`.
+- Canonical gateway: `strix.integrations.telegram.StrixCoreGateway`.
+- `saga_fusion/strix_engine/` is retained only as a backwards-compatible wrapper/helper path.
+- Telegram runtime still enters via `saga_fusion/telegram/mission_operator.py`, but the real STRIX attempt imports from `strix.integrations.telegram`.
+- STRIX Core is the primary engine path; Saga Fusion remains an auxiliary control layer for policy, approval, sandbox, evidence, report packs, and redaction.
+- No Telegram real, LLM real, malware, payload, webshell, attachment, destructive command, token, or `.env` access was introduced by this patch.

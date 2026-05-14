@@ -1,0 +1,1 @@
+"""Canonical STRIX integration entrypoints."""

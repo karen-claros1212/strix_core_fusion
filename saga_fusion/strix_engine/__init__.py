@@ -1,5 +1,19 @@
-"""Optional adapters for invoking the real STRIX engine from Saga Fusion."""
+"""Compatibility wrappers for STRIX Core integrations used by Saga Fusion."""
 
-from .strix_agent_adapter import StrixAgentAdapter, StrixAgentAdapterResult
+from .strix_agent_adapter import (
+    StrixAgentAdapter,
+    StrixAgentAdapterResult,
+    StrixCoreGateway,
+    StrixCoreGatewayResult,
+    StrixTelegramAdapter,
+    StrixTelegramAdapterResult,
+)
 
-__all__ = ["StrixAgentAdapter", "StrixAgentAdapterResult"]
+__all__ = [
+    "StrixAgentAdapter",
+    "StrixAgentAdapterResult",
+    "StrixTelegramAdapter",
+    "StrixTelegramAdapterResult",
+    "StrixCoreGateway",
+    "StrixCoreGatewayResult",
+]
