@@ -1,0 +1,25 @@
+[Unit]
+Description=STRIX Telegram Persistent Lab Poller (evidence-only)
+Documentation=file:/mnt/Proyectos/strix_core_fusion/docs/deploy/STRIX_TELEGRAM_LAB_SERVICE.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/Proyectos/strix_core_fusion
+EnvironmentFile=%h/.ductor/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=TELEGRAM_MODE=real
+Environment=TELEGRAM_POLLING_ENABLED=true
+Environment=TELEGRAM_WEBHOOK_ENABLED=false
+ExecStart=/usr/bin/python3 -m saga_fusion.telegram.telegram_lab_runtime --service --poll-timeout-seconds 15 --start-at-latest
+Restart=on-failure
+RestartSec=5s
+KillSignal=SIGINT
+TimeoutStopSec=30s
+
+# Safety: this lab service loads Telegram secrets from EnvironmentFile only.
+# Do not add TELEGRAM_BOT_TOKEN or user identifiers directly to this unit.
+
+[Install]
+WantedBy=default.target

@@ -8,7 +8,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Sequence
 
 from .mission_operator import TelegramMissionOperator
 from .telegram_config import TelegramConfig, load_telegram_config, validate_real_mode_config
@@ -254,29 +254,126 @@ class TelegramLabRuntime:
             "evidence": self.evidence,
         }
 
+    async def run_service(
+        self,
+        *,
+        poll_timeout_seconds: int = 15,
+        start_at_latest: bool = False,
+        idle_sleep_seconds: float = 0.0,
+        max_polls: int | None = None,
+    ) -> dict[str, Any]:
+        """Run the lab poller as a persistent evidence-only service.
+
+        ``max_polls`` is intentionally test-only; production service mode leaves it
+        unset and relies on the process supervisor (for example systemd) for
+        lifecycle and restart handling.
+        """
+        preflight = self.preflight()
+        if not preflight.ok:
+            return {"status": "no_go", "preflight": preflight.to_redacted_dict(), "evidence": self.evidence}
+
+        offset: int | None = await self.latest_offset() if start_at_latest else None
+        handled = 0
+        polls = 0
+        self.evidence.append(
+            {
+                "event": "telegram_lab_service_started",
+                "bot_username": preflight.bot_username,
+                "polling_enabled": preflight.polling_enabled,
+                "webhook_enabled": preflight.webhook_enabled,
+                "allowed_user_count": preflight.allowed_user_count,
+                "execution_allowed": False,
+                "executed": False,
+                "non_authoritative": True,
+                "evidence_required": True,
+                "report_required": True,
+            }
+        )
+        logger.info(
+            "Telegram lab service started: %s",
+            self.security.redact_secrets(
+                {
+                    "bot_username": preflight.bot_username,
+                    "polling_enabled": preflight.polling_enabled,
+                    "webhook_enabled": preflight.webhook_enabled,
+                    "allowed_user_count": preflight.allowed_user_count,
+                }
+            ),
+        )
+
+        try:
+            while max_polls is None or polls < max_polls:
+                offset, count = await self.poll_once(offset=offset, timeout_seconds=poll_timeout_seconds)
+                polls += 1
+                handled += count
+                if count > 0:
+                    self.acknowledge_offset(offset)
+                logger.info(
+                    "Telegram lab service poll: %s",
+                    self.security.redact_secrets({"polls": polls, "handled_total": handled, "handled_in_poll": count}),
+                )
+                if idle_sleep_seconds > 0:
+                    await asyncio.sleep(idle_sleep_seconds)
+        except asyncio.CancelledError:
+            self.evidence.append({"event": "telegram_lab_service_cancelled", "polls": polls, "messages_handled": handled})
+            raise
+
+        return {
+            "status": "ok",
+            "service_mode": True,
+            "preflight": preflight.to_redacted_dict(),
+            "messages_handled": handled,
+            "polls": polls,
+            "evidence": self.evidence,
+        }
+
     @staticmethod
     def _redact_identifier(value: str) -> str:
         text = str(value or "")
         return f"...{text[-4:]}" if len(text) > 4 else "[REDACTED]"
 
 
-def main() -> int:
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run STRIX Telegram lab E2E polling in evidence-only mode.")
-    parser.add_argument("--max-messages", type=int, default=2)
-    parser.add_argument("--max-seconds", type=int, default=120)
+    parser.add_argument("--service", action="store_true", help="Run continuously as a persistent lab poller; ignores bounded max options.")
+    parser.add_argument("--max-messages", type=int, default=2, help="Bounded mode only: stop after this many handled messages.")
+    parser.add_argument("--max-seconds", type=int, default=120, help="Bounded mode only: stop after this many seconds.")
     parser.add_argument("--poll-timeout-seconds", type=int, default=15)
+    parser.add_argument("--idle-sleep-seconds", type=float, default=0.0, help="Service mode only: optional sleep between poll requests.")
     parser.add_argument("--start-at-latest", action="store_true", help="Ignore backlog and wait only for new lab messages.")
-    args = parser.parse_args()
+    return parser
 
-    result = asyncio.run(
-        TelegramLabRuntime().run(
-            max_messages=max(1, args.max_messages),
-            max_seconds=max(5, args.max_seconds),
-            poll_timeout_seconds=max(1, args.poll_timeout_seconds),
-            start_at_latest=args.start_at_latest,
+
+def _configure_logging() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = build_arg_parser()
+    args = parser.parse_args(argv)
+    _configure_logging()
+
+    runtime = TelegramLabRuntime()
+    if args.service:
+        result = asyncio.run(
+            runtime.run_service(
+                poll_timeout_seconds=max(1, args.poll_timeout_seconds),
+                start_at_latest=args.start_at_latest,
+                idle_sleep_seconds=max(0.0, args.idle_sleep_seconds),
+            )
         )
-    )
+    else:
+        result = asyncio.run(
+            runtime.run(
+                max_messages=max(1, args.max_messages),
+                max_seconds=max(5, args.max_seconds),
+                poll_timeout_seconds=max(1, args.poll_timeout_seconds),
+                start_at_latest=args.start_at_latest,
+            )
+        )
     print(json.dumps(result, indent=2, sort_keys=True))
+    if args.service and result.get("status") == "no_go":
+        return 1
     return 0 if result.get("status") in {"ok", "timeout", "no_go"} else 1
 
 

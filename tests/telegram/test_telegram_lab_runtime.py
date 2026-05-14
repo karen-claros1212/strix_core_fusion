@@ -5,7 +5,7 @@ import json
 
 from saga_fusion.telegram.lab_mode import assert_lab_mode
 from saga_fusion.telegram.telegram_config import TelegramConfig
-from saga_fusion.telegram.telegram_lab_runtime import TelegramLabRuntime
+from saga_fusion.telegram.telegram_lab_runtime import TelegramLabRuntime, build_arg_parser
 
 
 class FakeTelegramApi:
@@ -126,3 +126,41 @@ def test_lab_runtime_acknowledges_handled_updates_before_bounded_exit():
     assert result["status"] == "ok"
     assert ack_payloads
     assert result["evidence"][-1] == {"event": "telegram_lab_ack", "offset": 11, "ack_ok": True}
+
+
+def test_service_mode_parser_does_not_require_bounded_limits():
+    args = build_arg_parser().parse_args(["--service", "--poll-timeout-seconds", "1"])
+
+    assert args.service is True
+    assert args.max_messages == 2
+    assert args.max_seconds == 120
+    assert args.poll_timeout_seconds == 1
+
+
+def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window():
+    config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
+    fake = FakeTelegramApi(updates=[_message(20, "estado defensa")])
+    runtime = TelegramLabRuntime(config=config, api=fake)
+
+    result = asyncio.run(runtime.run_service(max_polls=2, poll_timeout_seconds=1, idle_sleep_seconds=0))
+
+    assert result["status"] == "ok"
+    assert result["service_mode"] is True
+    assert result["polls"] == 2
+    assert result["messages_handled"] == 1
+    send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
+    response = json.loads(send_payload["text"])
+    assert response["workflow_category"] == "defense_status"
+    assert response["execution_allowed"] is False
+    assert response["executed"] is False
+    assert response["non_authoritative"] is True
+    assert response["evidence_required"] is True
+    assert response["report_required"] is True
+    assert any(item["event"] == "telegram_lab_service_started" for item in result["evidence"])
+    ack_payloads = [
+        payload
+        for method, payload in fake.calls
+        if method == "getUpdates" and payload.get("offset") == 21 and payload.get("timeout") == 0
+    ]
+    assert ack_payloads
+    assert config.bot_token not in json.dumps(result)
