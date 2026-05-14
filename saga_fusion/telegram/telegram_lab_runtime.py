@@ -11,6 +11,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Sequence
 
 from .mission_operator import TelegramMissionOperator
+from strix_bridge.integrations.telegram.official_strix_direct_handler import OfficialStrixDirectHandler
 from .telegram_config import TelegramConfig, load_telegram_config, validate_real_mode_config
 from .telegram_gateway import TelegramGateway
 from .telegram_security import TelegramSecurity
@@ -86,6 +87,7 @@ class TelegramLabRuntime:
         self.security = TelegramSecurity(self.config)
         self.gateway = gateway or TelegramGateway(config=self.config)
         self.operator = operator or TelegramMissionOperator(self.config, self.gateway)
+        self.direct_strix_handler = OfficialStrixDirectHandler()
         self.api = api or TelegramBotApi(self.config)
         self.evidence: list[dict[str, Any]] = []
 
@@ -170,7 +172,12 @@ class TelegramLabRuntime:
             user_id = str(sender.get("id") or "")
             if not text or not chat_id or not user_id:
                 continue
-            response = await self.operator.handle_message(chat_id, user_id, text)
+            response = await self.direct_strix_handler.handle_message(chat_id, user_id, text)
+            # If direct handler fails, try Saga Fusion operator as last resort
+            if response.startswith("STRIX_ERROR:"):
+                fallback = await self.operator.handle_message(chat_id, user_id, text)
+                if not fallback.startswith("STRIX_ERROR:"):
+                    response = fallback
             safe_response = self.security.redact_secrets(response)
             sent = self.api.request("sendMessage", {"chat_id": chat_id, "text": safe_response})
             self.evidence.append(
