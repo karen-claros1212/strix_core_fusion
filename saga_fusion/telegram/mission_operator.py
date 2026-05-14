@@ -19,6 +19,7 @@ from ..approval import ApprovalAudit, ApprovalRequestBuilder, ApprovalStore, App
 from ..reporting import DefensiveWorkflowReporter, ReportBuilder, TelegramReportFormatter
 from ..task_planning import TaskPlanner
 from ..memory import MemoryStore, MissionMemory, MemoryRetriever, ContextWindow, SessionSummarizer
+from ..strix_engine import StrixAgentAdapter
 
 
 class TelegramMissionOperator:
@@ -51,6 +52,7 @@ class TelegramMissionOperator:
         self.context_window = ContextWindow(char_budget=1200)
         self.session_summarizer = SessionSummarizer()
         self.defensive_command_router = DefensiveCommandRouter()
+        self.strix_agent_adapter = StrixAgentAdapter()
         self.main_engine_available = True
 
     def _serialize_response(self, payload: dict) -> str:
@@ -226,6 +228,46 @@ class TelegramMissionOperator:
     async def _handle_main_engine_message(self, chat_id: str, user_id: str, normalized_text: str, parsed) -> str:
         if not self.main_engine_available:
             raise RuntimeError("STRIX main engine unavailable")
+
+        if parsed is None:
+            adapter_result = await self.strix_agent_adapter.handle_message(chat_id, user_id, normalized_text)
+            if adapter_result.available and adapter_result.handled:
+                payload = {
+                    "status": "ok",
+                    "routed_by": "real_strix_agent",
+                    "strix_main_engine_primary": True,
+                    "saga_control_layer": True,
+                    "message": adapter_result.response,
+                    "adapter_reason": adapter_result.reason,
+                    "execution_allowed": False,
+                    "executed": False,
+                    "non_authoritative": True,
+                    "evidence_required": True,
+                    "report_required": True,
+                }
+                self.evidence_logger._record(
+                    "real_strix_agent_selected",
+                    {
+                        "chat_id": str(chat_id),
+                        "user_id": str(user_id),
+                        "routed_by": "real_strix_agent",
+                        "saga_control_layer": True,
+                        "execution_allowed": False,
+                        "executed": False,
+                        "reason": adapter_result.reason,
+                    },
+                )
+                return self._serialize_response(payload)
+            if adapter_result.reason:
+                self.evidence_logger._record(
+                    "real_strix_agent_unavailable",
+                    {
+                        "chat_id": str(chat_id),
+                        "user_id": str(user_id),
+                        "reason": adapter_result.reason,
+                        "fallback": "saga_fusion_main_engine",
+                    },
+                )
 
         lowered = normalized_text.lower().strip("¿? ")
         if parsed is None and any(phrase in lowered for phrase in ("que puedes hacer", "qué puedes hacer", "ayuda", "help")):
