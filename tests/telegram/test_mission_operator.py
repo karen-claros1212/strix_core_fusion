@@ -98,7 +98,7 @@ def test_operator_end_to_end_dry_run():
         response = await operator.handle_message("123", "diego_claros", "/status")
         assert "Operational" in response
 
-        response = await operator.handle_message("123", "diego_claros", "/mission create VPS")
+        response = await operator.handle_message("123", "diego_claros", "crea un VPS")
         assert "requires approval" in response
 
     asyncio.run(run_async_test())

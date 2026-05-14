@@ -3,10 +3,10 @@ from .telegram_types import RiskLevel
 
 class CommandParser:
     def __init__(self):
-        self.commands = [
-            'start', 'status', 'mission', 'scope', 'evidence', 'findings', 'report', 'approve', 'deny', 'logs',
-            'create', 'run', 'defense_status', 'malware_triage', 'ransomware_response', 'phishing_review', 'webshell_investigation', 'credential_theft_review', 'suspicious_process_review'
-        ]
+        # Telegram UX is natural-first. Slash commands are limited to
+        # admin/debug controls; operational workflows are invoked by natural
+        # language and routed through STRIX Core first.
+        self.commands = ['status', 'help', 'approve', 'deny', 'report']
 
     def parse(self, text: str):
         """Parse a command string like '/status' or '/mission create VPS'."""
@@ -29,14 +29,10 @@ class CommandParser:
     def classify_risk(self, cmd):
         command = getattr(cmd, 'command', '') if cmd is not None else ''
 
-        if command in ('status', 'start'):
+        if command in ('status', 'help'):
             return RiskLevel.R0
-        if command in ('evidence', 'findings', 'logs'):
-            return RiskLevel.R1
         if command == 'report':
             return RiskLevel.R2
-        if command in ('scope', 'create'):
-            return RiskLevel.R3
-        if command in ('mission', 'run'):
+        if command in ('approve', 'deny'):
             return RiskLevel.R4
         return RiskLevel.R0

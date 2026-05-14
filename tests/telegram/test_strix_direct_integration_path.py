@@ -14,6 +14,11 @@ def _operator():
 
 
 class FakeUnavailableStrixAdapter:
+    unavailable_reason = "strix_agent_unavailable:ImportError"
+
+    def is_available(self):
+        return False
+
     async def handle_message(self, chat_id, user_id, text):
         from strix.integrations.telegram import StrixTelegramAdapterResult
 

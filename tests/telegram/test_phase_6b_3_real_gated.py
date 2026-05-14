@@ -78,7 +78,7 @@ def test_r4_generates_approval_required_with_action_hash():
     async def run():
         cfg = TelegramConfig(mode="mock", allowed_user_ids=["diego_claros"])
         operator = TelegramMissionOperator(cfg, MockTelegramAdapter(cfg))
-        response = json.loads(await operator.handle_message("123", "diego_claros", "/mission create VPS"))
+        response = json.loads(await operator.handle_message("123", "diego_claros", "crea un VPS"))
         assert response["status"] == "approval_required"
         assert response["risk_level"] == "R4"
         assert response["approval_id"]
@@ -90,7 +90,7 @@ def test_r5_blocked():
     async def run():
         cfg = TelegramConfig(mode="mock", allowed_user_ids=["diego_claros"])
         operator = TelegramMissionOperator(cfg, MockTelegramAdapter(cfg))
-        response = json.loads(await operator.handle_message("123", "diego_claros", "/mission delete /tmp"))
+        response = json.loads(await operator.handle_message("123", "diego_claros", "elimina /tmp"))
         assert response["status"] == "blocked"
         assert response["risk_level"] == "R5"
         assert response["result"]["executed"] is False

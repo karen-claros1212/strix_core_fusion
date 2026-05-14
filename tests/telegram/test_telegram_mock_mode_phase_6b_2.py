@@ -28,7 +28,7 @@ def test_natural_message_executes_dry_run():
 
 def test_r4_mission_returns_approval_required():
     operator = build_operator()
-    response = json.loads(__import__("asyncio").run(_handle(operator, "/mission create VPS")))
+    response = json.loads(__import__("asyncio").run(_handle(operator, "crea un VPS")))
 
     assert response["status"] == "approval_required"
     assert response["risk_level"] == "R4"
@@ -39,7 +39,7 @@ def test_r4_mission_returns_approval_required():
 
 def test_r5_mission_is_blocked_without_approval():
     operator = build_operator()
-    response = json.loads(__import__("asyncio").run(_handle(operator, "/mission delete /tmp")))
+    response = json.loads(__import__("asyncio").run(_handle(operator, "elimina /tmp")))
 
     assert response["status"] == "blocked"
     assert response["risk_level"] == "R5"

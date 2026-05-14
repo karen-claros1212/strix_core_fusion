@@ -134,6 +134,9 @@ class TelegramMissionOperator:
         payload = {
             "status": "ok",
             "routed_by": "strix_main_engine",
+            "routed_to": "UnifiedSagaAgent",
+            "used_command_parser": False,
+            "llm_fallback_used": True,
             "strix_main_engine_primary": True,
             "saga_control_layer": True,
             "message": "STRIX escucha lenguaje natural; Saga Fusion aplica política, aprobaciones, sandbox, evidencia, reportes y redacción.",
@@ -154,6 +157,18 @@ class TelegramMissionOperator:
         )
         return self._serialize_response(payload)
 
+    def _help_response(self) -> str:
+        return "Escríbeme en lenguaje natural. Ejemplos:\n revisa estado del sistema, analiza posible ransomware,\n audita repo, genera reporte defensivo."
+
+    def _strix_gateway_available(self) -> bool:
+        available = getattr(self.strix_agent_adapter, "is_available", None)
+        if callable(available):
+            try:
+                return bool(available())
+            except Exception:
+                return False
+        return True
+
     async def handle_message(self, chat_id: str, user_id: str, text: str) -> str:
         self.evidence_logger.log_incoming_message(chat_id, user_id, text)
 
@@ -170,7 +185,16 @@ class TelegramMissionOperator:
         parsed = self.command_parser.parse(normalized_text)
 
         if parsed is not None and not getattr(parsed, "known", False):
-            return f"Error: Unknown command: {parsed.command}"
+            return self._serialize_response({
+                "status": "clarification_required",
+                "message": "Escríbeme en lenguaje natural o usa /help para ejemplos.",
+                "used_command_parser": True,
+                "execution_allowed": False,
+                "executed": False,
+            })
+
+        if parsed is not None and getattr(parsed, "command", "") == "help":
+            return self._help_response()
 
         if parsed is not None and getattr(parsed, "command", "") == "status":
             return self._serialize_response({"status": "ok", "message": "System Status: Operational", "routed_by": "saga_control_command", "strix_main_engine_primary": False})
@@ -230,44 +254,61 @@ class TelegramMissionOperator:
             raise RuntimeError("STRIX main engine unavailable")
 
         if parsed is None:
-            adapter_result = await self.strix_agent_adapter.handle_message(chat_id, user_id, normalized_text)
-            if adapter_result.available and adapter_result.handled:
-                payload = {
-                    "status": "ok",
-                    "routed_by": "real_strix_agent",
-                    "strix_main_engine_primary": True,
-                    "saga_control_layer": True,
-                    "message": adapter_result.response,
-                    "adapter_reason": adapter_result.reason,
-                    "execution_allowed": False,
-                    "executed": False,
-                    "non_authoritative": True,
-                    "evidence_required": True,
-                    "report_required": True,
-                }
-                self.evidence_logger._record(
-                    "real_strix_agent_selected",
-                    {
-                        "chat_id": str(chat_id),
-                        "user_id": str(user_id),
+            gateway_available = self._strix_gateway_available()
+            if gateway_available:
+                adapter_result = await self.strix_agent_adapter.handle_message(chat_id, user_id, normalized_text)
+                if adapter_result.available and adapter_result.handled:
+                    payload = {
+                        "status": "ok",
                         "routed_by": "real_strix_agent",
+                        "routed_to": "StrixCoreGateway",
+                        "used_command_parser": False,
+                        "llm_fallback_used": False,
+                        "strix_main_engine_primary": True,
                         "saga_control_layer": True,
+                        "message": adapter_result.response,
+                        "adapter_reason": adapter_result.reason,
                         "execution_allowed": False,
                         "executed": False,
-                        "reason": adapter_result.reason,
-                    },
-                )
-                return self._serialize_response(payload)
-            if adapter_result.reason:
-                self.evidence_logger._record(
-                    "real_strix_agent_unavailable",
-                    {
-                        "chat_id": str(chat_id),
-                        "user_id": str(user_id),
-                        "reason": adapter_result.reason,
-                        "fallback": "saga_fusion_main_engine",
-                    },
-                )
+                        "non_authoritative": True,
+                        "evidence_required": True,
+                        "report_required": True,
+                    }
+                    self.evidence_logger._record(
+                        "real_strix_agent_selected",
+                        {
+                            "chat_id": str(chat_id),
+                            "user_id": str(user_id),
+                            "routed_by": "real_strix_agent",
+                            "routed_to": "StrixCoreGateway",
+                            "used_command_parser": False,
+                            "saga_control_layer": True,
+                            "execution_allowed": False,
+                            "executed": False,
+                            "reason": adapter_result.reason,
+                        },
+                    )
+                    return self._serialize_response(payload)
+                if adapter_result.reason and adapter_result.available:
+                    return self._serialize_response({
+                        "status": "clarification_required",
+                        "message": "No pude completar la ruta STRIX Core. Reformula la solicitud en lenguaje natural.",
+                        "routed_to": "StrixCoreGateway",
+                        "used_command_parser": False,
+                        "llm_fallback_used": False,
+                        "execution_allowed": False,
+                        "executed": False,
+                    })
+            self.evidence_logger._record(
+                "real_strix_agent_unavailable",
+                {
+                    "chat_id": str(chat_id),
+                    "user_id": str(user_id),
+                    "reason": getattr(self.strix_agent_adapter, "unavailable_reason", "strix_gateway_unavailable"),
+                    "fallback": "saga_fusion_main_engine",
+                    "used_command_parser": False,
+                },
+            )
 
         lowered = normalized_text.lower().strip("¿? ")
         if parsed is None and any(phrase in lowered for phrase in ("que puedes hacer", "qué puedes hacer", "ayuda", "help")):
@@ -303,6 +344,9 @@ class TelegramMissionOperator:
                         "executed": False,
                         "execution_allowed": False,
                         "routed_by": "strix_main_engine",
+                        "routed_to": "UnifiedSagaAgent",
+                        "used_command_parser": False,
+                        "llm_fallback_used": True,
                         "message": "blocked by prompt security",
                     }
                 )
@@ -381,6 +425,9 @@ class TelegramMissionOperator:
             return self._serialize_response({
                 "status": "workflow_plan",
                 "routed_by": "strix_main_engine",
+                "routed_to": "UnifiedSagaAgent",
+                "used_command_parser": False,
+                "llm_fallback_used": True,
                 "strix_main_engine_primary": True,
                 "saga_control_layer": True,
                 "mission_id": request.mission_id,
@@ -427,7 +474,7 @@ class TelegramMissionOperator:
 
         if self.policy.is_blocked(request.risk_level):
             request.status = MissionStatus.REJECTED
-            result = {"status": "blocked", "executed": False, "execution_allowed": False, "reason": "risk_r5_blocked", "routed_by": "strix_main_engine", "strix_main_engine_primary": True, "saga_control_layer": True}
+            result = {"status": "blocked", "executed": False, "execution_allowed": False, "reason": "risk_r5_blocked", "routed_by": "strix_main_engine", "routed_to": "UnifiedSagaAgent", "used_command_parser": False, "llm_fallback_used": True, "strix_main_engine_primary": True, "saga_control_layer": True}
             self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "blocked")
             self.evidence_logger.log_mission(request, result)
             self._remember_mission(request, policy_decision="blocked", outcome="blocked", evidence_refs=(f"mission:{request.mission_id}",), next_step="no_execution")
@@ -462,6 +509,9 @@ class TelegramMissionOperator:
                 "executed": False,
                 "execution_allowed": False,
                 "routed_by": "strix_main_engine",
+                "routed_to": "UnifiedSagaAgent",
+                "used_command_parser": False,
+                "llm_fallback_used": True,
                 "strix_main_engine_primary": True,
                 "saga_control_layer": True,
                 "approval_id": approval_id,
@@ -477,7 +527,7 @@ class TelegramMissionOperator:
 
         request.status = MissionStatus.EXECUTING
         result = self.sandbox_dispatcher.dispatch(request)
-        result.update({"routed_by": "strix_main_engine", "strix_main_engine_primary": True, "saga_control_layer": True, "evidence_required": True, "report_required": True, "non_authoritative": True, "execution_allowed": False})
+        result.update({"routed_by": "strix_main_engine", "routed_to": "UnifiedSagaAgent", "used_command_parser": False, "llm_fallback_used": True, "strix_main_engine_primary": True, "saga_control_layer": True, "evidence_required": True, "report_required": True, "non_authoritative": True, "execution_allowed": False})
         request.status = MissionStatus.COMPLETED if result.get("status") == "dry_run" else MissionStatus.FAILED
         self.evidence_logger.log_policy_decision(request.mission_id, request.risk_level, "sandbox_dispatch")
         self.evidence_logger.log_sandbox_dispatch_result(request.mission_id, result)

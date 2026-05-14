@@ -141,7 +141,7 @@ def test_service_mode_parser_does_not_require_bounded_limits():
 
 def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window():
     config = TelegramConfig(mode="real", bot_token="123456:" + "x" * 35, allowed_user_ids=["8166253211"])
-    fake = FakeTelegramApi(updates=[_message(20, "/defense_status")])
+    fake = FakeTelegramApi(updates=[_message(20, "/status")])
     runtime = TelegramLabRuntime(config=config, api=fake)
 
     result = asyncio.run(runtime.run_service(max_polls=2, poll_timeout_seconds=1, idle_sleep_seconds=0))
@@ -152,13 +152,9 @@ def test_lab_runtime_service_mode_polls_and_acknowledges_without_bounded_window(
     assert result["messages_handled"] == 1
     send_payload = next(payload for method, payload in fake.calls if method == "sendMessage")
     response = json.loads(send_payload["text"])
-    assert response["routed_by"] == "defensive_command_router_fallback"
-    assert response["workflow_category"] == "defense_status"
-    assert response["execution_allowed"] is False
-    assert response["executed"] is False
-    assert response["non_authoritative"] is True
-    assert response["evidence_required"] is True
-    assert response["report_required"] is True
+    assert response["routed_by"] == "saga_control_command"
+    assert response["status"] == "ok"
+    assert "Operational" in response["message"]
     assert any(item["event"] == "telegram_lab_service_started" for item in result["evidence"])
     ack_payloads = [
         payload
@@ -220,3 +216,4 @@ def test_lab_runtime_defensive_router_is_only_fallback_when_main_engine_unavaila
     assert response["strix_main_engine_primary"] is False
     assert response["workflow_category"] == "defense_status"
     assert response["execution_allowed"] is False
+    assert response["executed"] is False

@@ -92,19 +92,20 @@ def test_telegram_mock_intact_and_no_real_calls():
     assert gateway.send_message("1", "hello") is True
     assert calls == []
     response = gateway.handle_message(TelegramMessage(message_id=1, user_id=123, chat_id=1, text="/malware_triage"))
-    assert response.ok is True
+    assert response.ok is False
+    assert "Comando no reconocido" in response.text
 
 
-def test_operator_routes_defensive_command_without_real_telegram():
+def test_operator_routes_defensive_workflow_by_natural_language_without_real_telegram():
     async def run():
         config = TelegramConfig(mode="mock", allowed_user_ids=["123"])
         adapter = MockTelegramAdapter(config=config)
         operator = TelegramMissionOperator(config, adapter)
-        response = await operator.handle_message("1", "123", "/malware_triage")
+        response = await operator.handle_message("1", "123", "haz triage defensivo de malware")
         payload = json.loads(response)
         assert payload["workflow_category"] == "malware_triage"
-        assert payload["lab_mode"] is True
         assert payload["execution_allowed"] is False
+        assert payload["used_command_parser"] is False
         assert adapter.messages == []
     asyncio.run(run())
 

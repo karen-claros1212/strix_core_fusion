@@ -102,6 +102,9 @@ class FakeAvailableAdapter:
     def __init__(self):
         self.messages = []
 
+    def is_available(self):
+        return True
+
     async def handle_message(self, chat_id, user_id, text):
         self.messages.append((chat_id, user_id, text))
         from saga_fusion.strix_engine import StrixAgentAdapterResult
@@ -115,6 +118,11 @@ class FakeAvailableAdapter:
 
 
 class FakeUnavailableAdapter:
+    unavailable_reason = "strix_agent_unavailable:ImportError"
+
+    def is_available(self):
+        return False
+
     async def handle_message(self, chat_id, user_id, text):
         from saga_fusion.strix_engine import StrixAgentAdapterResult
 
@@ -169,13 +177,13 @@ def test_defensive_command_router_is_not_primary_for_free_text_when_real_adapter
     assert payload["saga_control_layer"] is True
 
 
-def test_explicit_slash_defensive_command_stays_legacy_control_path():
+def test_explicit_slash_defensive_command_is_not_primary_ux():
     operator = _operator()
     operator.strix_agent_adapter = FakeAvailableAdapter()
 
     raw = asyncio.run(operator.handle_message("8166253211", "8166253211", "/defense_status"))
     payload = json.loads(raw)
 
-    assert payload["routed_by"] == "defensive_command_router_fallback"
-    assert payload["workflow_category"] == "defense_status"
+    assert payload["status"] == "clarification_required"
+    assert payload["used_command_parser"] is True
     assert payload["execution_allowed"] is False
