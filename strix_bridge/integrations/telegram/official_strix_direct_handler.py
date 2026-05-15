@@ -16,7 +16,7 @@ _log = logging.getLogger(__name__)
 
 # Timeout total desde que llega el mensaje hasta que se envía la respuesta.
 # 90s para el agente + margen de red.
-_HANDLER_TIMEOUT = 110.0
+_HANDLER_TIMEOUT = 200.0
 
 
 class OfficialStrixDirectHandler:
